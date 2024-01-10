@@ -64,8 +64,8 @@ if (isset($_POST['change_permission'])) {
         // 해당 board_id가 가지고 있는 user_id를 가지는 user의 email정보를 알아야한다.
         // 그리고 그 email 정보를 이용해서 메일 전송.
         $boardUser_email = $boardRepository->getBoardUserEmail($board_id);
-        $subject = '글 권한 상태가 변경되었습니다.';
-        $message = '관리자 ' . $_SESSION['email'] . ' 님에 의해 게시글 상태가 변경되었습니다.  사유 : ' . $reason_content;
+        $subject = 'Post permission status changed.';
+        $message = 'Your post status has been changed by Administrator ' . $_SESSION['email'];
 
         if ($mailSender->sendToUser($subject, $message,$boardUser_email)) {
             echo "메일이 성공적으로 전송되었습니다.";

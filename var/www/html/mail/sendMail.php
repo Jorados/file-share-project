@@ -19,13 +19,15 @@ class SendMail {
         }
 
         $to = implode(', ', $adminEmails);
-        $headers = 'From: admin@mkSeongjin.com';
+        $headers = 'From: admin@example.com';
 
         // 가리자.
-        $username = 'seongjin8860@naver.com';
-        $password = 'cho980625.';
+        $secret = include '/var/secret/secret.php';
+        $username = $secret['username'];
+        $password = $secret['password'];
 
         if (mail($to, $subject, $message, $headers, '-f' . $username)) {
+            error_log("reason to send email to: " . $to, 3, "/var/log/php_mail.log");
             return true;
         } else {
             return false;
@@ -36,11 +38,12 @@ class SendMail {
     // 해당 글 작성자에게 메일 전송
     public function sendToUser($subject, $message,$boardUser_email) {
         $to = $boardUser_email;
-        $headers = 'From: admin@mkSeongjin.com';
+        $headers = 'From: admin@example.com';
 
         // 가리자.
-        $username = 'seongjin8860@naver.com';
-        $password = 'cho980625.';
+        $secret = include '/var/secret/secret.php';
+        $username = $secret['username'];
+        $password = $secret['password'];
 
         if (mail($to, $subject, $message, $headers, '-f' . $username)) {
             return true;

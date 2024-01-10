@@ -19,19 +19,40 @@ try {
         $boardRepository->addBoard($title, $content, $date, $user_id);
 
         /*
-         *  메일 기능
+         *  메일 기능 1
          *  php - send mail
          */
         $mailSender = new SendMail($pdo);
 
-        $subject = '게시글이 작성되었습니다.';
-        $message = $_SESSION['email'] . ' 님의 게시글이 작성되었습니다.';
+        $subject = 'post has been written.';
+        $message = $_SESSION['email'] . ' post has been written.';
 
         if ($mailSender->sendToAdmins($subject, $message)) {
             echo "메일이 성공적으로 전송되었습니다.";
         } else {
             echo "메일 전송에 실패했습니다.";
         }
+
+        /*
+         *  메일 기능
+         *  php - send mail
+         */
+//        $to = 'whtjdwls1539@nate.com';  // -> 여기에 잘 넣어야 한다.
+//        $subject = 'Test Email';
+//        $message = 'This is a test email sent from PHP with Naver SMTP.';
+//        $headers = 'From: sender@example.com';
+//
+//        // SMTP 서버 인증 정보
+//        $secret = include '/var/secret/secret.php';
+//        $username = $secret['username'];
+//        $password = $secret['password'];
+
+        // 메일 전송
+//        if(mail($to, $subject, $message, $headers, '-f' . $username)) {
+//            echo "메일이 성공적으로 전송되었습니다.";
+//        } else {
+//            echo "메일 전송에 실패했습니다.";
+//        }
 
         echo "게시글이 성공적으로 추가되었습니다.";
     }
