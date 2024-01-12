@@ -10,7 +10,7 @@ if (!isset($_SESSION['session_start_time'])) {
 $_SESSION['session_start_time'] = time();
 
 if (isset($_SESSION['session_start_time'])) {
-    $session_duration = 1800;
+    $session_duration = Constant::SESSION_LIMIT_TIME;
     $current_time = time();
 
     //경과시간
@@ -18,7 +18,7 @@ if (isset($_SESSION['session_start_time'])) {
 
     //경과시간이 30분보다 크다면 세션파기.
     if ($elapsed_time >= $session_duration) {
-        $remaining_time=0;
+        $remaining_time = 0;
         // 세션 파기
         session_unset();
         session_destroy();
@@ -67,42 +67,42 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
 </head>
 
 <body>
-<div class="bg-light p-3 shadow-sm rounded d-flex justify-content-between">
-    <div class="d-flex align-items-center">
-        <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
+    <div class="bg-light p-3 shadow-sm rounded d-flex justify-content-between">
+        <div class="d-flex align-items-center">
+            <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) : ?>
 
-            <p class="m-0 mr-3"><strong>환영합니다, <?php echo $_SESSION['email']; ?> 님</strong></p>
-            <form method='post' class='m-0 mr-3'>
-                <button type='submit' name='logout' class="btn btn-danger">로그아웃</button>
-            </form>
-            <?php
-            // 로그아웃 버튼 클릭 시 세션 제거 및 리다이렉션
-            if (isset($_POST['logout'])) {
+                <p class="m-0 mr-3"><strong>환영합니다, <?php echo $_SESSION['email']; ?> 님</strong></p>
+                <form method='post' class='m-0 mr-3'>
+                    <button type='submit' name='logout' class="btn btn-danger">로그아웃</button>
+                </form>
+                <?php
+                // 로그아웃 버튼 클릭 시 세션 제거 및 리다이렉션
+                if (isset($_POST['logout'])) {
 
-                // 로그아웃 로그
-                include '/var/access_logs/UserLogger.php';
-                $logger = new UserLogger();
-                $email = $_SESSION['email'];
-                $logger->logout($_SERVER['REQUEST_URI'],$email);
+                    // 로그아웃 로그
+                    include '/var/access_logs/UserLogger.php';
+                    $logger = new UserLogger();
+                    $email = $_SESSION['email'];
+                    $logger->logout($_SERVER['REQUEST_URI'], $email);
 
-                // 세션 파기
-                session_unset();
-                session_destroy();
-                header("Location: /phpinfo.php");
-                exit;
-            }
-            ?>
-        <?php else: ?>
-            <p class="m-0">로그인이 필요합니다. <a href="/phpinfo.php" class="text-primary">홈 페이지로 이동</a></p>
-        <?php endif; ?>
+                    // 세션 파기
+                    session_unset();
+                    session_destroy();
+                    header("Location: /phpinfo.php");
+                    exit;
+                }
+                ?>
+            <?php else : ?>
+                <p class="m-0">로그인이 필요합니다. <a href="/phpinfo.php" class="text-primary">홈 페이지로 이동</a></p>
+            <?php endif; ?>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <p class="m-0 mr-2">세션 남은 시간:</p>
+            <p id="session_timer" class="m-0 mr-2"></p>
+        </div>
+
     </div>
-
-    <div class="d-flex align-items-center">
-        <p class="m-0 mr-2">세션 남은 시간:</p>
-        <p id="session_timer" class="m-0 mr-2"></p>
-    </div>
-
-</div>
 </body>
 
 

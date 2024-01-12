@@ -27,7 +27,7 @@ try {
 
 
     // 해당 게시글 수정하기.
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === Constant::METHOD_POST) {
         $title = $_POST['title'];
         $content = $_POST['content'];
 
@@ -44,7 +44,6 @@ try {
         header("Location: adminBoardList.php");  // boardList.php로 리다이렉션
         exit;  // 리다이렉션 후 스크립트 종료
     }
-
 } catch (PDOException $e) {
     die("Error: " . $e->getMessage());
 }
@@ -52,31 +51,34 @@ try {
 
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 수정</title>
 </head>
+
 <body>
-<?php include '/var/www/html/includes/header.php'?>
-<?php include '/var/www/html/includes/adminNavibar.php'?>
-<h2 align="center">게시글 수정</h2>
+    <?php include '/var/www/html/includes/header.php' ?>
+    <?php include '/var/www/html/includes/adminNavibar.php' ?>
+    <h2 align="center">게시글 수정</h2>
 
-<div align="center">
-    <form action="" method="post">
-        <label for="title">제목</label><br>
-        <input type="text" id="title" name="title" value="<?php echo $post['title']?>" required><br>
+    <div align="center">
+        <form action="" method="post">
+            <label for="title">제목</label><br>
+            <input type="text" id="title" name="title" value="<?php echo $post['title'] ?>" required><br>
 
-        <br>
-        <label for="content">내용</label><br>
-        <textarea id="content" name="content" rows="5" required><?php echo$post['content']; ?></textarea><br>
+            <br>
+            <label for="content">내용</label><br>
+            <textarea id="content" name="content" rows="5" required><?php echo $post['content']; ?></textarea><br>
 
-        <br>
-        <input type="submit" value="게시글 수정">
-    </form>
-</div>
+            <br>
+            <input type="submit" value="게시글 수정">
+        </form>
+    </div>
 </body>
 <footer>
-    <?php include '/var/www/html/includes/footer.php'?>
+    <?php include '/var/www/html/includes/footer.php' ?>
 </footer>
+
 </html>

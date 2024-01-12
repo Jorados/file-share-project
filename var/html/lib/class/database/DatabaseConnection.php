@@ -1,6 +1,8 @@
 <?php
 
-class DatabaseConnection {
+//싱글턴
+class DatabaseConnection
+{
     private $host = 'localhost';
     private $db   = 'seongjinDB';
     private $user = 'USERNAME';
@@ -8,7 +10,8 @@ class DatabaseConnection {
     private $charset = 'utf8mb4';
     private $pdo;
 
-    public function __construct() {
+    public function __construct()
+    {
         $dsn = "mysql:host=$this->host;dbname=$this->db;charset=$this->charset";
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
@@ -23,10 +26,13 @@ class DatabaseConnection {
         }
     }
 
+    public function connect()
+    {
+    }
+
     // pdo 사용
-    public function getConnection() {
+    public function getConnection()
+    {
         return $this->pdo;
     }
 }
-?>
-

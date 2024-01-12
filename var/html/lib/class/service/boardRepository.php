@@ -1,14 +1,17 @@
 <?php
 
-class BoardRepository {
+class BoardRepository
+{
     public $pdo;
 
-    public function __construct(PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct()
+    {
+        $this->pdo = new DatabaseConnection();
     }
 
     // 토탈 board
-    public function getTotalItemsByUserId($user_id) {
+    public function getTotalItemsByUserId($user_id)
+    {
         $query = "SELECT COUNT(*) as total FROM board WHERE user_id = :user_id AND status = 'normal';";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -18,7 +21,8 @@ class BoardRepository {
     }
 
     // 페이지 구분
-    public function getBoardItemsByUserId($user_id, $offset, $items_per_page) {
+    public function getBoardItemsByUserId($user_id, $offset, $items_per_page)
+    {
         $query = "SELECT * FROM board WHERE user_id = :user_id AND status = 'normal' LIMIT :offset, :items_per_page;";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
@@ -29,19 +33,20 @@ class BoardRepository {
     }
 
     // status가 'notification'인 board 조회
-    public function getNotificationBoardItems() {
+    public function getNotificationBoardItems()
+    {
         try {
             $query = "SELECT * FROM board WHERE status = 'notification'";
             $stmt = $this->pdo->prepare($query);
             $stmt->execute();
             return $stmt;
-
         } catch (PDOException $e) {
             throw new PDOException($e->getMessage(), (int)$e->getCode());
         }
     }
 
-    public function getBoardById($board_id) {
+    public function getBoardById($board_id)
+    {
         try {
             $query = "SELECT * FROM board WHERE board_id = :board_id";
             $stmt = $this->pdo->prepare($query);
@@ -53,24 +58,62 @@ class BoardRepository {
         }
     }
 
-    public function deleteBoardById($board_id) {
+    public function deleteBoardById($board_id)
+    {
         $deleteQuery = "DELETE FROM board WHERE board_id = :board_id";
         $stmt = $this->pdo->prepare($deleteQuery);
         $stmt->bindParam(':board_id', $board_id, PDO::PARAM_INT);
         return $stmt->execute();
     }
 
-    public function addBoard($title, $content, $date, $user_id) {
-        $query = "INSERT INTO board (title, content, date, user_id) VALUES (:title, :content, :date, :user_id)";
+    public function addBoard(Board $boardInstance)
+    {
+
+
+
+
+
+
+        function getKeyValue($instance)
+        {
+            $key = '';
+            $value = '';
+            foreach ($instance->getObjectVars() as $key => $value) {
+                if (empty($value)) continue;
+
+                $key .= "{$key},";
+                $value .= ":{$value},";
+            }
+
+            return [
+                'key' => trim($key, ","),
+                'value' => trim($value, ",")
+            ];
+        }
+
+
+
+
+
+
+        [
+            'key' => $boardInsertKey,
+            'value' => $boardInsertValue
+        ] = getKeyValue($boardInstance);
+        $query = "INSERT INTO board ({$boardInsertKey}) VALUES ({$boardInsertValue})";
+        $total $this->pdo->getTotal($query);
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-        $stmt->bindParam(':content', $content, PDO::PARAM_STR);
-        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
-        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        // $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+        // $stmt->bindParam(':content', $content, PDO::PARAM_STR);
+        // $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+        // $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+
+        $this->pdo->setParamterBind($stmt, $boardInstance);
         $stmt->execute();
     }
 
-    public function getTotalBoardCount() {
+    public function getTotalBoardCount()
+    {
         $query = "SELECT COUNT(*) as total FROM board WHERE status = 'normal';";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
@@ -78,16 +121,17 @@ class BoardRepository {
         return $result['total'];
     }
 
-//    public function getBoardsByPage($offset, $items_per_page) {
-//        $query = "SELECT * FROM board WHERE status = 'normal' LIMIT :offset, :items_per_page;";
-//        $stmt = $this->pdo->prepare($query);
-//        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-//        $stmt->bindParam(':items_per_page', $items_per_page, PDO::PARAM_INT);
-//        $stmt->execute();
-//        return $stmt;
-//    }
+    //    public function getBoardsByPage($offset, $items_per_page) {
+    //        $query = "SELECT * FROM board WHERE status = 'normal' LIMIT :offset, :items_per_page;";
+    //        $stmt = $this->pdo->prepare($query);
+    //        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+    //        $stmt->bindParam(':items_per_page', $items_per_page, PDO::PARAM_INT);
+    //        $stmt->execute();
+    //        return $stmt;
+    //    }
 
-    public function getBoardsByPage($offset, $items_per_page, $order) {
+    public function getBoardsByPage($offset, $items_per_page, $order)
+    {
         $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
 
         $query = "SELECT * FROM board WHERE status = 'normal' $orderClause LIMIT :offset, :items_per_page;";
@@ -99,7 +143,8 @@ class BoardRepository {
         return $stmt;
     }
 
-    public function adminCreateBoard($title, $content, $date, $user_id, $status) {
+    public function adminCreateBoard($title, $content, $date, $user_id, $status)
+    {
         $query = "INSERT INTO board (title, content, date, user_id, status) VALUES (:title, :content, :date, :user_id, :status)";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':title', $title, PDO::PARAM_STR);
@@ -110,7 +155,8 @@ class BoardRepository {
         $stmt->execute();
     }
 
-    public function updateBoardPermission($board_id, $newPermission) {
+    public function updateBoardPermission($board_id, $newPermission)
+    {
         $updateQuery = "UPDATE board SET openclose = :openclose WHERE board_id = :board_id";
         $stmt = $this->pdo->prepare($updateQuery);
         $stmt->bindParam(':openclose', $newPermission, PDO::PARAM_INT);
@@ -118,7 +164,8 @@ class BoardRepository {
         $stmt->execute();
     }
 
-    public function getBoardIdLimit1() {
+    public function getBoardIdLimit1()
+    {
         $updateQuery = "SELECT board_id FROM board ORDER BY board_id DESC LIMIT 1";
         $stmt = $this->pdo->prepare($updateQuery);
         $stmt->execute();
@@ -127,7 +174,8 @@ class BoardRepository {
     }
 
 
-    public function getBoardUserEmail($board_id) {
+    public function getBoardUserEmail($board_id)
+    {
         $sql = "SELECT u.email 
             FROM user u 
             WHERE u.user_id IN (
@@ -143,4 +191,3 @@ class BoardRepository {
         return $result['email'];
     }
 }
-?>
