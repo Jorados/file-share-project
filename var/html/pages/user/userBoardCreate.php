@@ -64,7 +64,7 @@
             this.on("addedfile", function(file) {
                 // 여기에 추가된 파일에 대한 초기화 로직을 추가할 수 있습니다.
                 // 예: 파일 추가 시 사용자에게 취소 옵션을 제공하는 버튼을 생성
-                var cancelButton = Dropzone.createElement("<button class='btn btn-danger btn-sm mt-2'>취소</button>");
+                var cancelButton = Dropzone.createElement("<button class='btn btn-danger btn-sm mt-1'>취소</button>");
                 var _this = this;
 
                 cancelButton.addEventListener("click", function() {

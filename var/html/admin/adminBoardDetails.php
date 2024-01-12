@@ -72,8 +72,8 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
             <h3 class="text-center">글 상세 조회</h3>
         </div>
         <div class="card-body">
-            <p class="card-text">제목 : <?php echo $board['title']; ?></p>
-            <p class="card-text">내용 : <?php echo $board['content']; ?></p>
+            <p class="card-text">제목 : <?php echo htmlspecialchars($board['title'], ENT_QUOTES, 'UTF-8'); ?></p>
+            <p class="card-text">내용 : <?php echo htmlspecialchars($board['content'], ENT_QUOTES, 'UTF-8'); ?></p>
             <p class="card-text">파일목록
             <ul>
                 <?php

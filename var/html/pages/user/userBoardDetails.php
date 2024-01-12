@@ -68,14 +68,13 @@ foreach ($comments as &$comment) {
         <div class="card-body">
             <?php if ($board['openclose'] == 0): ?>
                 <p class="card-text">제목 : <?php echo $board['title']; ?></p>
-                <p class="card-text">작성일 : 볼 수 없음</p>
                 <p class="card-text">내용 : 볼 수 없음</p>
                 <p class="card-text">첨부 파일 : 볼 수 없음</p>
+                <p class="card-text">작성일 : 볼 수 없음</p>
                 <p class="card-text">열람 권한 : 불가</p>
             <?php else: ?>
-                <p class="card-text">제목 : <?php echo $board['title']; ?></p>
-                <p class="card-text">작성일 : <?php echo date('Y-m-d', strtotime($board['date'])); ?></p>
-                <p class="card-text">내용 : <?php echo $board['content']; ?></p>
+                <p class="card-text">제목 : <?php echo htmlspecialchars($board['title'], ENT_QUOTES, 'UTF-8'); ?></p>
+                <p class="card-text">내용 : <?php echo htmlspecialchars($board['content'], ENT_QUOTES, 'UTF-8'); ?></p>
                 <p class="card-text">파일목록
                 <ul>
                     <?php
@@ -93,6 +92,7 @@ foreach ($comments as &$comment) {
 
                 </ul>
                 </p>
+                <p class="card-text">작성일 : <?php echo date('Y-m-d', strtotime($board['date'])); ?></p>
                 <p class="card-text">열람 권한 : <?php echo $board['openclose'] == 0 ? '불가' : '허용'; ?></p>
             <?php endif; ?>
 

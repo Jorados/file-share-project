@@ -78,12 +78,24 @@ class BoardRepository {
         return $result['total'];
     }
 
-    public function getBoardsByPage($offset, $items_per_page) {
-        $query = "SELECT * FROM board WHERE status = 'normal' LIMIT :offset, :items_per_page;";
+//    public function getBoardsByPage($offset, $items_per_page) {
+//        $query = "SELECT * FROM board WHERE status = 'normal' LIMIT :offset, :items_per_page;";
+//        $stmt = $this->pdo->prepare($query);
+//        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+//        $stmt->bindParam(':items_per_page', $items_per_page, PDO::PARAM_INT);
+//        $stmt->execute();
+//        return $stmt;
+//    }
+
+    public function getBoardsByPage($offset, $items_per_page, $order) {
+        $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
+
+        $query = "SELECT * FROM board WHERE status = 'normal' $orderClause LIMIT :offset, :items_per_page;";
         $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindParam(':items_per_page', $items_per_page, PDO::PARAM_INT);
         $stmt->execute();
+
         return $stmt;
     }
 
