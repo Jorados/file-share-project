@@ -2,8 +2,11 @@
 session_start();
 
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
-include '/var/repository/attachmentRepository.php';
+include '/var/www/html/repository/boardRepository.php';
+include '/var/www/html/repository/attachmentRepository.php';
+include '/var/access_logs/PostLogger.php';
+include '/var/www/html/repository/userRepository.php';
+include '/var/www/html/repository/commentRepository.php';
 
 // 게시글 ID를 URL 파라미터에서 가져옵니다. // isset() -> 값이 할당되었는지 확인하는 함수
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
@@ -19,6 +22,28 @@ $board = $boardRepository->getBoardById($board_id);
 
 $attachmentRepository = new AttachmentRepository($pdo);
 $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
+
+$commentRepository = new CommentRepository($pdo);
+$userRepository = new UserRepository($pdo);
+// 댓글 조회
+try {
+    $comments = $commentRepository -> getCommentByBoardId($board_id);
+    // 각 댓글의 작성자 이메일을 가져옵니다.
+    foreach ($comments as &$comment) {
+        $user_id = $comment['user_id'];
+        $user = $userRepository->getUserEmailById($user_id);
+        $comment['user_email'] = $user['email'];
+    }
+} catch (PDOException $e) {
+    echo "댓글 조회 중 오류가 발생했습니다: " . $e->getMessage();
+}
+
+// 글 상세 조회 로그
+$logger = new PostLogger();
+$email = $_SESSION['email'];
+$title = $board['title'];
+$status = $board['status'];
+$logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
 ?>
 
 
@@ -34,7 +59,7 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 <?php include '/var/www/html/includes/userNavibar.php'?>
 <div class="container mt-5">
     <!-- 게시글 상세 정보 -->
-    <div class="card mx-auto mb-5" style="max-width: 500px;">
+    <div class="card mx-auto mb-5" style="max-width: 1000px;">
         <div class="card-header bg-dark text-white" style="max-height: 90px;">
             <h3 class="text-center">공지 상세 조회</h3>
         </div>
@@ -57,6 +82,26 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
             </ul>
             <p class="card-text">작성일 : <?php echo date('Y-m-d', strtotime($board['date'])); ?></p>
             <p class="card-text">열람 권한 : <?php echo '허용'; ?></p>
+        </div>
+    </div>
+
+
+    <div class="card mx-auto mb-5" style="max-width: 1000px;">
+        <div class="card-body">
+            <label for="comment_content">댓글 내용</label>
+            <?php foreach ($comments as $comment): ?>
+                <div class="card mb-2">
+                    <div class="card-body d-flex justify-content-between"> <!-- d-flex와 justify-content-between 추가 -->
+                        <div>
+                            <p class="card-text"><?php echo $comment['content']; ?></p>
+                            <small class="text-muted">작성자: <?php echo $comment['user_email']; ?></small>
+                        </div>
+                        <div class="text-right"> <!-- text-right 추가 -->
+                            <small class="text-muted"><?php echo date('Y-m-d', strtotime($comment['date'])); ?></small>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
         </div>
     </div>
 </div>

@@ -2,13 +2,15 @@
 session_start();
 
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
+include '/var/www/html/repository/boardRepository.php';
 include '/var/www/html/mail/sendMail.php';
+include '/var/access_logs/PostLogger.php';
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
 
 $boarRepository = new BoardRepository($pdo);
+$logger = new PostLogger();
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $title = $_POST['title'];
@@ -37,6 +39,11 @@ try {
         } else {
             echo "메일 전송에 실패했습니다.";
         }
+
+
+        // 로그 작성
+        $email = $_SESSION['email'];
+        $logger->createPost($_SERVER['REQUEST_URI'], $email, $postStatus);
         echo "게시글이 성공적으로 추가되었습니다.";
     }
 } catch (PDOException $e) {

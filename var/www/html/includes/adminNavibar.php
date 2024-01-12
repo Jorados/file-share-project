@@ -34,9 +34,17 @@
                     게시글 관리
                 </a>
                 <div class="dropdown-menu" aria-labelledby="boardDropdown">
-                    <a class="dropdown-item" href="adminBoardList.php">게시글 관리</a>
-                    <a class="dropdown-item" href="adminBoardCreate.php">게시글 작성</a>
+                    <a class="dropdown-item" href="adminHome.php">게시글 관리</a>
                     <a class="dropdown-item" href="adminNotice.php">공지글 관리</a>
+                    <a class="dropdown-item" href="adminBoardCreate.php">게시글 작성</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="logDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    로그 관리
+                </a>
+                <div class="dropdown-menu" aria-labelledby="logDropdown">
+                    <a class="dropdown-item" href="logDetails.php">로그 보기</a>
                 </div>
             </li>
         </ul>

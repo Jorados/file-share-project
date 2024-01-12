@@ -19,6 +19,9 @@
 
 <?php
 // download.php
+session_start();
+include '/var/access_logs/PostLogger.php';
+$logger = new PostLogger();
 
 //GET 요청에서 파일 이름을 가져옵니다.
 if (isset($_GET['file'])) {
@@ -47,6 +50,10 @@ if (isset($_GET['file'])) {
 
         // 파일을 읽어서 출력합니다.
         readfile($filepath);
+
+        // 파일 다운 로그
+        $email = $_SESSION['email'];
+        $logger->downloadFile($_SERVER['REQUEST_URI'], $email, $filename);
         exit;
     } else {
         // 파일이 존재하지 않는 경우 에러 메시지를 출력합니다.

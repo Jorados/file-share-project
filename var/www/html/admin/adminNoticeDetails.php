@@ -1,39 +1,41 @@
 <?php
 session_start();
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
-include '/var/repository/userRepository.php';
-include '/var/repository/attachmentRepository.php';
+include '/var/www/html/repository/boardRepository.php';
+include '/var/www/html/repository/userRepository.php';
+include '/var/www/html/repository/attachmentRepository.php';
+include '/var/access_logs/PostLogger.php';
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
 
-// 게시글 ID를 URL 파라미터에서 가져옵니다.
-// isset() -> 값이 할당되었는지 확인하는 함수
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
 if (!$board_id) die("게시글 ID가 제공되지 않았습니다.");
 
 $boarRepository = new BoardRepository($pdo);
 $userRepository = new UserRepository($pdo);
 $attachmentRepository = new AttachmentRepository($pdo);
+$logger = new PostLogger();
 
-try {
-    // 해당 ID의 게시글을 데이터베이스에서 가져옵니다.
-    $board = $boarRepository -> getBoardById($board_id);
-    if (!$board) die("해당 ID의 게시글을 찾을 수 없습니다.");
+$board = $boarRepository -> getBoardById($board_id);
 
-    // 사용자 정보 조회
-    $user_id = $board['user_id'];
-    $user = $userRepository -> getUserById($user_id);
-    if (!$user) die("해당 ID의 사용자를 찾을 수 없습니다.");
-} catch (PDOException $e) {
-    die("Error: " . $e->getMessage());
-}
+// 공지 조회 로그
+$email = $_SESSION['email'];
+$status = $board['status'];
+$title = $board['title'];
+$logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
+
+// 사용자 정보 조회
+$user_id = $board['user_id'];
+$user = $userRepository -> getUserById($user_id);
+$attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
 // 게시글 삭제 기능
 if (isset($_POST['delete_post'])) {
     try {
         $stmt = $boarRepository -> deleteBoardById($board_id);
+        // 삭제 로그
+        $logger -> deletePost($_SERVER['REQUEST_URI'], $email, $status, $title);
         header("Location: adminNotice.php");
         exit;
     } catch (PDOException $e) {
@@ -41,7 +43,7 @@ if (isset($_POST['delete_post'])) {
     }
 }
 
-$attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
+
 ?>
 
 
@@ -57,7 +59,7 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 <?php include '/var/www/html/includes/adminNavibar.php'?>
 <div class="container mt-5">
 
-    <div class="card mx-auto mb-5" style="max-width: 500px;">
+    <div class="card mx-auto mb-5" style="max-width: 1000px;">
         <div class="card-header bg-dark text-white" style="max-height: 90px;">
             <h3 class="text-center">공지 상세 조회</h3>
         </div>

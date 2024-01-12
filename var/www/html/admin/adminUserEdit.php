@@ -1,7 +1,7 @@
 <?php
 session_start();
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/userRepository.php';
+include '/var/www/html/repository/userRepository.php';
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // 비밀번호 입력 여부 확인
     if (empty($password)) {
         $message = "비밀번호를 입력해주세요.";
-    } elseif (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/", $password)) {
+    } else if (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/", $password)) {
         // 비밀번호 유효성 검사 (영어와 숫자, 최소 8자)
         $message = "비밀번호는 영어와 숫자를 포함하여 8자 이상이어야 합니다.";
     } else {
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <div class="d-flex justify-content-center">
-                <form method="post" action="" class="col-md-9">
+                <form action="/action/editUser.php" method="post" class="col-md-9" id="editForm">
                     <div class="form-group">
                         <label for="email">이메일:</label>
                         <input type="email" class="form-control" id="email" name="email" value="<?php echo $user['email']; ?>" required>
@@ -89,12 +89,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <input type="text" class="form-control" id="phone" name="phone" value="<?php echo $user['phone']; ?>">
                     </div>
 
-                    <button type="submit" class="btn btn-warning">정보 수정</button>
+                    <input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>">
+                    <button type="button" class="btn btn-warning" onclick="submitForm()">정보 수정</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function submitForm() {
+        var formData = new FormData(document.getElementById('editForm'));
+
+        // 비동기적으로 createUser.php에 POST 요청을 보냄
+        fetch('/action/editUser.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 서버에서 반환한 데이터를 처리
+                if (data.status) {
+                    alert(data.content);
+                    window.location.href = '/admin/adminAuthority.php';
+                } else {
+                    alert(data.content);
+                }
+            })
+            .catch(data => {
+                alert(data.content);
+                console.log('Error:', data.message);
+            });
+    }
+</script>
+
 </body>
 <footer>
     <?php include '/var/www/html/includes/footer.php'?>

@@ -1,12 +1,14 @@
 <?php
 session_start();
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
-include '/var/repository/infoRepository.php';
-include '/var/repository/userRepository.php';
-include '/var/repository/commentRepository.php';
-include '/var/repository/attachmentRepository.php';
+include '/var/www/html/repository/boardRepository.php';
+include '/var/www/html/repository/infoRepository.php';
+include '/var/www/html/repository/userRepository.php';
+include '/var/www/html/repository/commentRepository.php';
+include '/var/www/html/repository/attachmentRepository.php';
 include '/var/www/html/mail/sendMail.php';
+include '/var/access_logs/PostLogger.php';
+include '/var/access_logs/CommentLogger.php';
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
@@ -18,77 +20,24 @@ $userRepository = new UserRepository($pdo);
 $commentRepository = new CommentRepository($pdo);
 $attachmentRepository = new AttachmentRepository($pdo);
 $mailSender = new SendMail($pdo);
+$logger = new PostLogger();
 
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
 if (!$board_id) die("게시글 ID가 제공되지 않았습니다.");
 
+// 글 상세 조회 로그  추가
+$board = $boardRepository -> getBoardByid($board_id);
+$status = $board['status'];
+$email = $_SESSION['email'];
+$title = $board['title'];
+$logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
+
 try {
     $board = $boardRepository -> getBoardByid($board_id);
-    if (!$board) die("해당 ID의 게시글을 찾을 수 없습니다.");
-
     $user_id = $board['user_id'];
     $user = $userRepository -> getUserById($user_id);
-    if (!$user) die("해당 ID의 사용자를 찾을 수 없습니다.");
 } catch (PDOException $e) {
     die("Error: " . $e->getMessage());
-}
-
-// 게시글 삭제 기능
-if (isset($_POST['delete_post'])) {
-    try {
-        $stmt = $boardRepository -> deleteBoardById($board_id);
-        $stmt = $attachmentRepository -> deleteAttachment($board_id);
-
-        header("Location: adminBoardList.php");
-        exit;
-    } catch (PDOException $e) {
-        echo "게시글 삭제 중 오류가 발생했습니다: " . $e->getMessage();
-    }
-
-
-}
-
-// 글 열람권한 변경 관련 --> 해당 작성자에게 메일도 전송 해야함.
-if (isset($_POST['change_permission'])) {
-    $newPermission = $_POST['change_permission'];
-    $board_id = $_POST['board_id'];
-    $reason_content = $_POST['reason_content']; // 사용자로부터의 입력
-    $user_id = $_SESSION['user_id'];
-    try {
-        // 게시글 권한 업데이트
-        $boardRepository->updateBoardPermission($board_id, $newPermission);
-        // info 테이블에 정보 삽입
-        $infoRepository->addInfo($reason_content, $user_id, $board_id);
-
-        // 메일 전송 구현 로직 , 글 주인한테 메일 쏴야함
-        // 해당 board_id가 가지고 있는 user_id를 가지는 user의 email정보를 알아야한다.
-        // 그리고 그 email 정보를 이용해서 메일 전송.
-        $boardUser_email = $boardRepository->getBoardUserEmail($board_id);
-        $subject = 'Post permission status changed.';
-        $message = 'Your post status has been changed by Administrator ' . $_SESSION['email'];
-
-        if ($mailSender->sendToUser($subject, $message,$boardUser_email)) {
-            echo "메일이 성공적으로 전송되었습니다.";
-        } else {
-            echo "메일 전송에 실패했습니다.";
-        }
-
-        header("Location: /admin/adminBoardList.php"); // 페이지 새로고침
-    } catch (PDOException $e) {
-        echo "오류: " . $e->getMessage();
-    }
-}
-
-// 댓글 등록 기능
-if (isset($_POST['submit_comment'])) {
-    $content = $_POST['content'];
-    $user_id = $_SESSION['user_id']; // 로그인한 사용자의 ID를 사용
-
-    try {
-        $stmt = $commentRepository -> addComment($content, $board_id, $user_id);
-    } catch (PDOException $e) {
-        echo "댓글 작성 중 오류가 발생했습니다: " . $e->getMessage();
-    }
 }
 
 // 댓글 조회
@@ -103,9 +52,9 @@ try {
 } catch (PDOException $e) {
     echo "댓글 조회 중 오류가 발생했습니다: " . $e->getMessage();
 }
-
 $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -146,24 +95,27 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
             <p class="card-text">작성일 : <?php echo date('Y-m-d', strtotime($board['date'])); ?></p>
             <p class="card-text">열람 권한 : <?php echo $board['openclose'] == 0 ? '불가' : '허용'; ?></p>
 
-            <form method="post" action="" class="mt-3">
+            <form action="/action/boardAuthorityChange.php" method="post"  class="mt-3" id="authorityForm">
                 <label for="reason_content">사유</label>
                 <textarea name="reason_content" id="reason_content" rows="3" class="form-control" placeholder="열람 권한 변경의 사유를 입력하세요." required></textarea>
-
                 <input type="hidden" name="board_id" value="<?php echo $board['board_id']; ?>">
+
                 <?php if ($board['openclose'] == 0): ?>
-                    <button type="submit" name="change_permission" value="1" class="btn btn-primary mt-3">열람 허용</button>
+                    <input type="hidden" name="change_permission" value="1">
+                    <button type="button" name="change_permission" value="1" class="btn btn-primary mt-3" onclick="submitBoardAuthority()">열람 허용</button>
                 <?php else: ?>
-                    <button type="submit" name="change_permission" value="0" class="btn btn-primary mt-3">열람 불가</button>
+                    <input type="hidden" name="change_permission" value="0">
+                    <button type="button" name="change_permission" value="0" class="btn btn-primary mt-3" onclick="submitBoardAuthority()">열람 불가</button>
                 <?php endif; ?>
             </form>
 
             <div class="row mt-3">
                 <div class="col-md-6">
-                    <form method="post" action="" class="d-inline-block">
-                        <input type="submit" name="delete_post" value="삭제" class="btn btn-danger" onclick="return confirm('정말로 삭제하시겠습니까?');">
+                    <form action="/action/deleteForm.php" method="post"  class="d-inline-block" id="deleteForm">
+                        <input type="hidden" name="board_id" value="<?php echo $board['board_id']; ?>">
+                        <input type="button" name="delete_post" value="삭제" class="btn btn-danger" onclick="submitDeleteForm()">
                     </form>
-                    <a href="boardEdit.php?id=<?php echo $board['board_id']; ?>" class="btn btn-warning">수정</a>
+<!--                    <a href="boardEdit.php?id=--><?php //echo $board['board_id']; ?><!--" class="btn btn-warning">수정</a>-->
                 </div>
             </div>
         </div>
@@ -171,13 +123,13 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
     <div class="card mx-auto mb-5 " style="max-width: 1000px";>
         <div class="card-body">
-            <form method="post" action="">
+            <form action="/action/createComment.php" method="post" id="createCommentForm">
                 <div class="form-group">
                     <label for="content">댓글 내용</label>
                     <textarea name="content" id="content" rows="3" class="form-control" required></textarea>
                 </div>
-
-                <button type="submit" name="submit_comment" class="btn btn-primary">댓글 작성</button>
+                <input type="hidden" name="board_id" value="<?php echo $board['board_id']; ?>">
+                <button type="button" name="submit_comment" class="btn btn-primary" onclick="submitCommentForm()">댓글 작성</button>
             </form>
         </div>
     </div>
@@ -206,3 +158,79 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
     <?php include '/var/www/html/includes/footer.php'?>
 </footer>
 </html>
+
+<script>
+    function submitDeleteForm() {
+        var formData = new FormData(document.getElementById('createCommentForm'));
+
+        // 비동기적으로 createUser.php에 POST 요청을 보냄
+        fetch('/action/deletePost.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 서버에서 반환한 데이터를 처리
+                if (data.status) {
+                    alert(data.content);
+                    window.location.href = '/admin/adminHome.php';
+                } else {
+                    alert(data.content);
+                }
+            })
+            .catch(data => {
+                alert(data.content);
+                console.log('Error:', data.content);
+            });
+    }
+
+    function submitCommentForm() {
+        var formData = new FormData(document.getElementById('createCommentForm'));
+
+        // 비동기적으로 createUser.php에 POST 요청을 보냄
+        fetch('/action/createComment.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 서버에서 반환한 데이터를 처리
+                if (data.status) {
+                    alert(data.content);
+                    location.reload();
+                } else {
+                    alert(data.content);
+                }
+            })
+            .catch(data => {
+                alert(data.content);
+                console.log('Error:', data.content);
+            });
+    }
+
+    function submitBoardAuthority() {
+        var formData = new FormData(document.getElementById('authorityForm'));
+
+        // 비동기적으로 createUser.php에 POST 요청을 보냄
+        fetch('/action/boardAuthorityChange.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 서버에서 반환한 데이터를 처리
+                console.log(data.status + " " + data.content);
+                if (data.status) {
+                    alert(data.content);
+                    window.location.href = '/admin/adminHome.php';
+                } else {
+                    alert(data.content);
+                }
+            })
+            .catch(error => {
+                alert("Error: " + error);
+                console.log('Error:', error);
+            });
+
+    }
+</script>

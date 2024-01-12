@@ -78,6 +78,14 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
             <?php
             // 로그아웃 버튼 클릭 시 세션 제거 및 리다이렉션
             if (isset($_POST['logout'])) {
+
+                // 로그아웃 로그
+                include '/var/access_logs/UserLogger.php';
+                $logger = new UserLogger();
+                $email = $_SESSION['email'];
+                $logger->logout($_SERVER['REQUEST_URI'],$email);
+
+                // 세션 파기
                 session_unset();
                 session_destroy();
                 header("Location: /phpinfo.php");

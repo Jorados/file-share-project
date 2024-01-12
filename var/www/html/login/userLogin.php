@@ -2,10 +2,13 @@
 session_start();
 
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/userRepository.php';
+include '/var/www/html/repository/userRepository.php';
+include '/var/access_logs/UserLogger.php';
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
+
+$logger = new UserLogger();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
@@ -26,8 +29,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // 로그인 후 리다이렉션
             if ($user['role'] == 'admin') {
+                $logger->login($_SERVER['REQUEST_URI'],$email);
                 header("Location: /admin/adminHome.php");
             } elseif ($user['role'] == 'user') {
+                $logger->login($_SERVER['REQUEST_URI'],$email);
                 header("Location: /user/userHome.php");
             } else {
                 echo "알 수 없는 역할입니다.";

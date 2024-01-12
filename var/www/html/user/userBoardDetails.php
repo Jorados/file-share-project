@@ -1,11 +1,12 @@
 <?php
 session_start();
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
-include '/var/repository/infoRepository.php';
-include '/var/repository/userRepository.php';
-include '/var/repository/commentRepository.php';
-include '/var/repository/attachmentRepository.php';
+include '/var/www/html/repository/boardRepository.php';
+include '/var/www/html/repository/infoRepository.php';
+include '/var/www/html/repository/userRepository.php';
+include '/var/www/html/repository/commentRepository.php';
+include '/var/www/html/repository/attachmentRepository.php';
+include '/var/access_logs/PostLogger.php';
 
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
 if (!$board_id) {
@@ -22,7 +23,6 @@ $userRepository = new UserRepository($pdo);
 $commentRepository = new CommentRepository($pdo);
 $attachmentRepository = new AttachmentRepository($pdo);
 
-
 $board = $boardRepository -> getBoardById($board_id);
 $info = $infoRepository -> getLatestInfoByBoardId($board_id);
 $latest_date = $info['date'];
@@ -32,15 +32,16 @@ $user = $userRepository->getUserById($user_id);
 $comments = $commentRepository -> getCommentsByBoardId($board_id);
 $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
+// 글 상세 조회 로그
+$logger = new PostLogger();
+$email = $_SESSION['email'];
+$title = $board['title'];
+$status = $board['status'];
+$logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
+
 // 각 댓글의 작성자 이메일을 가져옵니다.
 foreach ($comments as &$comment) {
-    $userQuery = "SELECT email FROM user WHERE user_id = :user_id";
-    $stmt = $pdo->prepare($userQuery);
-    $stmt->bindParam(':user_id', $comment['user_id'], PDO::PARAM_INT);
-    $stmt->execute();
-    $user = $stmt->fetch();
-
-    // 가져온 이메일을 댓글 데이터에 추가합니다.
+    $userRepository -> getUserEmailById($comment['user_id']);
     $comment['user_email'] = $user['email'];
 }
 ?>

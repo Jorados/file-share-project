@@ -2,7 +2,7 @@
 
 <?php
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/userRepository.php';
+include '/var/www/html/repository/userRepository.php';
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();

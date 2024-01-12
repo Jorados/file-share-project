@@ -3,7 +3,7 @@ session_start();
 $user_id = $_SESSION['user_id'];
 
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
+include '/var/www/html/repository/boardRepository.php';
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
@@ -46,6 +46,7 @@ try {
                 <th scope="col" width="200" class="text-center">번호</th>
                 <th scope="col" width="200" class="text-center">제목</th>
                 <th scope="col" width="200" class="text-center">내용</th>
+                <th scope="col" width="200" class="text-center">작성자</th>
                 <th scope="col" width="200" class="text-center">날짜</th>
             </tr>
             </thead>
@@ -67,6 +68,7 @@ try {
                         </a>
                     </td>
                     <td class="text-center"><?php echo $row['openclose'] == 0 ? '볼 수 없음' : $row['content']; ?></td>
+                    <td class="text-center"><?php echo $_SESSION['email'] ?></td>
                     <td class="text-center"><?php echo $row['openclose'] == 0 ? '볼 수 없음' : date('Y-m-d', strtotime($row['date'])); ?></td>
                 </tr>
             <?php endwhile; ?>

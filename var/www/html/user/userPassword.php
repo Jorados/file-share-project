@@ -1,36 +1,3 @@
-<?php
-session_start();
-
-include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/userRepository.php';
-
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
-$userRepository = new UserRepository($pdo);
-try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        $password = $_POST['password'];
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // 현재 세션의 이메일 가져오기
-        $email = $_SESSION['email'];
-
-        // 이메일을 사용하여 사용자 비밀번호 업데이트
-        $userRepository->updateUserPassword($email, $hashed_password);
-
-        // 사용자 available 값을 업데이트
-        $userRepository->updateAvailableStatus($email);
-
-        echo "비밀번호가 성공적으로 변경되었습니다.";
-        header("Location: /phpinfo.php");
-        exit;
-    }
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
-}
-?>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -52,18 +19,43 @@ try {
 
         <div class="card-body">
             <div class="d-flex justify-content-center">
-                <form action="" method="post" class="col-md-9">
+                <form action="/action/changePassword.php" method="post" class="col-md-9" id="passwordForm">
                     <div class="form-group">
                         <label for="password">비밀번호</label>
                         <input type="password" id="password" name="password" class="form-control">
                     </div>
-
-                    <button type="submit" class="btn btn-primary btn-block" >변경</button>
+                    <button type="button" class="btn btn-primary btn-block" onclick="submitForm()">변경</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function submitForm() {
+        var formData = new FormData(document.getElementById('passwordForm'));
+
+        // 비동기적으로 createUser.php에 POST 요청을 보냄
+        fetch('/action/changePassword.php', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // 서버에서 반환한 데이터를 처리
+                if (data.status) {
+                    alert(data.content);
+                    window.location.href = '/login/userLogin.php';
+                } else {
+                    alert(data.content);
+                }
+            })
+            .catch(data => {
+                alert(data.content);
+                console.log('Error:', data.content);
+            });
+    }
+</script>
 </body>
 
 <footer>

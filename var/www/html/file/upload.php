@@ -37,8 +37,8 @@ if ($_FILES['file']['error'] === 0 && $_FILES['file']['size'] <= 100 * 1024 * 10
 }
 
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
-include '/var/repository/attachmentRepository.php';
+include '/var/www/html/repository/boardRepository.php';
+include '/var/www/html/repository/attachmentRepository.php';
 
 //위에서 파일 처리를 한 후에, 최근 boardList LIMIT 1로 생성된 board_id를 불러와서
 $dbConnection = new DatabaseConnection();

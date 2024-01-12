@@ -2,10 +2,15 @@
 session_start();
 
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
+include '/var/www/html/repository/boardRepository.php';
+include '/var/www/html/repository/userRepository.php';
+
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
+
+$userRepository = new UserRepository($pdo);
+$boardRepository = new BoardRepository($pdo);
 
 $items_per_page = 10;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -22,6 +27,7 @@ try {
 } catch (PDOException $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
+
 ?>
 <!DOCTYPE html>
 
@@ -37,16 +43,17 @@ try {
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">전체 게시글 조회</h2>
-
+    <pre><script>console.log("asd")</script></pre>
     <div class="table-responsive">
         <table class="table table-bordered table-striped fixed-table">
             <thead class="thead-dark">
             <tr>
-                <th scope="col" width="200" class="text-center">번호</th>
+                <th scope="col" width="50" class="text-center">번호</th>
                 <th scope="col" width="200" class="text-center">제목</th>
                 <th scope="col" width="200" class="text-center">내용</th>
-                <th scope="col" width="200" class="text-center">날짜</th>
-                <th scope="col" width="200" class="text-center">열람권한</th>
+                <th scope="col" width="170" class="text-center">작성자</th>
+                <th scope="col" width="130" class="text-center">날짜</th>
+                <th scope="col" width="80" class="text-center">열람권한</th>
             </tr>
             </thead>
 
@@ -54,19 +61,33 @@ try {
             <?php while ($row = $boards->fetch()): ?>
                 <tr>
                     <td class="text-center"><?php echo $total; ?></td> <?php $total++; ?>
-                    <td class="text-center">
+                    <td class="text-left">
                         <a href="adminBoardDetails.php?board_id=<?php echo $row['board_id']; ?>">
                             <?php
                             $title = $row['title']; // 제목을 변수에 저장합니다.
-                            if (strlen($title) > 27) { // 제목의 길이가 20자 이상인 경우
-                                echo substr($title, 0, 27) . ".."; // 20자까지만 표시하고 나머지는 생략 기호로 표시합니다.
+                            $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8'); // HTML 이스케이프
+                            if (strlen($escapedTitle) > 27) {
+                                echo substr($escapedTitle, 0, 27) . "..";
                             } else {
-                                echo $title; // 그렇지 않으면 전체 제목을 표시합니다.
+                                echo $escapedTitle;
                             }
                             ?>
                         </a>
                     </td>
-                    <td class="text-center content-cell"><?php echo $row['content']; ?></td>
+                    <td class="text-left content-cell">
+                        <?php
+                        $content = $row['content'];
+                        $escapedContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8'); // HTML 이스케이프
+                        echo $escapedContent;
+                        ?>
+                    </td>
+                    <td class="text-center">
+                    <?php
+                    $user_id = $row['user_id'];
+                    $user = $userRepository -> getUserById($user_id);
+                    echo $user['email'];
+                    ?>
+                    </td>
                     <td class="text-center"><?php echo date('Y-m-d', strtotime($row['date'])); ?></td>
                     <td class="text-center"><?php echo $row['openclose'] == 0 ? '불가' : '허용'; ?></td>
                 </tr>
@@ -101,7 +122,7 @@ try {
     }
 
     .fixed-table {
-        width: 1100px; /* 원하는 너비로 설정하세요 */
+        width: 1110px; /* 원하는 너비로 설정하세요 */
         table-layout: fixed;
     }
 

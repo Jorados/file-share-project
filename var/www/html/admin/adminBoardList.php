@@ -2,10 +2,15 @@
 session_start();
 
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/boardRepository.php';
+include '/var/www/html/repository/boardRepository.php';
+include '/var/www/html/repository/userRepository.php';
+
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
+
+$userRepository = new UserRepository($pdo);
+$boardRepository = new BoardRepository($pdo);
 
 $items_per_page = 10;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -13,7 +18,7 @@ $offset = ($current_page - 1) * $items_per_page;
 
 try {
     $boardRepository = new BoardRepository($pdo);
-    $total_items = $boardRepository -> getTotalBoardCount();  
+    $total_items = $boardRepository -> getTotalBoardCount();
     $total_pages = ceil($total_items / $items_per_page);
 
     // 각 페이지의 시작 번호를 설정
@@ -22,6 +27,7 @@ try {
 } catch (PDOException $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
 }
+
 ?>
 <!DOCTYPE html>
 
@@ -42,11 +48,12 @@ try {
         <table class="table table-bordered table-striped fixed-table">
             <thead class="thead-dark">
             <tr>
-                <th scope="col" width="200" class="text-center">번호</th>
+                <th scope="col" width="50" class="text-center">번호</th>
                 <th scope="col" width="200" class="text-center">제목</th>
                 <th scope="col" width="200" class="text-center">내용</th>
-                <th scope="col" width="200" class="text-center">날짜</th>
-                <th scope="col" width="200" class="text-center">열람권한</th>
+                <th scope="col" width="170" class="text-center">작성자</th>
+                <th scope="col" width="130" class="text-center">날짜</th>
+                <th scope="col" width="80" class="text-center">열람권한</th>
             </tr>
             </thead>
 
@@ -54,7 +61,7 @@ try {
             <?php while ($row = $boards->fetch()): ?>
                 <tr>
                     <td class="text-center"><?php echo $total; ?></td> <?php $total++; ?>
-                    <td class="text-center">
+                    <td class="text-left">
                         <a href="adminBoardDetails.php?board_id=<?php echo $row['board_id']; ?>">
                             <?php
                             $title = $row['title']; // 제목을 변수에 저장합니다.
@@ -66,7 +73,14 @@ try {
                             ?>
                         </a>
                     </td>
-                    <td class="text-center content-cell"><?php echo $row['content']; ?></td>
+                    <td class="text-left content-cell"><?php echo $row['content']; ?></td>
+                    <td class="text-center">
+                        <?php
+                        $user_id = $row['user_id'];
+                        $user = $userRepository -> getUserById($user_id);
+                        echo $user['email'];
+                        ?>
+                    </td>
                     <td class="text-center"><?php echo date('Y-m-d', strtotime($row['date'])); ?></td>
                     <td class="text-center"><?php echo $row['openclose'] == 0 ? '불가' : '허용'; ?></td>
                 </tr>
@@ -85,12 +99,13 @@ try {
         <?php endfor; ?>
     </ul>
 </div>
+
 </body>
 <footer>
     <?php include '/var/www/html/includes/footer.php'?>
 </footer>
-</html>
 
+</html>
 <style>
     .fixed-pagination {
         position: fixed;

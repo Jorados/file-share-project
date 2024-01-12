@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 ?>
 
 <!DOCTYPE html>
@@ -39,8 +40,10 @@ session_start();
                         게시 글
                     </a>
                     <div class="dropdown-menu" aria-labelledby="userBoardDropdown">
-                        <a class="dropdown-item" href="userBoardList.php">게시글 보기</a>
-                        <a class="dropdown-item" href="userBoardCreate.php">게시글 작성</a>
+                        <a class="dropdown-item" href="userHome.php">게시글 보기</a>
+                        <?php if ($_SESSION['authority'] == 1): ?>
+                            <a class="dropdown-item" href="userBoardCreate.php">게시글 작성</a>
+                        <?php endif; ?>
                     </div>
                 </li>
                 <li class="nav-item dropdown">

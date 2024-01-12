@@ -2,8 +2,8 @@
 session_start();
 
 include '/var/www/html/database/DatabaseConnection.php';
-include '/var/repository/userRepository.php';
-include '/var/repository/boardRepository.php';
+include '/var/www/html/repository/userRepository.php';
+include '/var/www/html/repository/boardRepository.php';
 
 $dbConnection = new DatabaseConnection();
 $pdo = $dbConnection->getConnection();
@@ -52,6 +52,7 @@ try {
 <head>
     <?php include '/var/www/html/includes/header.php'?>
     <?php include '/var/www/html/includes/userNavibar.php'?>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -72,16 +73,17 @@ try {
 
     <?php if ($user['available'] == 1): ?>
         <div class="container mt-5">
-            <h2 class="text-center mb-4">내가 쓴 글 조회</h2>
+            <h2 class="text-center mb-4">게시글 조회</h2>
 
             <div class="table-responsive">
                 <table class="table table-bordered table-striped fixed-table">
                     <thead class="thead-dark">
                     <tr>
-                        <th scope="col" width="200" class="text-center">번호</th>
+                        <th scope="col" width="50" class="text-center">번호</th>
                         <th scope="col" width="200" class="text-center">제목</th>
                         <th scope="col" width="200" class="text-center">내용</th>
-                        <th scope="col" width="200" class="text-center">날짜</th>
+                        <th scope="col" width="160" class="text-center">작성자</th>
+                        <th scope="col" width="100" class="text-center">날짜</th>
                     </tr>
                     </thead>
 
@@ -89,21 +91,23 @@ try {
                     <?php while ($row = $stmt->fetch()): ?>
                         <tr>
                             <td class="text-center"><?php echo $total; ?></td> <?php $total++; ?>
-                            <td class="text-center">
+                            <td class="text-left">
                                 <a href="userBoardDetails.php?board_id=<?php echo $row['board_id']; ?>">
                                     <?php
                                     $title = $row['title']; // 제목을 변수에 저장합니다.
-                                    if (strlen($title) > 30) { // 제목의 길이가 20자 이상인 경우
-                                        echo substr($title, 0, 30) . ".."; // 20자까지만 표시하고 나머지는 생략 기호로 표시합니다.
-                                    } else {
-                                        echo $title; // 그렇지 않으면 전체 제목을 표시합니다.
-                                    }
+                                    $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8'); // HTML 이스케이프
+                                    echo $escapedTitle;
                                     ?>
                                 </a>
                             </td>
                             <td class="text-center">
-                                <?php echo $row['openclose'] == 0 ? '볼 수 없음' : (strlen($row['content']) > 100 ? substr($row['content'], 0, 30) . ".." : $row['content']); ?>
+                                <?php
+                                $content = $row['openclose'] == 0 ? '볼 수 없음' : (strlen($row['content']) > 100 ? substr($row['content'], 0, 50) . ".." : $row['content']);
+                                $escapedContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
+                                echo $escapedContent;
+                                ?>
                             </td>
+                            <td class="text-center"><?php echo $_SESSION['email'] ?></td>
                             <td class="text-center"><?php echo $row['openclose'] == 0 ? '볼 수 없음' : date('Y-m-d', strtotime($row['date'])); ?></td>
                         </tr>
                     <?php endwhile; ?>
@@ -128,9 +132,6 @@ try {
 </footer>
 </html>
 
-
-
-
 <style>
     .fixed-pagination {
         position: fixed;
@@ -141,7 +142,7 @@ try {
     }
 
     .fixed-table {
-        width: 1100px; /* 원하는 너비로 설정하세요 */
+        width: 1110px; /* 원하는 너비로 설정하세요 */
         table-layout: fixed;
     }
 
