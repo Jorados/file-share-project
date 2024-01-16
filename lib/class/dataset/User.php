@@ -1,16 +1,25 @@
 <?php
+
 namespace dataset;
 
-class User{
+use dataset\BaseModel;
 
-    private $user_id;
-    private $email;
-    private $password;
-    private $username;
-    private $phone;
-    private $role;
-    private $authority;
-    private $available;
+class User extends BaseModel
+{
+
+    protected $user_id;
+    protected $email;
+    protected $password;
+    protected $username;
+    protected $phone;
+    protected $role;
+    protected $authority;
+    protected $available;
+
+    public function __construct($data = null)
+    {
+        parent::__construct($data);
+    }
 
     public function getUserId()
     {
@@ -99,6 +108,4 @@ class User{
         $this->available = $available;
         return $this;
     }
-
-
 }
