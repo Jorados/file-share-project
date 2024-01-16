@@ -2,6 +2,8 @@
 
 namespace repository;
 
+use dataset\User;
+
 class UserRepository {
 
     public $pdo;
