@@ -1,16 +1,14 @@
 <?php
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\BoardRepository;
 use repository\UserRepository;
 
-$pdo = DatabaseConnection::getInstance() -> getConnection();
-$userRepository = new UserRepository($pdo);
+$userRepository = new UserRepository();
 
 try {
     // status가 'notification'인 board 조회
-    $boardRepository = new BoardRepository($pdo);
+    $boardRepository = new BoardRepository();
     $stmt = $boardRepository->getNotificationBoardItems();
 
     $total = 1;

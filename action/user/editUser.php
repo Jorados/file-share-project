@@ -1,13 +1,9 @@
 <?php
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
 
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
-$userRepository = new UserRepository($pdo);
+$userRepository = new UserRepository();
 // 수정 버튼 클릭
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : null;

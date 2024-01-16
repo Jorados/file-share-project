@@ -5,9 +5,7 @@ include '/var/www/html/lib/config.php';
 use database\DatabaseConnection;
 use log\UserLogger;
 
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
+$pdo = DatabaseConnection::getInstance()->getConnection();
 $logger = new UserLogger();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

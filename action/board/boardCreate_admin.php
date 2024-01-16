@@ -3,16 +3,11 @@ session_start();
 
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\BoardRepository;
 use mail\SendMail;
 use log\PostLogger;
 
-
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
-$boarRepository = new BoardRepository($pdo);
+$boarRepository = new BoardRepository();
 $logger = new PostLogger();
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -32,7 +27,7 @@ try {
          *  메일 기능
          *  php - send mail
          */
-        $mailSender = new SendMail($pdo);
+        $mailSender = new SendMail();
 
         $subject = '관리자 게시글이 작성되었습니다.';
         $message = '관리자 ' . $_SESSION['email'] . ' 님의 게시글이 작성되었습니다.';

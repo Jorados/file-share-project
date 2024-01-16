@@ -1,11 +1,7 @@
 <?php
-include '/var/www/html/database/DatabaseConnection.php';
 include '/var/www/html/repository/userRepository.php';
 
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
-$userRepository = new UserRepository($pdo);
+$userRepository = new UserRepository();
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = $_POST['email'];

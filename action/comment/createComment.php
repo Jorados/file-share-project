@@ -2,16 +2,12 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\BoardRepository;
 use repository\CommentRepository;
 use log\CommentLogger;
 
-
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-$boardRepository = new BoardRepository($pdo);
-$commentRepository = new CommentRepository($pdo);
+$boardRepository = new BoardRepository();
+$commentRepository = new CommentRepository();
 $logger = new CommentLogger();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){

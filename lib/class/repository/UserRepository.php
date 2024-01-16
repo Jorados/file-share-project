@@ -2,31 +2,38 @@
 
 namespace repository;
 
+use database\DatabaseConnection;
 use dataset\User;
 
 class UserRepository {
 
     public $pdo;
 
-    public function __construct(\PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
     // 로그인
     public function loginUser($email, $password) {
-        try {
-            $stmt = $this->pdo->prepare("SELECT * FROM user WHERE email = :email");
-            $stmt->bindParam(':email', $email);
-            $stmt->execute();
-            $user = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $stmt = $this->pdo->prepare("SELECT * FROM user WHERE email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $userData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-            if ($user && password_verify($password, $user['password'])) {
-                return $user;
-            }
-            return false;
-        } catch (\PDOException $e) {
-            throw new \Exception("Error: " . $e->getMessage());
+        if ($userData && password_verify($password, $userData['password'])) {
+            // User 객체 생성
+            $user = new User();
+            $user->setUserId($userData['user_id'])
+                ->setEmail($userData['email'])
+                ->setPassword($userData['password'])
+                ->setUsername($userData['username'])
+                ->setPhone($userData['phone'])
+                ->setRole($userData['role'])
+                ->setAuthority($userData['authority'])
+                ->setAvailable($userData['available']);
+            return $user;
         }
+        return null;
     }
 
     // 이메일을 사용하여 사용자 조회 및 비밀번호 업데이트

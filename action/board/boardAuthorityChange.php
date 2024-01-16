@@ -2,20 +2,14 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\BoardRepository;
 use repository\InfoRepository;
 use mail\SendMail;
 use log\PostLogger;
 
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
-// 리포지토리 인스턴스 생성 시 데이터베이스 연결 주입
-$boardRepository = new BoardRepository($pdo);
-$infoRepository = new InfoRepository($pdo);
-
-$mailSender = new SendMail($pdo);
+$boardRepository = new BoardRepository();
+$infoRepository = new InfoRepository();
+$mailSender = new SendMail();
 $logger = new PostLogger();
 
 // 글 열람권한 변경 관련 --> 해당 작성자에게 메일도 전송 해야함.
@@ -42,9 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $message = 'Your post status has been changed by Administrator ' . $_SESSION['email'];
 
         if ($mailSender->sendToUser($subject, $message,$boardUser_email)) {
-            //echo "메일이 성공적으로 전송되었습니다.";
+            echo "메일이 성공적으로 전송되었습니다.";
         } else {
-            //echo "메일 전송에 실패했습니다.";
+            echo "메일 전송에 실패했습니다.";
         }
 
         // 로그 작성

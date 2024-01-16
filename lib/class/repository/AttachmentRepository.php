@@ -2,11 +2,13 @@
 
 namespace repository;
 
+use database\DatabaseConnection;
+
 class AttachmentRepository{
     public $pdo;
 
-    public function __construct(\PDO $pdo){
-        $this->pdo = $pdo;
+    public function __construct(){
+        $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
     public function setAttachment($board_id, $fileName, $fileSize, $fileType, $filePath){

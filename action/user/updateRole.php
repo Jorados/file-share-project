@@ -2,14 +2,10 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
-use log\UserLogge;
+use log\UserLogger;
 
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
-$userRepository = new UserRepository($pdo);
+$userRepository = new UserRepository();
 $logger = new UserLogger();
 
 if (isset($_GET['change_role']) && isset($_GET['user_id'])) {

@@ -3,7 +3,6 @@ session_start();
 
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
 use repository\BoardRepository;
 use repository\AttachmentRepository;
@@ -12,11 +11,10 @@ use log\PostLogger;
 
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
 
-$pdo = DatabaseConnection::getInstance() -> getConnection();
-$boardRepository = new BoardRepository($pdo);
-$attachmentRepository = new AttachmentRepository($pdo);
-$commentRepository = new CommentRepository($pdo);
-$userRepository = new UserRepository($pdo);
+$boardRepository = new BoardRepository();
+$attachmentRepository = new AttachmentRepository();
+$commentRepository = new CommentRepository();
+$userRepository = new UserRepository();
 
 $board = $boardRepository->getBoardById($board_id);
 $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);

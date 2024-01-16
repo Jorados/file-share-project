@@ -2,23 +2,20 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
 use repository\BoardRepository;
 use repository\AttachmentRepository;
 use repository\InfoRepository;
 use repository\CommentRepository;
 use log\PostLogger;
-use log\CommentLogger;
 use mail\SendMail;
 
-$pdo = DatabaseConnection::getInstance() -> getConnection();
-$boardRepository = new BoardRepository($pdo);
-$infoRepository = new InfoRepository($pdo);
-$userRepository = new UserRepository($pdo);
-$commentRepository = new CommentRepository($pdo);
-$attachmentRepository = new AttachmentRepository($pdo);
-$mailSender = new SendMail($pdo);
+$boardRepository = new BoardRepository();
+$infoRepository = new InfoRepository();
+$userRepository = new UserRepository();
+$commentRepository = new CommentRepository();
+$attachmentRepository = new AttachmentRepository();
+$mailSender = new SendMail();
 $logger = new PostLogger();
 
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;

@@ -2,11 +2,13 @@
 
 namespace repository;
 
+use database\DatabaseConnection;
+
 class BoardRepository {
     public $pdo;
 
-    public function __construct(\PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
     // 토탈 board

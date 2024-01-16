@@ -6,7 +6,6 @@ use database\DatabaseConnection;
 
 $pdo = DatabaseConnection::getInstance() -> getConnection();
 
-
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 try {
     // 해당 ID의 게시글을 데이터베이스에서 가져옵니다.
@@ -19,7 +18,6 @@ try {
     if (!$post) {
         die("해당 ID의 게시글을 찾을 수 없습니다.");
     }
-
 
     // 해당 게시글 수정하기.
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {

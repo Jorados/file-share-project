@@ -3,7 +3,6 @@ session_start();
 
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
 use repository\BoardRepository;
 use repository\InfoRepository;
@@ -15,15 +14,12 @@ $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
 if (!$board_id) {
     die("게시글 ID가 제공되지 않았습니다.");
 }
-// 데이터베이스 연결 생성
-$pdo = DatabaseConnection::getInstance() -> getConnection();
 
-// 리포지토리 인스턴스 생성 시 데이터베이스 연결 주입
-$boardRepository = new BoardRepository($pdo);
-$infoRepository = new InfoRepository($pdo);
-$userRepository = new UserRepository($pdo);
-$commentRepository = new CommentRepository($pdo);
-$attachmentRepository = new AttachmentRepository($pdo);
+$boardRepository = new BoardRepository();
+$infoRepository = new InfoRepository();
+$userRepository = new UserRepository();
+$commentRepository = new CommentRepository();
+$attachmentRepository = new AttachmentRepository();
 
 $board = $boardRepository -> getBoardById($board_id);
 $info = $infoRepository -> getLatestInfoByBoardId($board_id);

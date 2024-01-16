@@ -2,11 +2,13 @@
 
 namespace repository;
 
+use database\DatabaseConnection;
+
 class CommentRepository {
     public $pdo;
 
-    public function __construct(\PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
     public function getCommentsByBoardId($board_id) {

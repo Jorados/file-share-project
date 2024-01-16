@@ -1,12 +1,12 @@
 <?php
 
 namespace repository;
-
+use database\DatabaseConnection;
 class InfoRepository {
     public $pdo;
 
-    public function __construct(\PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
     public function getLatestInfoByBoardId($board_id) {

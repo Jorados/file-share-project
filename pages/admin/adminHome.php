@@ -2,13 +2,11 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
 use repository\BoardRepository;
 
-$pdo = DatabaseConnection::getInstance() -> getConnection();
-$userRepository = new UserRepository($pdo);
-$boardRepository = new BoardRepository($pdo);
+$userRepository = new UserRepository();
+$boardRepository = new BoardRepository();
 
 $items_per_page = 9;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -17,7 +15,7 @@ $offset = ($current_page - 1) * $items_per_page;
 $order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
 
 try {
-    $boardRepository = new BoardRepository($pdo);
+//    $boardRepository = new BoardRepository($pdo);
     $total_items = $boardRepository->getTotalBoardCount();
     $total_pages = ceil($total_items / $items_per_page);
 
@@ -50,7 +48,7 @@ try {
 
     <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
-            <a class="nav-link <?php echo isset($_GET['order']) && $_GET['order'] === 'newest' ? 'active' : ''; ?>" href="?page=1&order=newest">최신순</a>
+            <a class="nav-link <?php echo (!isset($_GET['order']) || $_GET['order'] === 'newest') ? 'active' : ''; ?>" href="?page=1&order=newest">최신순</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <?php echo isset($_GET['order']) && $_GET['order'] === 'oldest' ? 'active' : ''; ?>" href="?page=1&order=oldest">오래된순</a>

@@ -3,16 +3,12 @@ session_start();
 
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\BoardRepository;
 use repository\AttachmentRepository;
 use log\PostLogger;
 
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
-$boardRepository = new BoardRepository($pdo);
-$attachmentRepository = new AttachmentRepository($pdo);
+$boardRepository = new BoardRepository();
+$attachmentRepository = new AttachmentRepository();
 $logger = new PostLogger();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

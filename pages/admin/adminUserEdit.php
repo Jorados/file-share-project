@@ -2,13 +2,10 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
 
-$pdo = DatabaseConnection::getInstance() -> getConnection();
-
 $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
-$userRepository = new UserRepository($pdo);
+$userRepository = new UserRepository();
 
 if (!$user_id) die("사용자 ID가 제공되지 않았습니다.");
 

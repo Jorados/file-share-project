@@ -1,11 +1,13 @@
 <?php
 namespace mail;
 
+use database\DatabaseConnection;
+
 class SendMail {
     public $pdo;
 
-    public function __construct(\PDO $pdo) {
-        $this->pdo = $pdo;
+    public function __construct() {
+        $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
     // role = 'user' 글 작성 시 모든 관리자에게 메일 전송 (gmail 안됨)

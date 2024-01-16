@@ -2,30 +2,17 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
 use repository\BoardRepository;
 
-$pdo = DatabaseConnection::getInstance() -> getConnection();
-$userRepository = new UserRepository($pdo);
-$boardRepository = new BoardRepository($pdo);
+$userRepository = new UserRepository();
+$boardRepository = new BoardRepository();
 
 try {
     $user = $userRepository->getUserByEmail($_SESSION['email']);
     if (!$user) {
         header("Location: /lib/pages/user/userHome.php");
         exit;
-    }
-    if (isset($_GET['write_post'])) {
-        // authority 값 체크 및 동작
-        if ($user['authority'] == 0) {
-            $_SESSION['error_message'] = "권한이 없습니다.";
-            header("Location: /lib/pages/user/userHome.php");
-            exit;
-        } elseif ($user['authority'] == 1) {
-            header("Location: /lib/pages/user/userBoardCreate.php"); // 권한이 있는 경우에 해당 페이지로 리다이렉트
-            exit;
-        }
     }
 } catch (\PDOException $e) {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
@@ -71,7 +58,7 @@ try {
 
     <ul class="nav nav-tabs mb-4">
         <li class="nav-item">
-            <a class="nav-link <?php echo isset($_GET['order']) && $_GET['order'] === 'newest' ? 'active' : ''; ?>" href="?page=1&order=newest">최신순</a>
+            <a class="nav-link <?php echo (!isset($_GET['order']) || $_GET['order'] === 'newest') ? 'active' : ''; ?>" href="?page=1&order=newest">최신순</a>
         </li>
         <li class="nav-item">
             <a class="nav-link <?php echo isset($_GET['order']) && $_GET['order'] === 'oldest' ? 'active' : ''; ?>" href="?page=1&order=oldest">오래된순</a>

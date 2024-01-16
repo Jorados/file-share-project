@@ -3,15 +3,10 @@ session_start();
 
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\UserRepository;
 use log\UserLogger;
 
-
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
-
-$userRepository = new UserRepository($pdo);
+$userRepository = new UserRepository();
 $logger = new UserLogger();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

@@ -2,30 +2,26 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\BoardRepository;
 use mail\SendMail;
 use log\PostLogger;
-
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
 
 $logger = new PostLogger();
 try {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $title = $_POST['title']; $content = $_POST['content']; $date = date('Y-m-d H:i:s'); $user_email = $_SESSION['email'];
 
-        $userRepository = new UserRepository($pdo);
+        $userRepository = new UserRepository();
         $user_id = $userRepository->getUserIdByEmail($user_email);
 
-        $boardRepository = new BoardRepository($pdo);
+        $boardRepository = new BoardRepository();
         $boardRepository->addBoard($title, $content, $date, $user_id);
 
         /*
          *  메일 기능
          *  php - send mail
          */
-        $mailSender = new SendMail($pdo);
+        $mailSender = new SendMail();
 
         $subject = 'post has been written.';
         $message = $_SESSION['email'] . ' post has been written.';
