@@ -6,15 +6,9 @@ use repository\UserRepository;
 
 $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
 $userRepository = new UserRepository();
-
 if (!$user_id) die("사용자 ID가 제공되지 않았습니다.");
 
-try {
-    $user = $userRepository -> getUserById($user_id);
-    if (!$user) die("해당 사용자를 찾을 수 없습니다.");
-} catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
-}
+$user = $userRepository -> getUserById($user_id);
 
 // 수정 버튼 클릭
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -69,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form action="/action/editUser.php" method="post" class="col-md-9" id="editForm">
                     <div class="form-group">
                         <label for="email">이메일:</label>
-                        <input type="email" class="form-control" id="email" name="email" value="<?php echo $user['email']; ?>" required>
+                        <input type="email" class="form-control" id="email" name="email" value="<?=$user->getEmail(); ?>" required>
                     </div>
 
                     <div class="form-group">
@@ -79,15 +73,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <div class="form-group">
                         <label for="username">사용자명:</label>
-                        <input type="text" class="form-control" id="username" name="username" value="<?php echo $user['username']; ?>" required>
+                        <input type="text" class="form-control" id="username" name="username" value="<?=$user->getUsername(); ?>" required>
                     </div>
 
                     <div class="form-group">
                         <label for="phone">전화번호:</label>
-                        <input type="text" class="form-control" id="phone" name="phone" value="<?php echo $user['phone']; ?>">
+                        <input type="text" class="form-control" id="phone" name="phone" value="<?=$user->getPhone(); ?>">
                     </div>
 
-                    <input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>">
+                    <input type="hidden" name="user_id" value="<?=$user->getUserId(); ?>">
                     <button type="button" class="btn btn-warning" onclick="submitForm()">정보 수정</button>
                 </form>
             </div>

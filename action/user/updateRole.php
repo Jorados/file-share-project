@@ -17,7 +17,7 @@ if (isset($_GET['change_role']) && isset($_GET['user_id'])) {
         $stmt = $userRepository->updateUserRole($userId, $newRole);
         $userEmail = $userRepository->getUserEmailById($userId);
 
-        $logger->changeAuthority($_SERVER['REQUEST_URI'], $adminEmail, $userEmail['email'], $newRole);
+        $logger->changeAuthority($_SERVER['REQUEST_URI'], $adminEmail, $userEmail->getEmail(), $newRole);
 
         header("Location: /pages/admin/adminAuthority.php");
         exit;

@@ -51,7 +51,7 @@ try {
                             작성자: <?php
                             $user_id = $row['user_id'];
                             $user = $userRepository->getUserById($user_id);
-                            echo $user['email'];
+                            echo $user->getEmail();
                             ?>
                         </p>
                         <p class="card-text">날짜: <?php echo date('Y-m-d', strtotime($row['date'])); ?></p>

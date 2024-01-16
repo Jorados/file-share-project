@@ -104,9 +104,9 @@ foreach ($comments as &$comment) {
                     <br>
 
                     <h5 class="font-weight-bold mb-3">관리자</h5>
-                    <p class="mb-0">이름 : <?php echo isset($user['username']) ? $user['username'] : '없음'; ?></p>
-                    <p class="mb-0">이메일 : <?php echo isset($user['email']) ? $user['email'] : '없음'; ?></p>
-                    <p class="mb-1">전화번호 : <?php echo isset($user['phone']) ? $user['phone'] : '없음'; ?></p>
+                    <p class="mb-0">이름 : <?php echo !empty($user->getUsername()) ? $user->getUsername() : '없음'; ?></p>
+                    <p class="mb-0">이메일 : <?php echo !empty($user->getEmail()) ? $user->getEmail() : '없음'; ?></p>
+                    <p class="mb-1">전화번호 : <?php echo !empty($user->getPhone()) ? $user->getPhone() : '없음'; ?></p>
                 </div>
             <?php endif; ?>
         </div>

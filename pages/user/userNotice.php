@@ -5,11 +5,10 @@ use repository\UserRepository;
 use repository\BoardRepository;
 
 $userRepository = new UserRepository();
+$boardRepository = new BoardRepository();
 try {
     // status가 'notification'인 board 조회
-    $boardRepository = new BoardRepository();
     $stmt = $boardRepository->getNotificationBoardItems();
-
     $total = 1;
 } catch (PDOException $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
@@ -50,7 +49,7 @@ try {
                             작성자: <?php
                             $user_id = $row['user_id'];
                             $user = $userRepository->getUserById($user_id);
-                            echo $user['email'];
+                            echo $user->getEmail();
                             ?>
                         </p>
                         <p class="card-text">날짜: <?php echo date('Y-m-d', strtotime($row['date'])); ?></p>

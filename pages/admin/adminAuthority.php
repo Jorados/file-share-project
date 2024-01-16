@@ -48,17 +48,17 @@ try {
                     ?>
                         <tr>
                             <td class="text-center"><?= $user->getEmail() ?></td>
-                            <td class="text-center"><?php echo $user['username'] ?></td>
-                            <td class="text-center"><?php echo $user['phone'] ?></td>
-                            <td class="text-center"><?php echo ($user['authority'] == 1) ? '허용' : '불가'; ?></td>
+                            <td class="text-center"><?= $user->getUsername() ?></td>
+                            <td class="text-center"><?= $user->getPhone() ?></td>
+                            <td class="text-center"><?= ($user->getAuthority() == 1) ? '허용' : '불가'; ?></td>
                             <td class="text-center">
-                                <a href="/action/user/updateRole.php?change_role=<?php echo $user['authority'] ?>&user_id=<?php echo $user['user_id'] ?>" class="btn btn-sm btn-primary">
+                                <a href="/action/user/updateRole.php?change_role=<?= $user->getAuthority() ?>&user_id=<?= $user->getUserId() ?>" class="btn btn-sm btn-primary">
                                     권한 변경하기
                                 </a>
                             </td>
                             <td class="text-center">
                                 <!-- 정보 변경 버튼 -->
-                                <a href="/pages/admin/adminUserEdit.php?user_id=<?php echo $user['user_id']; ?>" class="btn btn-sm btn-warning">
+                                <a href="/pages/admin/adminUserEdit.php?user_id=<?= $user->getUserId(); ?>" class="btn btn-sm btn-warning">
                                     정보 변경
                                 </a>
                             </td>

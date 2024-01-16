@@ -28,10 +28,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
 function handleLogin($logger, $user) {
-    if ($user['role'] == 'admin') {
+    if ($user->getRole() == 'admin') {
         echo json_encode(['status'=>true, 'content'=> '로그인 성공!', 'role' => 1]);
         $logger->login($_SERVER['REQUEST_URI'], $user['email']);
-    } else if ($user['role'] == 'user') {
+    } else if ($user->getRole() == 'user') {
         echo json_encode(['status'=>true, 'content'=> '로그인 성공!', 'role' => 0]);
         $logger->login($_SERVER['REQUEST_URI'], $user['email']);
     } else {
@@ -42,11 +42,11 @@ function handleLogin($logger, $user) {
 
 function handleUser($user){
     $_SESSION['loggedin'] = true;
-    $_SESSION['email'] = $_POST['email'];
+    $_SESSION['email'] = $user->getEmail();
     $_SESSION['session_start_time'] = time(); // 세션 시작 시간 설정
-    $_SESSION['available'] = $user['available'];
-    $_SESSION['authority'] = $user['authority'];
-    $_SESSION['role'] = $user['role'];
-    $_SESSION['user_id'] = $user['user_id'];
+    $_SESSION['available'] = $user->getAvailable();
+    $_SESSION['authority'] = $user->getAuthority();
+    $_SESSION['role'] = $user->getRole();
+    $_SESSION['user_id'] = $user->getUserId();
 }
 ?>

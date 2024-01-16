@@ -77,13 +77,16 @@ try {
                             ?>
                         </p>
                         <p class="card-text">
-                            작성자: <?php echo $userRepository->getUserById($row['user_id'])['email']; ?>
+                            작성자:
+                            <?php
+                            $user = $userRepository->getUserById($row['user_id']);
+                            echo $user->getEmail(); ?>
                         </p>
                         <p class="card-text">
-                            날짜: <?php echo date('Y-m-d', strtotime($row['date'])); ?>
+                            날짜: <?= date('Y-m-d', strtotime($row['date'])); ?>
                         </p>
                         <p class="card-text">
-                            열람권한: <?php echo $row['openclose'] == 0 ? '불가' : '허용'; ?>
+                            열람권한: <?= $row['openclose'] == 0 ? '불가' : '허용'; ?>
                         </p>
                     </div>
                 </div>

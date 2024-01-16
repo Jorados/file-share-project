@@ -26,7 +26,7 @@ try {
     foreach ($comments as &$comment) {
         $user_id = $comment['user_id'];
         $user = $userRepository->getUserEmailById($user_id);
-        $comment['user_email'] = $user['email'];
+        $comment['user_email'] = $user->getEmail();
     }
 } catch (PDOException $e) {
     echo "댓글 조회 중 오류가 발생했습니다: " . $e->getMessage();

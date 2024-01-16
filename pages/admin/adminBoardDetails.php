@@ -43,7 +43,7 @@ try {
     foreach ($comments as &$comment) {
         $user_id = $comment['user_id'];
         $user = $userRepository->getUserEmailById($user_id);
-        $comment['user_email'] = $user['email'];
+        $comment['user_email'] = $user->getEmail();
     }
 } catch (PDOException $e) {
     echo "댓글 조회 중 오류가 발생했습니다: " . $e->getMessage();
@@ -86,8 +86,8 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
                 ?>
             </ul>
             </p>
-            <p class="card-text">작성자 : <?php echo $user['username']; ?></p>
-            <p class="card-text">작성자 이메일 : <?php echo $user['email']; ?></p>
+            <p class="card-text">작성자 : <?php echo $user->getUsername(); ?></p>
+            <p class="card-text">작성자 이메일 : <?php echo $user->getEmail(); ?></p>
             <p class="card-text">작성일 : <?php echo date('Y-m-d', strtotime($board['date'])); ?></p>
             <p class="card-text">열람 권한 : <?php echo $board['openclose'] == 0 ? '불가' : '허용'; ?></p>
 

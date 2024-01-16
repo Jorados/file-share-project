@@ -4,8 +4,7 @@ namespace dataset;
 
 use dataset\BaseModel;
 
-class User extends BaseModel
-{
+class User extends BaseModel{
 
     protected $user_id;
     protected $email;

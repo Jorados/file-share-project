@@ -4,8 +4,7 @@ namespace dataset;
 
 abstract class BaseModel
 {
-    public function __construct($data = null)
-    {
+    public function __construct($data = null){
         $this->bindData($data);
     }
 
@@ -20,7 +19,6 @@ abstract class BaseModel
 
         foreach ($data as $key => $value) {
             if (!array_key_exists($key, $this->getObjectVars())) continue;
-
             $this->{$key} = $value;
         }
     }
