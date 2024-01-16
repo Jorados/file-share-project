@@ -1,0 +1,43 @@
+/* /assets/css/style.css */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    max-width: 500px;
+    margin: 50px auto;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: #343a40;
+    color: #ffffff;
+    text-align: center;
+    padding: 20px 0;
+    border-radius: 10px 10px 0 0;
+}
+
+.form-group {
+    margin: 20px;
+}
+
+.form-text {
+    color: #6c757d;
+}
+
+.custom-header h3 {
+    color: black;
+}
+
+button.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+    margin-top: 20px;
+}
+
+button.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
