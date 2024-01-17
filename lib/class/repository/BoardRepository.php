@@ -3,6 +3,8 @@
 namespace repository;
 
 use database\DatabaseConnection;
+use dataset\Board;
+use dataset\User;
 
 class BoardRepository {
     public $pdo;
@@ -23,27 +25,24 @@ class BoardRepository {
 
     // status가 'notification'인 board 조회
     public function getNotificationBoardItems() {
-        try {
-            $query = "SELECT * FROM board WHERE status = 'notification'";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->execute();
-            return $stmt;
+        $query = "SELECT * FROM board WHERE status = 'notification'";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
 
-        } catch (PDOException $e) {
-            throw new PDOException($e->getMessage(), (int)$e->getCode());
-        }
+        return array_map(
+            function ($board){
+                return new Board($board);
+            },
+            $stmt->fetchAll(\PDO::FETCH_ASSOC)
+        );
     }
 
     public function getBoardById($board_id) {
-        try {
-            $query = "SELECT * FROM board WHERE board_id = :board_id";
-            $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-            $stmt->execute();
-            return $stmt->fetch();
-        } catch (PDOException $e) {
-            die("Error: " . $e->getMessage());
-        }
+        $query = "SELECT * FROM board WHERE board_id = :board_id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return new Board($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
     public function deleteBoardById($board_id) {
@@ -80,7 +79,12 @@ class BoardRepository {
         $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt;
+        return array_map(
+            function ($board){
+                return new Board($board);
+            },
+            $stmt->fetchAll(\PDO::FETCH_ASSOC)
+        );
     }
 
     public function getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order) {
@@ -91,7 +95,13 @@ class BoardRepository {
         $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
         $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt;
+
+        return array_map(
+            function ($board){
+                return new Board($board);
+            },
+            $stmt->fetchAll(\PDO::FETCH_ASSOC)
+        );
     }
 
 
@@ -118,8 +128,8 @@ class BoardRepository {
         $updateQuery = "SELECT board_id FROM board ORDER BY board_id DESC LIMIT 1";
         $stmt = $this->pdo->prepare($updateQuery);
         $stmt->execute();
-        $result = $stmt->fetch();
-        return $result['board_id'];
+        $stmt->fetch(\PDO::FETCH_ASSOC);
+        return new Board($stmt);
     }
 
 
@@ -134,9 +144,8 @@ class BoardRepository {
         $stmt = $this->pdo->prepare($sql);
         $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
         $stmt->execute();
-
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result['email'];
+        return new User($result);
     }
 }
 ?>

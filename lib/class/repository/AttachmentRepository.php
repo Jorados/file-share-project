@@ -3,12 +3,32 @@
 namespace repository;
 
 use database\DatabaseConnection;
-
+use dataset\Attachment;
 class AttachmentRepository{
     public $pdo;
 
     public function __construct(){
         $this->pdo = DatabaseConnection::getInstance()->getConnection();
+    }
+
+    public function getAttachmentsByBoardId($board_id) {
+        $query = "SELECT * FROM attachment WHERE board_id = :board_id";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
+        $stmt->execute();
+        return array_map(
+            function ($attachment){
+                return new Attachment($attachment);
+            },
+            $stmt->fetchAll(\PDO::FETCH_ASSOC)
+        );
+    }
+
+    public function deleteAttachment($board_id) {
+        $deleteQuery = "DELETE FROM attachment WHERE board_id = :board_id";
+        $stmt = $this->pdo->prepare($deleteQuery);
+        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
+        return $stmt->execute();
     }
 
     public function setAttachment($board_id, $fileName, $fileSize, $fileType, $filePath){
@@ -27,31 +47,15 @@ class AttachmentRepository{
         $stmt->execute();
     }
 
-    public function getAttachmentsByBoardId($board_id) {
-        $query = "SELECT * FROM attachment WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    public function getAttachmentFilePath($attachment_id) {
-        $query = "SELECT filepath FROM attachment WHERE attachment_id = :attachment_id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':attachment_id', $attachment_id, \PDO::PARAM_INT);
-        $stmt->execute();
-
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-        return $result['filepath'] ?? null;
-    }
-
-    public function deleteAttachment($board_id) {
-        $deleteQuery = "DELETE FROM attachment WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($deleteQuery);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        return $stmt->execute();
-    }
+//    public function getAttachmentFilePath($attachment_id) {
+//        $query = "SELECT filepath FROM attachment WHERE attachment_id = :attachment_id";
+//        $stmt = $this->pdo->prepare($query);
+//        $stmt->bindParam(':attachment_id', $attachment_id, \PDO::PARAM_INT);
+//        $stmt->execute();
+//
+//        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+//
+//        return $result['filepath'] ?? null;
+//    }
 }
 ?>

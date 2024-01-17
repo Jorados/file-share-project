@@ -20,23 +20,13 @@ $board = $boardRepository->getBoardById($board_id);
 $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
 // 댓글 조회
-try {
-    $comments = $commentRepository -> getCommentByBoardId($board_id);
-    // 각 댓글의 작성자 이메일을 가져옵니다.
-    foreach ($comments as &$comment) {
-        $user_id = $comment['user_id'];
-        $user = $userRepository->getUserEmailById($user_id);
-        $comment['user_email'] = $user->getEmail();
-    }
-} catch (PDOException $e) {
-    echo "댓글 조회 중 오류가 발생했습니다: " . $e->getMessage();
-}
+$comments = $commentRepository -> getCommentsByBoardId($board_id);
 
 // 글 상세 조회 로그
 $logger = new PostLogger();
 $email = $_SESSION['email'];
-$title = $board['title'];
-$status = $board['status'];
+$title = $board->getTitle();
+$status = $board->getStatus();
 $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
 ?>
 
@@ -57,8 +47,8 @@ $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
             <h3 class="text-center">공지 상세 조회</h3>
         </div>
         <div class="card-body">
-            <p class="card-text">제목 : <?php echo $board['title']; ?></p>
-            <p class="card-text">내용 : <?php echo $board['content']; ?></p>
+            <p class="card-text">제목 : <?= $board->getTitle(); ?></p>
+            <p class="card-text">내용 : <?= $board->getContent(); ?></p>
             <ul>
                 <?php
                 $filepath = '/var/www/html/file/uploads/';
@@ -67,13 +57,13 @@ $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
                 } else {
                     foreach ($attachments as $attachment) {
                         if (file_exists($filepath)) {
-                            echo '<li><a href="/file/download.php?file=' . urlencode($attachment['filename']) . '">' . $attachment['filename'] . '</a></li>';
+                            echo '<li><a href="/file/download.php?file=' . urlencode($attachment->getFilename()) . '">' . $attachment->getFilename() . '</a></li>';
                         }
                     }
                 }
                 ?>
             </ul>
-            <p class="card-text">작성일 : <?php echo date('Y-m-d', strtotime($board['date'])); ?></p>
+            <p class="card-text">작성일 : <?php echo date('Y-m-d', strtotime($board->getDate())); ?></p>
             <p class="card-text">열람 권한 : <?php echo '허용'; ?></p>
         </div>
     </div>
@@ -86,11 +76,14 @@ $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
                 <div class="card mb-2">
                     <div class="card-body d-flex justify-content-between"> <!-- d-flex와 justify-content-between 추가 -->
                         <div>
-                            <p class="card-text"><?php echo $comment['content']; ?></p>
-                            <small class="text-muted">작성자: <?php echo $comment['user_email']; ?></small>
+                            <p class="card-text"><?= $comment->getContent(); ?></p>
+                            <small class="text-muted">
+                                작성자:
+                                <?= $userRepository->getUserEmailById($comment->getUserId())->getEmail(); ?>
+                            </small>
                         </div>
                         <div class="text-right"> <!-- text-right 추가 -->
-                            <small class="text-muted"><?php echo date('Y-m-d', strtotime($comment['date'])); ?></small>
+                            <small class="text-muted"><?= date('Y-m-d', strtotime($comment->getDate())); ?></small>
                         </div>
                     </div>
                 </div>

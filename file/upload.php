@@ -51,12 +51,9 @@ if ($_FILES['file']['error'] === 0 && $_FILES['file']['size'] <= 100 * 1024 * 10
 // 2. 로그아웃한(권한 없는) 계정에서 파일에대한 요청이 오면 다운로드가 진행되는 문제.
 // 해결방법 --> 헤더에서 라우팅, 세션처리를 확실하게 하자.
 
-$dbConnection = new DatabaseConnection();
-$pdo = $dbConnection->getConnection();
+$attachmentRepository = new AttachmentRepository();
+$boardRepository = new BoardRepository();
 
-$attachmentRepository = new AttachmentRepository($pdo);
-$boardRepository = new BoardRepository($pdo);
-
-$board_id = $boardRepository -> getBoardIdLimit1();
-$attachmentRepository->setAttachment($board_id, $_FILES['file']['name'], $_FILES['file']['size'], $_FILES['file']['type'], $destination);
+$board = $boardRepository -> getBoardIdLimit1();
+$attachmentRepository->setAttachment($board->getBoardId(), $_FILES['file']['name'], $_FILES['file']['size'], $_FILES['file']['type'], $destination);
 ?>

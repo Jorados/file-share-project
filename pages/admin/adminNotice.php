@@ -6,15 +6,11 @@ use repository\UserRepository;
 
 $userRepository = new UserRepository();
 
-try {
-    // status가 'notification'인 board 조회
-    $boardRepository = new BoardRepository();
-    $stmt = $boardRepository->getNotificationBoardItems();
+// status가 'notification'인 board 조회
+$boardRepository = new BoardRepository();
+$boards = $boardRepository->getNotificationBoardItems();
 
-    $total = 1;
-} catch (PDOException $e) {
-    throw new PDOException($e->getMessage(), (int)$e->getCode());
-}
+$total = 1;
 ?>
 
 <!DOCTYPE html>
@@ -30,14 +26,14 @@ try {
     <h2 class="text-center mb-4">공지 조회</h2>
 
     <div class="row">
-        <?php while ($row = $stmt->fetch()): ?>
+        <?php foreach($boards as $board): ?>
             <div class="col-md-4 mt-5 mb-4">
                 <div class="card shadow">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <a href="adminBoardDetails.php?board_id=<?php echo $row['board_id']; ?>">
+                            <a href="adminBoardDetails.php?board_id=<? $board->getBoardId(); ?>">
                                 <?php
-                                $title = $row['title'];
+                                $title = $board->getTitle();
                                 if (strlen($title) > 27) {
                                     echo substr($title, 0, 27) . "..";
                                 } else {
@@ -46,20 +42,17 @@ try {
                                 ?>
                             </a>
                         </h5>
-                        <p class="card-text"><?php echo $row['content']; ?></p>
+                        <p class="card-text"><?= $board->getContent(); ?></p>
                         <p class="card-text">
-                            작성자: <?php
-                            $user_id = $row['user_id'];
-                            $user = $userRepository->getUserById($user_id);
-                            echo $user->getEmail();
-                            ?>
+                            작성자:
+                            <?= $user = $userRepository->getUserById($board->getUserId())->getEmail(); ?>
                         </p>
-                        <p class="card-text">날짜: <?php echo date('Y-m-d', strtotime($row['date'])); ?></p>
+                        <p class="card-text">날짜: <?php echo date('Y-m-d', strtotime($board->getDate())); ?></p>
                         <p class="card-text">열람권한: 허용</p>
                     </div>
                 </div>
             </div>
-        <?php endwhile; ?>
+        <?php endforeach; ?>
     </div>
 </div>
 </body>

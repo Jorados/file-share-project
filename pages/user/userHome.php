@@ -33,9 +33,9 @@ try {
 
     // 정렬 방식에 따라 데이터를 가져오기
     if ($order === 'newest') {
-        $stmt = $boardRepository->getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order);
+        $boards = $boardRepository->getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order);
     } elseif ($order === 'oldest') {
-        $stmt = $boardRepository->getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order);
+        $boards = $boardRepository->getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order);
     }
 } catch (PDOException $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());
@@ -66,14 +66,14 @@ try {
     </ul>
 
     <div class="row">
-        <?php while ($row = $stmt->fetch()): ?>
+        <?php foreach ($boards as $board): ?>
             <div class="col-md-4 mb-4">
-                <div class="card shadow">
+                <div class="card shadow" style="background-color: <?= $board->getOpenclose() == 1 ? '#D0E7FA' : '#FFFFFF'; ?>;">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <a href="userBoardDetails.php?board_id=<?php echo $row['board_id']; ?>">
+                            <a href="userBoardDetails.php?board_id=<?= $board->getBoardId(); ?>">
                                 <?php
-                                $title = $row['title'];
+                                $title = $board->getTitle();
                                 $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
                                 echo strlen($escapedTitle) > 27 ? substr($escapedTitle, 0, 27) . ".." : $escapedTitle;
                                 ?>
@@ -81,21 +81,25 @@ try {
                         </h5>
                         <p class="card-text">
                             <?php
-                            $content = $row['openclose'] == 0 ? '볼 수 없음' : (strlen($row['content']) > 100 ? substr($row['content'], 0, 50) . ".." : $row['content']);
+                            $content = $board->getOpenclose() == 0 ? '볼 수 없음' : (strlen($board->getContent()) > 100 ? substr($board->getContent(), 0, 50) . ".." : $board->getContent());
                             $escapedContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
-                            echo $escapedContent;
+                            echo '내용: ' . $escapedContent;
                             ?>
                         </p>
                         <p class="card-text">
-                            작성자: <?php echo $_SESSION['email'] ?>
+                            작성자:
+                            <?= $userRepository->getUserById($board->getUserId())->getEmail(); ?>
                         </p>
                         <p class="card-text">
-                            날짜: <?php echo $row['openclose'] == 0 ? '볼 수 없음' : date('Y-m-d', strtotime($row['date'])); ?>
+                            날짜: <?= $board->getOpenclose() == 0 ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
+                        </p>
+                        <p class="card-text">
+                            권한:  <?= $board->getOpenclose() == 0 ? '불가' : '허용' ?>
                         </p>
                     </div>
                 </div>
             </div>
-        <?php endwhile; ?>
+        <?php endforeach; ?>
     </div>
 
     <div class="container mt-4 fixed-pagination">

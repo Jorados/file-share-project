@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $board = $boardRepository -> getBoardByid($board_id);
 
         $email = $_SESSION['email'];
-        $logger->createComment($_SERVER['REQUEST_URI'], $email, $board['title']);
+        $logger->createComment($_SERVER['REQUEST_URI'], $email, $board->getTitle());
         echo json_encode(['status' => true, 'content' => '댓글이 작성되었습니다.']);
     }
 }

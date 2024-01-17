@@ -27,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // 글 삭제 로그
             $email = $_SESSION['email'];
-            $title = $board['title'];
-            $status = $board['status'];
+            $title = $board->getTitle();
+            $status = $board->getStatus();
             $logger->deletePost($_SERVER['REQUEST_URI'], $email, $status, $title);
 
             echo json_encode(['status' => true, 'content' => '게시글이 삭제되었습니다.']);

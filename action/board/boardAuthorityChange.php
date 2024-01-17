@@ -31,11 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         // 메일 전송 구현 로직 , 글 주인한테 메일 쏴야함
         // 해당 board_id가 가지고 있는 user_id를 가지는 user의 email정보를 알아야한다.
         // 그리고 그 email 정보를 이용해서 메일 전송.
-        $boardUser_email = $boardRepository->getBoardUserEmail($board_id);
+        $user = $boardRepository->getBoardUserEmail($board_id);
         $subject = 'Post permission status changed.';
         $message = 'Your post status has been changed by Administrator ' . $_SESSION['email'];
 
-        $mailSender->sendToUser($subject, $message,$boardUser_email);
+        $mailSender->sendToUser($subject, $message,$user->getEmail());
 //        if () {
 //            echo "메일이 성공적으로 전송되었습니다.";
 //        } else {
@@ -43,8 +43,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
 //        }
 
         // 로그 작성
-        $array = $boardRepository->getBoardById($board_id);
-        $title = $array['title'];
+        $board = $boardRepository->getBoardById($board_id);
+        $title = $board->getTitle();
         $email = $_SESSION['email'];
         $logger->openAuthority($_SERVER['REQUEST_URI'], $email ,$newPermission, $title);
 

@@ -56,14 +56,14 @@ try {
     </ul>
 
     <div class="row">
-        <?php while ($row = $boards->fetch()): ?>
+        <?php foreach ($boards as $board): ?>
             <div class="col-md-4 mb-4">
                 <div class="card shadow">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <a href="adminBoardDetails.php?board_id=<?php echo $row['board_id']; ?>">
+                            <a href="adminBoardDetails.php?board_id=<?= $board->getBoardId(); ?>">
                                 <?php
-                                $title = $row['title'];
+                                $title = $board->getTitle();
                                 $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
                                 echo strlen($escapedTitle) > 27 ? substr($escapedTitle, 0, 27) . ".." : $escapedTitle;
                                 ?>
@@ -71,7 +71,7 @@ try {
                         </h5>
                         <p class="card-text">
                             <?php
-                            $content = $row['content'];
+                            $content = $board->getContent();
                             $escapedContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
                             echo strlen($escapedContent) > 27 ? substr($escapedContent, 0, 27) . ".." : $escapedContent;
                             ?>
@@ -79,19 +79,19 @@ try {
                         <p class="card-text">
                             작성자:
                             <?php
-                            $user = $userRepository->getUserById($row['user_id']);
+                            $user = $userRepository->getUserById($board->getUserId());
                             echo $user->getEmail(); ?>
                         </p>
                         <p class="card-text">
-                            날짜: <?= date('Y-m-d', strtotime($row['date'])); ?>
+                            날짜: <?= date('Y-m-d', strtotime($board->getDate())); ?>
                         </p>
                         <p class="card-text">
-                            열람권한: <?= $row['openclose'] == 0 ? '불가' : '허용'; ?>
+                            열람권한: <?= $board->getOpenclose() == 0 ? '불가' : '허용'; ?>
                         </p>
                     </div>
                 </div>
             </div>
-        <?php endwhile; ?>
+        <?php endforeach; ?>
     </div>
 
     <div class="container mt-4" id="pagination-container">

@@ -3,6 +3,7 @@
 namespace repository;
 
 use database\DatabaseConnection;
+use dataset\Comment;
 
 class CommentRepository {
     public $pdo;
@@ -12,16 +13,17 @@ class CommentRepository {
     }
 
     public function getCommentsByBoardId($board_id) {
-        try {
-            $commentsQuery = "SELECT * FROM comment WHERE board_id = :board_id";
-            $stmt = $this->pdo->prepare($commentsQuery);
-            $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-            $stmt->execute();
-            $comments = $stmt->fetchAll();
-            return $comments;
-        } catch (\PDOException $e) {
-            die("댓글 조회 중 오류가 발생했습니다: " . $e->getMessage());
-        }
+        $commentsQuery = "SELECT * FROM comment WHERE board_id = :board_id";
+        $stmt = $this->pdo->prepare($commentsQuery);
+        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
+        $stmt->execute();
+
+        return array_map(
+            function ($comment) {
+                return new Comment($comment);
+            },
+            $stmt->fetchAll(\PDO::FETCH_ASSOC)
+        );
     }
 
     public function addComment($content, $board_id, $user_id) {
@@ -31,14 +33,6 @@ class CommentRepository {
         $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
         $stmt->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
         $stmt->execute();
-    }
-
-    public function getCommentByBoardId($board_id) {
-        $commentsQuery = "SELECT * FROM comment WHERE board_id = :board_id ";
-        $stmt = $this->pdo->prepare($commentsQuery);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $comments = $stmt->fetchAll();
     }
 }
 

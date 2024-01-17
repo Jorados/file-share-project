@@ -30,7 +30,6 @@ class SendMail {
         $password = $secret['password'];
 
         if (mail($to, $subject, $message, $headers, '-f' . $username)) {
-            error_log("reason to send email to: " . $to, 3, "/var/log/php_mail.log");
             return true;
         } else {
             return false;
