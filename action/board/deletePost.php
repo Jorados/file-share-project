@@ -22,8 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['status' => false, 'content' => '게시글을 찾을 수 없습니다.']);
         }
         else{
-            $stmt = $boardRepository->deleteBoardById($board_id);
-            $stmt = $attachmentRepository->deleteAttachment($board_id);
+            // 삭제 로직
+            $boardRepository->deleteBoardById($board_id);
+            $attachmentRepository->deleteAttachment($board_id);
 
             // 글 삭제 로그
             $email = $_SESSION['email'];

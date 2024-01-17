@@ -101,4 +101,24 @@ class UserRepository{
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
+    public function createUser($email,$hashed_password,$username,$phone){
+        $query = "INSERT INTO user (email, password, username, phone) VALUES (:email, :password, :username, :phone)";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':email', $email, \PDO::PARAM_STR);
+        $stmt->bindParam(':password', $hashed_password, \PDO::PARAM_STR);
+        $stmt->bindParam(':username', $username, \PDO::PARAM_STR);
+        $stmt->bindParam(':phone', $phone, \PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+    public function isEmailDuplicate($email) {
+        $query = 'SELECT COUNT(*) FROM user WHERE email = :email';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':email', $email, \PDO::PARAM_STR);
+        $stmt->execute();
+        $count = $stmt->fetchColumn();
+
+        return $count > 0;
+    }
+
 }

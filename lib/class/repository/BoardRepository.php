@@ -128,8 +128,7 @@ class BoardRepository {
         $updateQuery = "SELECT board_id FROM board ORDER BY board_id DESC LIMIT 1";
         $stmt = $this->pdo->prepare($updateQuery);
         $stmt->execute();
-        $stmt->fetch(\PDO::FETCH_ASSOC);
-        return new Board($stmt);
+        return new Board($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
 

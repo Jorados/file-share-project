@@ -56,24 +56,9 @@ $total = 1;
     </div>
 </div>
 </body>
+<link rel="stylesheet" href="/assets/css/notice.css">
 <footer>
     <?php include '/var/www/html/includes/footer.php'?>
 </footer>
 </html>
-<style>
-    /* 추가된 스타일 */
-    .card {
-        min-height: 230px; /* 카드의 최소 높이 설정 */
-        transition: transform 0.3s, box-shadow 0.3s; /* 변화에 대한 애니메이션 효과 추가 */
-        border-radius : 20px;
-    }
 
-    .card:hover {
-        transform: scale(1.05); /* 마우스 호버 시 약간 확대 */
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2); /* 그림자 효과 추가 */
-    }
-
-    .card-title {
-        font-size: 1.25rem; /* 카드 제목 글꼴 크기 설정 */
-    }
-</style>

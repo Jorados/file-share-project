@@ -1,0 +1,11 @@
+.scrollable-table {
+    overflow-x: auto;
+    max-height: 550px;
+    /* 필요에 따라 조절 */
+}
+
+/* 테이블 스타일 유지 */
+.table-bordered {
+    border-collapse: collapse;
+    width: 100%;
+}

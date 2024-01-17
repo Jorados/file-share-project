@@ -8,13 +8,8 @@ use log\UserLogger;
 $userRepository = new UserRepository();
 $logger = new UserLogger();
 
-try {
-    $users = $userRepository->getUsersByRole('user');
-    $total = 1;
-} catch (PDOException $e) {
-    throw new PDOException($e->getMessage(), (int)$e->getCode());
-}
-
+$users = $userRepository->getUsersByRole('user');
+$total = 1;
 ?>
 <!DOCTYPE html>
 <html>
@@ -70,23 +65,9 @@ try {
             </table>
         </div>
     </div>
+    <link rel="stylesheet" href="/assets/css/authority.css">
 </body>
 <footer>
     <?php include '/var/www/html/includes/footer.php' ?>
 </footer>
-
 </html>
-<style>
-    /* 스크롤바가 추가될 부분의 스타일 */
-    .scrollable-table {
-        overflow-x: auto;
-        max-height: 550px;
-        /* 필요에 따라 조절 */
-    }
-
-    /* 테이블 스타일 유지 */
-    .table-bordered {
-        border-collapse: collapse;
-        width: 100%;
-    }
-</style>

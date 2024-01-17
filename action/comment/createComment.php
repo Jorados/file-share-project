@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         echo json_encode(['status' => false, 'content' => '댓글을 다시 작성해주세요.']);
     }
     else{
-        $stmt = $commentRepository -> addComment($content, $board_id, $user_id);
+        $commentRepository -> addComment($content, $board_id, $user_id);
         $board = $boardRepository -> getBoardByid($board_id);
 
         $email = $_SESSION['email'];

@@ -2,9 +2,11 @@
 //// 단일 파일 처리
 include '/var/www/html/lib/config.php';
 
-use database\DatabaseConnection;
 use repository\BoardRepository;
 use repository\AttachmentRepository;
+
+$attachmentRepository = new AttachmentRepository();
+$boardRepository = new BoardRepository();
 
 $uploadDir = '/var/www/html/file/uploads/';
 
@@ -50,9 +52,6 @@ if ($_FILES['file']['error'] === 0 && $_FILES['file']['size'] <= 100 * 1024 * 10
 
 // 2. 로그아웃한(권한 없는) 계정에서 파일에대한 요청이 오면 다운로드가 진행되는 문제.
 // 해결방법 --> 헤더에서 라우팅, 세션처리를 확실하게 하자.
-
-$attachmentRepository = new AttachmentRepository();
-$boardRepository = new BoardRepository();
 
 $board = $boardRepository -> getBoardIdLimit1();
 $attachmentRepository->setAttachment($board->getBoardId(), $_FILES['file']['name'], $_FILES['file']['size'], $_FILES['file']['type'], $destination);
