@@ -21,9 +21,7 @@ class UserRepository
         $stmt->execute();
         $userData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if ($userData && password_verify($password, $userData['password'])) {
-            return new User($userData);
-        }
+        if ($userData && password_verify($password, $userData['password'])) return new User($userData);
         return null;
     }
 

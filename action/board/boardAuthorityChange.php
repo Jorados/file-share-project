@@ -35,11 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         $subject = 'Post permission status changed.';
         $message = 'Your post status has been changed by Administrator ' . $_SESSION['email'];
 
-        if ($mailSender->sendToUser($subject, $message,$boardUser_email)) {
-            echo "메일이 성공적으로 전송되었습니다.";
-        } else {
-            echo "메일 전송에 실패했습니다.";
-        }
+        $mailSender->sendToUser($subject, $message,$boardUser_email);
+//        if () {
+//            echo "메일이 성공적으로 전송되었습니다.";
+//        } else {
+//            echo "메일 전송에 실패했습니다.";
+//        }
 
         // 로그 작성
         $array = $boardRepository->getBoardById($board_id);

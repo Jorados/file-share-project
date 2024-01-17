@@ -25,7 +25,7 @@ $offset = ($current_page - 1) * $items_per_page;
 $order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
 
 try {
-    $total_items = $boardRepository->getTotalBoardCount();
+    $total_items = $boardRepository->getTotalItemsByUserId($user_id);
     $total_pages = ceil($total_items / $items_per_page);
 
     // 각 페이지의 시작 번호를 설정
@@ -33,9 +33,9 @@ try {
 
     // 정렬 방식에 따라 데이터를 가져오기
     if ($order === 'newest') {
-        $stmt = $boardRepository->getBoardsByPage($offset, $items_per_page, $order);
+        $stmt = $boardRepository->getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order);
     } elseif ($order === 'oldest') {
-        $stmt = $boardRepository->getBoardsByPage($offset, $items_per_page, $order);
+        $stmt = $boardRepository->getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order);
     }
 } catch (PDOException $e) {
     throw new PDOException($e->getMessage(), (int)$e->getCode());

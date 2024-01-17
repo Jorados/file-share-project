@@ -21,17 +21,6 @@ class BoardRepository {
         return $result['total'];
     }
 
-    // 페이지 구분
-    public function getBoardItemsByUserId($user_id, $offset, $items_per_page) {
-        $query = "SELECT * FROM board WHERE user_id = :user_id AND status = 'normal' LIMIT :offset, :items_per_page;";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
-        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt;
-    }
-
     // status가 'notification'인 board 조회
     public function getNotificationBoardItems() {
         try {
@@ -82,15 +71,6 @@ class BoardRepository {
         return $result['total'];
     }
 
-//    public function getBoardsByPage($offset, $items_per_page) {
-//        $query = "SELECT * FROM board WHERE status = 'normal' LIMIT :offset, :items_per_page;";
-//        $stmt = $this->pdo->prepare($query);
-//        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-//        $stmt->bindParam(':items_per_page', $items_per_page, PDO::PARAM_INT);
-//        $stmt->execute();
-//        return $stmt;
-//    }
-
     public function getBoardsByPage($offset, $items_per_page, $order) {
         $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
 
@@ -102,6 +82,18 @@ class BoardRepository {
 
         return $stmt;
     }
+
+    public function getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order) {
+        $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
+        $query = "SELECT * FROM board WHERE status = 'normal' AND user_id = :user_id $orderClause LIMIT :offset, :items_per_page;";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt;
+    }
+
 
     public function adminCreateBoard($title, $content, $date, $user_id, $status) {
         $query = "INSERT INTO board (title, content, date, user_id, status) VALUES (:title, :content, :date, :user_id, :status)";

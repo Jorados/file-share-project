@@ -40,7 +40,7 @@ $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
 // 각 댓글의 작성자 이메일을 가져옵니다.
 foreach ($comments as &$comment) {
     $userRepository -> getUserEmailById($comment['user_id']);
-    $comment['user_email'] = $user['email'];
+    $comment['user_email'] = $user->getEmail();
 }
 ?>
 

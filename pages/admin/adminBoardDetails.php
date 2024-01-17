@@ -228,6 +228,5 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
                 alert("Error: " + error);
                 console.log('Error:', error);
             });
-
     }
 </script>
