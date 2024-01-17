@@ -17,3 +17,7 @@
 
 > ID : seongjin8860@naver.com    
 > PW : cho980625 
+
+### WBS
+
+> https://docs.google.com/spreadsheets/d/1eU2O7kzHnQqxTx5iBJp2_r8CohMnA372/edit?usp=drive_link&ouid=114989303808624482632&rtpof=true&sd=true   
