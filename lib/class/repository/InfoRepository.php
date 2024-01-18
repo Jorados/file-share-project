@@ -20,13 +20,14 @@ class InfoRepository {
         return new Info($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
-    public function addInfo($info) {
+    public function addInfo(Info $info) {
         $insertQuery = "INSERT INTO info (reason_content, date, user_id, board_id) VALUES (:reason_content, NOW(), :user_id, :board_id)";
         $stmt = $this->pdo->prepare($insertQuery);
-        $stmt->bindParam(':reason_content', $info->getReasonContent(), \PDO::PARAM_STR);
-        $stmt->bindParam(':user_id', $info->getUserId(), \PDO::PARAM_INT);
-        $stmt->bindParam(':board_id', $info->getBoardId(), \PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([
+            'reason_content'=>$info->getReasonContent(),
+            'user_id'=>$info->getUserId(),
+            'board_id'=>$info->getBoardId()
+        ]);
     }
 }
 ?>

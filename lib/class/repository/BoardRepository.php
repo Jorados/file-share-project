@@ -15,11 +15,12 @@ class BoardRepository {
     }
 
     // 토탈 board
-    public function getTotalItemsByUserId($user) {
+    public function getTotalItemsByUserId(User $user) {
         $query = "SELECT COUNT(*) as total FROM board WHERE user_id = :user_id AND status = 'normal';";
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':user_id', $user->getUserId(), \PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([
+            'user_id'=>$user->getUserId()
+        ]);
         $result = $stmt->fetch();
         return $result['total'];
     }
@@ -48,14 +49,15 @@ class BoardRepository {
         return $stmt->execute();
     }
 
-    public function addBoard($board) {
+    public function addBoard(Board $board) {
         $query = "INSERT INTO board (title, content, date, user_id) VALUES (:title, :content, :date, :user_id)";
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':title', $board->getTitle(), \PDO::PARAM_STR);
-        $stmt->bindParam(':content', $board->getContent(), \PDO::PARAM_STR);
-        $stmt->bindParam(':date', $board->getDate(), \PDO::PARAM_STR);
-        $stmt->bindParam(':user_id', $board->getUserId(), \PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([
+            'title'=>$board->getTitle(),
+            'content'=>$board->getContent(),
+            'date'=>$board->getDate(),
+            'user_id'=>$board->getUserId()
+        ]);
     }
 
     public function getTotalBoardCount() {
@@ -90,23 +92,25 @@ class BoardRepository {
         return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
-    public function adminCreateBoard($board) {
+    public function adminCreateBoard(Board $board) {
         $query = "INSERT INTO board (title, content, date, user_id, status) VALUES (:title, :content, :date, :user_id, :status)";
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':title', $board->getTitle(), \PDO::PARAM_STR);
-        $stmt->bindParam(':content', $board->getContent(), \PDO::PARAM_STR);
-        $stmt->bindParam(':date', $board->getDate(), \PDO::PARAM_STR);
-        $stmt->bindParam(':user_id', $board->getUserId(), \PDO::PARAM_INT);
-        $stmt->bindParam(':status', $board->getStatus(), \PDO::PARAM_STR);
-        $stmt->execute();
+        $stmt->execute([
+            'title'=>$board->getTitle(),
+            'content'=>$board->getContent(),
+            'date'=>$board->getDate(),
+            'user_id'=>$board->getUserId(),
+            'status'=>$board->getStatus()
+        ]);
     }
 
-    public function updateBoardPermission($board) {
+    public function updateBoardPermission(Board $board) {
         $updateQuery = "UPDATE board SET openclose = :openclose WHERE board_id = :board_id";
         $stmt = $this->pdo->prepare($updateQuery);
-        $stmt->bindParam(':openclose', $board->getOpenclose(), \PDO::PARAM_INT);
-        $stmt->bindParam(':board_id', $board->getBoardId(), \PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([
+            'openclose'=>$board->getOpenclose(),
+            'board_id'=>$board->getBoardId()
+        ]);
     }
 
     public function getBoardIdLimit1() {

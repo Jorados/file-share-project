@@ -22,13 +22,14 @@ class CommentRepository {
         return DatabaseController::arrayMapObjects(new Comment(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
-    public function addComment($comment) {
+    public function addComment(Comment $comment) {
         $insertQuery = "INSERT INTO comment (content, date, board_id, user_id) VALUES (:content, NOW(), :board_id, :user_id)";
         $stmt = $this->pdo->prepare($insertQuery);
-        $stmt->bindParam(':content', $comment->getContent(), \PDO::PARAM_STR);
-        $stmt->bindParam(':board_id', $comment->getBoardId(), \PDO::PARAM_INT);
-        $stmt->bindParam(':user_id', $comment->getUserId(), \PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([
+            'content'=>$comment->getContent(),
+            'board_id'=>$comment->getBoardId(),
+            'user_id'=>$comment->getUserId()
+        ]);
     }
 }
 
