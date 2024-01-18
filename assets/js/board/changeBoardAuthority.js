@@ -1,4 +1,3 @@
-// 글 열람 권한 변경
 function submitBoardAuthority() {
     var formData = new FormData(document.getElementById('authorityForm'));
 

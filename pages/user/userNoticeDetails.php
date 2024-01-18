@@ -8,6 +8,7 @@ use repository\BoardRepository;
 use repository\AttachmentRepository;
 use repository\CommentRepository;
 use log\PostLogger;
+use dataset\User;
 
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
 
@@ -79,7 +80,7 @@ $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
                             <p class="card-text"><?= $comment->getContent(); ?></p>
                             <small class="text-muted">
                                 작성자:
-                                <?= $userRepository->getUserEmailById($comment->getUserId())->getEmail(); ?>
+                                <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
                             </small>
                         </div>
                         <div class="text-right"> <!-- text-right 추가 -->

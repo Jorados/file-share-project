@@ -6,6 +6,8 @@ use repository\UserRepository;
 use repository\BoardRepository;
 use mail\SendMail;
 use log\PostLogger;
+use dataset\User;
+use dataset\Board;
 
 $logger = new PostLogger();
 $userRepository = new UserRepository();
@@ -19,8 +21,10 @@ try {
         $date = date('Y-m-d H:i:s');
         $user_email = $_SESSION['email'];
 
-        $user = $userRepository->getUserIdByEmail($user_email);
-        $boardRepository->addBoard($title, $content, $date, $user->getUserId());
+        $user = $userRepository->getUserIdByEmail(new User(['email'=>$user_email]));
+
+        $board = new Board(['title'=>$title,'content'=>$content,'date'=>$date,'user_id'=>$user->getUserId()]);
+        $boardRepository->addBoard($board);
 
         /*
          *  메일 기능

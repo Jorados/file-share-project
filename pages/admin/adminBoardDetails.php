@@ -9,6 +9,7 @@ use repository\InfoRepository;
 use repository\CommentRepository;
 use log\PostLogger;
 use mail\SendMail;
+use dataset\User;
 
 $boardRepository = new BoardRepository();
 $infoRepository = new InfoRepository();
@@ -41,6 +42,9 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
     <meta charset='utf-8'>
     <title>게시글 상세보기</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/assets/js/board/changeBoardAuthority.js"></script>
+    <script src="/assets/js/board/deleteBoard.js"></script>
+    <script src="/assets/js/comment/createComment.js"></script>
 </head>
 <body>
 <?php include '/var/www/html/includes/header.php'?>
@@ -62,7 +66,20 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
                 } else {
                     foreach ($attachments as $attachment) {
                         if (file_exists($filepath)) {
-                            echo '<li><a href="/file/download.php?file=' . urlencode($attachment->getFilename()) . '">' . $attachment->getFilename() . '</a></li>';
+                            $filename = $attachment->getFilename();
+
+                            $dot=0;
+                            $under=0;
+                            for ($i = strlen($filename) - 1; $i >= 0; $i--) {
+                                if($filename[$i]=='.' && $dot == 0) $dot=$i;
+                                if($filename[$i]=='_' && $under == 0) $under=$i;
+                            }
+
+                            $leftPart = substr($filename, 0, $under); // $under 이전까지의 부분
+                            $rightPart = substr($filename, $dot); // $dot 이후의 부분
+                            $displayFilename = $leftPart . $rightPart;
+
+                            echo '<li><a href="/file/download.php?file=' . urlencode($filename) . '">' . $displayFilename . '</a></li>';
                         }
                     }
                 }
@@ -74,7 +91,7 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
             <p class="card-text">작성일 : <?= date('Y-m-d', strtotime($board->getDate())); ?></p>
             <p class="card-text">열람 권한 : <?= $board->getOpenclose() == 0 ? '불가' : '허용'; ?></p>
 
-            <form action="/action/boardAuthorityChange.php" method="post"  class="mt-3" id="authorityForm">
+            <form action="/action/board/boardAuthorityChange.php" method="post"  class="mt-3" id="authorityForm">
                 <label for="reason_content">사유</label>
                 <textarea name="reason_content" id="reason_content" rows="3" class="form-control" placeholder="열람 권한 변경의 사유를 입력하세요." required></textarea>
                 <input type="hidden" name="board_id" value="<?= $board->getBoardId(); ?>">
@@ -90,7 +107,7 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
             <div class="row mt-3">
                 <div class="col-md-6">
-                    <form action="/action/deleteForm.php" method="post"  class="d-inline-block" id="deleteForm">
+                    <form action="/action/board/deleteForm.php" method="post"  class="d-inline-block" id="deleteForm">
                         <input type="hidden" name="board_id" value="<?= $board->getBoardId() ?>">
                         <input type="button" name="delete_post" value="삭제" class="btn btn-danger" onclick="submitDeleteForm()">
                     </form>
@@ -102,7 +119,7 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
     <div class="card mx-auto mb-5 " style="max-width: 1000px";>
         <div class="card-body">
-            <form action="/action/createComment.php" method="post" id="createCommentForm">
+            <form action="/action/comment/createComment.php" method="post" id="createCommentForm">
                 <div class="form-group">
                     <label for="content">댓글 내용</label>
                     <textarea name="content" id="content" rows="3" class="form-control" required></textarea>
@@ -123,7 +140,7 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
                             <p class="card-text"><?php echo $comment->getContent(); ?></p>
                             <small class="text-muted">
                                 작성자:
-                                <?= $userRepository->getUserEmailById($comment->getUserId())->getEmail(); ?>
+                                <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
                             </small>
                         </div>
                         <div class="text-right"> <!-- text-right 추가 -->
@@ -135,11 +152,11 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
         </div>
     </div>
 </div>
+
 </body>
 <footer>
     <?php include '/var/www/html/includes/footer.php'?>
 </footer>
 </html>
-<script src="/assets/js/board/deleteBoard.js"></script>
-<script src="/assets/js/comment/createComment.js"></script>
-<script src="/assets/js/board/changeBoardAuthority.js"></script>
+
+

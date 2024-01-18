@@ -9,6 +9,7 @@ use repository\InfoRepository;
 use repository\AttachmentRepository;
 use repository\CommentRepository;
 use log\PostLogger;
+use dataset\User;
 
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
 if (!$board_id) {
@@ -71,12 +72,24 @@ $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
                     } else {
                         foreach ($attachments as $attachment) {
                             if (file_exists($filepath)) {
-                                echo '<li><a href="/file/download.php?file=' . urlencode($attachment->getFilename()) . '">' . $attachment->getFilename() . '</a></li>';
+                                $filename = $attachment->getFilename();
+
+                                $dot=0;
+                                $under=0;
+                                for ($i = strlen($filename) - 1; $i >= 0; $i--) {
+                                    if($filename[$i]=='.' && $dot == 0) $dot=$i;
+                                    if($filename[$i]=='_' && $under == 0) $under=$i;
+                                }
+
+                                $leftPart = substr($filename, 0, $under); // $under 이전까지의 부분
+                                $rightPart = substr($filename, $dot); // $dot 이후의 부분
+                                $displayFilename = $leftPart . $rightPart;
+
+                                echo '<li><a href="/file/download.php?file=' . urlencode($filename) . '">' . $displayFilename . '</a></li>';
                             }
                         }
                     }
                     ?>
-
                 </ul>
                 </p>
                 <p class="card-text">작성일 : <?= date('Y-m-d', strtotime($board->getDate())); ?></p>
@@ -113,7 +126,7 @@ $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
                             <p class="card-text"><?= $comment->getContent();?></p>
                             <small class="text-muted">
                                 작성자:
-                                <?= $userRepository->getUserEmailById($comment->getUserId())->getEmail(); ?>
+                                <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
                             </small>
                         </div>
                         <div class="text-right"> <!-- text-right 추가 -->

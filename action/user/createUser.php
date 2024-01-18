@@ -4,6 +4,7 @@ include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
 use log\UserLogger;
+use dataset\User;
 
 $userRepository = new UserRepository();
 $logger = new UserLogger();
@@ -20,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => false, 'content' => $message]);
     } else {
         // 중복 이메일 검사
-        if($userRepository->isEmailDuplicate($email)){
+        if($userRepository->isEmailDuplicate(new User(['email'=>$email]))){
             $message = "이미 사용 중인 이메일 주소입니다.";
             echo json_encode(['status' => false, 'content' => $message]);
         }
@@ -41,8 +42,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     } else {
                         // 비밀번호 해싱
                         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
                         // 회원 가입
-                        $userRepository->createUser($email,$hashed_password,$username,$phone);
+                        $user = new User(['email'=>$email,'password'=>$hashed_password,'username'=>$username,'phone'=>$phone]);
+                        $userRepository->createUser($user);
 
                         $adminEmail = $_SESSION['email'];
                         $logger->createUser($_SERVER['REQUEST_URI'], $adminEmail, $email);

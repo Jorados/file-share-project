@@ -20,15 +20,21 @@
 <?php
 // download.php
 session_start();
-include '/var/access_logs/PostLogger.php';
+
+include '/var/www/html/lib/config.php';
+
+use log\PostLogger;
+
+// 세션 값체크
+if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
+    header("Location: /index.php");
+    exit;
+}
+
 $logger = new PostLogger();
 
 //GET 요청에서 파일 이름을 가져옵니다.
 if (isset($_GET['file'])) {
-
-    error_log(E_ALL);
-    ini_set("display_errors", 1);
-
     $filename = $_GET['file'];
 
     // 파일의 실제 경로를 설정합니다.

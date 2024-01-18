@@ -23,6 +23,10 @@ abstract class BaseModel{
         }
     }
 
+    public static function createNewInstance($data){
+        return new static($data); //--> new static() 해주면 해당 부모클래스를 호출한 BaseModel 내의 자식클래스가 return 된다.
+    }
+
     // ----- 개념 -----
     // get_object_vars
     // 객체의 속성을 배열로 반환하는 내장 함수 / ( key,value ) 형태로 데이터 보관

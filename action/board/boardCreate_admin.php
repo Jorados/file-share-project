@@ -6,6 +6,7 @@ include '/var/www/html/lib/config.php';
 use repository\BoardRepository;
 use mail\SendMail;
 use log\PostLogger;
+use dataset\Board;
 
 $boarRepository = new BoardRepository();
 $logger = new PostLogger();
@@ -14,14 +15,12 @@ try {
         $title = $_POST['title'];
         $content = $_POST['content'];
         $date = date('Y-m-d H:i:s');
-
         $user_id = $_SESSION['user_id'];
-
-        // 게시글 유형 설정 (normal 또는 notification)
         $postStatus = $_POST['status'];
 
         // 글 추가 작업
-        $boarRepository->adminCreateBoard($title, $content, $date, $user_id, $postStatus);
+        $board = new Board(['title'=>$title,'content'=>$content,'date'=>$date,'user_id'=>$user_id,'status'=>$postStatus]);
+        $boarRepository->adminCreateBoard($board);
 
         /*
          *  메일 기능

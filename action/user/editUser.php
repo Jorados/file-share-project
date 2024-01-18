@@ -16,10 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $phone = $_POST['phone'];
     $password = $_POST['password'];
-
     $message = ""; // 초기 메시지 설정
-
-
 
     // 이메일 유효성 검사
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -43,9 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode(['status' => false, 'content' => $message]);
     } else {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // 비밀번호 암호화
-        $updateStmt = $userRepository->updateUserDetails($user_id, $email, $hashedPassword, $username, $phone);
 
-        // $updateStmt = $userRepository->updateUserDetails(new User($_POST));
+        $user = new User(['$user_id'=>$user_id , '$email' => $email, 'password'=>$hashedPassword, 'username'=>$username, 'phone'=>$phone]);
+        $updateStmt = $userRepository->updateUserDetails($user);
+
         echo json_encode(['status' => true, 'content' => '회원 정보가 성공적으로 업데이트되었습니다.']);
     }
 }

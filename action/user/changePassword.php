@@ -5,6 +5,7 @@ include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
 use log\UserLogger;
+use dataset\User;
 
 $userRepository = new UserRepository();
 $logger = new UserLogger();
@@ -20,8 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         $email = $_SESSION['email'];
-        $userRepository->updateUserPassword($email, $hashed_password);
-        $userRepository->updateAvailableStatus($email);
+
+        $user = new User(['email' => $email,'password'=>$hashed_password]);
+        $userRepository->updateUserPassword($user);
+        $userRepository->updateAvailableStatus($user);
 
         // 로그 남기기
         $logger->changePassword($_SERVER['REQUEST_URI'], $email);

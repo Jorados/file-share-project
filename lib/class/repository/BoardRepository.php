@@ -3,6 +3,7 @@
 namespace repository;
 
 use database\DatabaseConnection;
+use database\DatabaseController;
 use dataset\Board;
 use dataset\User;
 
@@ -14,10 +15,10 @@ class BoardRepository {
     }
 
     // 토탈 board
-    public function getTotalItemsByUserId($user_id) {
+    public function getTotalItemsByUserId($user) {
         $query = "SELECT COUNT(*) as total FROM board WHERE user_id = :user_id AND status = 'normal';";
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':user_id', $user->getUserId(), \PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch();
         return $result['total'];
@@ -28,14 +29,9 @@ class BoardRepository {
         $query = "SELECT * FROM board WHERE status = 'notification'";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
-
-        return array_map(
-            function ($board){
-                return new Board($board);
-            },
-            $stmt->fetchAll(\PDO::FETCH_ASSOC)
-        );
+        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
+
 
     public function getBoardById($board_id) {
         $query = "SELECT * FROM board WHERE board_id = :board_id";
@@ -52,13 +48,13 @@ class BoardRepository {
         return $stmt->execute();
     }
 
-    public function addBoard($title, $content, $date, $user_id) {
+    public function addBoard($board) {
         $query = "INSERT INTO board (title, content, date, user_id) VALUES (:title, :content, :date, :user_id)";
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':title', $title, \PDO::PARAM_STR);
-        $stmt->bindParam(':content', $content, \PDO::PARAM_STR);
-        $stmt->bindParam(':date', $date, \PDO::PARAM_STR);
-        $stmt->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':title', $board->getTitle(), \PDO::PARAM_STR);
+        $stmt->bindParam(':content', $board->getContent(), \PDO::PARAM_STR);
+        $stmt->bindParam(':date', $board->getDate(), \PDO::PARAM_STR);
+        $stmt->bindParam(':user_id', $board->getUserId(), \PDO::PARAM_INT);
         $stmt->execute();
     }
 
@@ -79,12 +75,7 @@ class BoardRepository {
         $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
         $stmt->execute();
 
-        return array_map(
-            function ($board){
-                return new Board($board);
-            },
-            $stmt->fetchAll(\PDO::FETCH_ASSOC)
-        );
+        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
     public function getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order) {
@@ -96,31 +87,25 @@ class BoardRepository {
         $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
         $stmt->execute();
 
-        return array_map(
-            function ($board){
-                return new Board($board);
-            },
-            $stmt->fetchAll(\PDO::FETCH_ASSOC)
-        );
+        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
-
-    public function adminCreateBoard($title, $content, $date, $user_id, $status) {
+    public function adminCreateBoard($board) {
         $query = "INSERT INTO board (title, content, date, user_id, status) VALUES (:title, :content, :date, :user_id, :status)";
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':title', $title, \PDO::PARAM_STR);
-        $stmt->bindParam(':content', $content, \PDO::PARAM_STR);
-        $stmt->bindParam(':date', $date, \PDO::PARAM_STR);
-        $stmt->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
-        $stmt->bindParam(':status', $status, \PDO::PARAM_STR);
+        $stmt->bindParam(':title', $board->getTitle(), \PDO::PARAM_STR);
+        $stmt->bindParam(':content', $board->getContent(), \PDO::PARAM_STR);
+        $stmt->bindParam(':date', $board->getDate(), \PDO::PARAM_STR);
+        $stmt->bindParam(':user_id', $board->getUserId(), \PDO::PARAM_INT);
+        $stmt->bindParam(':status', $board->getStatus(), \PDO::PARAM_STR);
         $stmt->execute();
     }
 
-    public function updateBoardPermission($board_id, $newPermission) {
+    public function updateBoardPermission($board) {
         $updateQuery = "UPDATE board SET openclose = :openclose WHERE board_id = :board_id";
         $stmt = $this->pdo->prepare($updateQuery);
-        $stmt->bindParam(':openclose', $newPermission, \PDO::PARAM_INT);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
+        $stmt->bindParam(':openclose', $board->getOpenclose(), \PDO::PARAM_INT);
+        $stmt->bindParam(':board_id', $board->getBoardId(), \PDO::PARAM_INT);
         $stmt->execute();
     }
 
@@ -146,5 +131,6 @@ class BoardRepository {
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return new User($result);
     }
+
 }
 ?>

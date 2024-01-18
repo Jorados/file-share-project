@@ -6,6 +6,8 @@ use repository\BoardRepository;
 use repository\InfoRepository;
 use mail\SendMail;
 use log\PostLogger;
+use dataset\Board;
+use dataset\Info;
 
 $boardRepository = new BoardRepository();
 $infoRepository = new InfoRepository();
@@ -24,9 +26,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
     }
     else{
         // 게시글 권한 업데이트
-        $boardRepository->updateBoardPermission($board_id, $newPermission);
+        $boardRepository->updateBoardPermission(new Board(['board_id'=>$board_id,'openclose'=>$newPermission]));
         // info 테이블에 정보 삽입
-        $infoRepository->addInfo($reason_content, $user_id, $board_id);
+        $infoRepository->addInfo(new Info(['reason_content'=>$reason_content,'user_id'=>$user_id,'board_id'=>$board_id]));
 
         // 메일 전송 구현 로직 , 글 주인한테 메일 쏴야함
         // 해당 board_id가 가지고 있는 user_id를 가지는 user의 email정보를 알아야한다.

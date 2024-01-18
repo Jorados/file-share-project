@@ -27,7 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message = "비밀번호는 영어와 숫자를 포함하여 8자 이상이어야 합니다.";
     } else {
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // 비밀번호 암호화
-        $updateStmt = $userRepository->updateUserDetails($user_id, $email, $hashedPassword, $username, $phone);
+
+        $user = new User(['$user_id'=>$user_id , '$email' => $email, 'password'=>$hashedPassword, 'username'=>$username, 'phone'=>$phone]);
+        $userRepository->updateUserDetails($user);
+
         header("Location: adminAuthority.php"); // 예시 리다이렉트
         exit;
     }

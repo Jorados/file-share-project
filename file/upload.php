@@ -4,6 +4,7 @@ include '/var/www/html/lib/config.php';
 
 use repository\BoardRepository;
 use repository\AttachmentRepository;
+use dataset\Attachment;
 
 $attachmentRepository = new AttachmentRepository();
 $boardRepository = new BoardRepository();
@@ -15,9 +16,18 @@ if (!file_exists($uploadDir)) {
 }
 
 if ($_FILES['file']['error'] === 0 && $_FILES['file']['size'] <= 100 * 1024 * 1024) { // 100MB 제한
+//    $fileName = $_FILES['file']['name'];
+//    $fileTmpPath = $_FILES['file']['tmp_name'];
+//    $destination = $uploadDir . $fileName;
+
     $fileName = $_FILES['file']['name'];
     $fileTmpPath = $_FILES['file']['tmp_name'];
-    $destination = $uploadDir . $fileName;
+    $extension = pathinfo($fileName, PATHINFO_EXTENSION);  // 파일 확장자 추출
+
+    // 새로운 파일 이름 생성 (예: 현재 파일 이름에 현재 시간을 추가)
+    $newFileName = pathinfo($fileName, PATHINFO_FILENAME) . '_' . date('Y-m-d H:i:s')  . '.' . $extension;
+
+    $destination = $uploadDir . $newFileName;
 
     // 파일을 올바른 위치로 이동
     if (move_uploaded_file($fileTmpPath, $destination)) {
@@ -54,5 +64,13 @@ if ($_FILES['file']['error'] === 0 && $_FILES['file']['size'] <= 100 * 1024 * 10
 // 해결방법 --> 헤더에서 라우팅, 세션처리를 확실하게 하자.
 
 $board = $boardRepository -> getBoardIdLimit1();
-$attachmentRepository->setAttachment($board->getBoardId(), $_FILES['file']['name'], $_FILES['file']['size'], $_FILES['file']['type'], $destination);
+
+$attachment = new Attachment([
+    'board_id'=>$board->getBoardId(),
+    'filename'=>$newFileName,
+    'filesize'=>$_FILES['file']['size'],
+    'file_type'=>$_FILES['file']['type'],
+    'filepath'=>$destination
+    ]);
+$attachmentRepository->setAttachment($attachment);
 ?>

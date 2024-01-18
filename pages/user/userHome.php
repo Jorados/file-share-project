@@ -4,11 +4,12 @@ include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
 use repository\BoardRepository;
+use dataset\User;
 
 $userRepository = new UserRepository();
 $boardRepository = new BoardRepository();
 
-$user = $userRepository->getUserByEmail($_SESSION['email']);
+$user = $userRepository->getUserByEmail(new User(['email'=>$_SESSION['email']]));
 if (!$user) {
     header("Location: /lib/pages/user/userHome.php");
     exit;
@@ -20,12 +21,8 @@ $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $items_per_page;
 $order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
 
-
-$total_items = $boardRepository->getTotalItemsByUserId($user_id);
+$total_items = $boardRepository->getTotalItemsByUserId(new User(['user_id'=>$user_id]));
 $total_pages = ceil($total_items / $items_per_page);
-
-// 각 페이지의 시작 번호를 설정
-$total = $offset + 1;
 
 // 정렬 방식에 따라 데이터를 가져오기
 if ($order === 'newest') {

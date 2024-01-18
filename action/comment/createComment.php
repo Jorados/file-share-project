@@ -5,6 +5,7 @@ include '/var/www/html/lib/config.php';
 use repository\BoardRepository;
 use repository\CommentRepository;
 use log\CommentLogger;
+use dataset\Comment;
 
 $boardRepository = new BoardRepository();
 $commentRepository = new CommentRepository();
@@ -19,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'){
         echo json_encode(['status' => false, 'content' => '댓글을 다시 작성해주세요.']);
     }
     else{
-        $commentRepository -> addComment($content, $board_id, $user_id);
+        $commentRepository -> addComment(new Comment(['content'=>$content,'board_id'=>$board_id,'user_id'=>$user_id]));
         $board = $boardRepository -> getBoardByid($board_id);
 
         $email = $_SESSION['email'];

@@ -4,6 +4,7 @@ include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
 use log\UserLogger;
+use dataset\User;
 
 $userRepository = new UserRepository();
 $logger = new UserLogger();
@@ -12,17 +13,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    try {
-        $user = $userRepository->loginUser($email, $password);
-        if ($user) {
-            handleUser($user);
-            handleLogin($logger,$user);
-            exit;
-        } else {
-            echo json_encode(['status'=>false,'content'=>'유효하지 않은 이메일 또는 비밀번호입니다.']);
-        }
-    } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
+    $userInfo = new User(['email'=>$email ,'password'=>$password]);
+    $user = $userRepository->loginUser($userInfo);
+    if ($user) {
+        handleUser($user);
+        handleLogin($logger,$user);
+        exit;
+    } else {
+        echo json_encode(['status'=>false,'content'=>'유효하지 않은 이메일 또는 비밀번호입니다.']);
     }
 }
 
