@@ -7,6 +7,9 @@
 
     <link href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/dropzone.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .custom-mx-10 { margin-left: 8rem !important; margin-right: 8rem !important; }
+    </style>
 </head>
 
 <body>
@@ -53,9 +56,3 @@
     <?php include '/var/www/html/includes/footer.php'?>
 </footer>
 </html>
-<style>
-    .custom-mx-10 {
-        margin-left: 8rem !important;
-        margin-right: 8rem !important;
-    }
-</style>

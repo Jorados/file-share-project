@@ -30,12 +30,16 @@
     <?php
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $selectedDate = $_POST["date"];
-        $logFilePath = "/var/www/html/file/logs/{$selectedDate}.log";
 
+        // 선택된 날짜로부터 년도와 월을 추출
+        $year = date('Y', strtotime($selectedDate));
+        $month = date('m', strtotime($selectedDate));
+
+        $logFilePath = "/var/www/html/file/logs/{$year}/{$month}/{$selectedDate}.log";
 
         if (file_exists($logFilePath)) {
-            echo "<pre class='bg-light p-3' id='logContent'>";   //--> <pre> 이 태그안에 있는 문자들은 공백,줄바꿈 등 그대로 유지됨.
-            echo htmlspecialchars(file_get_contents($logFilePath)); // htmlspecialchars --> 자바스크립트 입력방지
+            echo "<pre class='bg-light p-3' id='logContent'>";   //--> <pre> 이 태그 안에 있는 문자들은 공백, 줄바꿈 등 그대로 유지됨.
+            echo htmlspecialchars(file_get_contents($logFilePath)); // htmlspecialchars --> 자바스크립트 입력 방지
             echo "</pre>";
         } else {
             echo "<p class='text-danger'>날짜를 선택 해주세요. 해당 날짜의 로그 정보가 없습니다.</p>";
