@@ -223,9 +223,9 @@ class BoardRepository {
      * @param null $userId
      * @return string
      */
+
     private function buildWhereClause($permission = null, $searchType = null, $searchQuery = null, $userId = null) {
         $whereConditions = [];
-
         if ($permission !== null) {
             $whereConditions[] = "openclose = :permission";
         }

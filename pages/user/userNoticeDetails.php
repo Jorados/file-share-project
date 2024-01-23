@@ -4,36 +4,23 @@
  */
 session_start();
 
-include '/var/www/html/lib/config.php';
+include_once '/var/www/html/lib/config.php';
 
+use service\UserService;
 use repository\UserRepository;
-use repository\BoardRepository;
-use repository\AttachmentRepository;
-use repository\CommentRepository;
-use log\PostLogger;
 use dataset\User;
 
 $board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
+$email = $_SESSION['email'];
 
-$boardRepository = new BoardRepository();
-$attachmentRepository = new AttachmentRepository();
-$commentRepository = new CommentRepository();
+$userService = new UserService();
 $userRepository = new UserRepository();
 
-$board = $boardRepository->getBoardById($board_id);
-$attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
-
-// 댓글 조회
-$comments = $commentRepository -> getCommentsByBoardId($board_id);
-
-// 글 상세 조회 로그
-$logger = new PostLogger();
-$email = $_SESSION['email'];
-$title = $board->getTitle();
-$status = $board->getStatus();
-$logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
+$result = $userService->noticeDetailsByUser($board_id, $email);
+$board = $result['board'];
+$attachments = $result['attachments'];
+$comments = $result['comments'];
 ?>
-
 
 <!DOCTYPE html>
 <html>
