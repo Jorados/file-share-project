@@ -39,7 +39,7 @@ $boards = $result['boards'];
         <div class="container-fluid">
             <form class="d-flex ml-auto" method="GET" action="adminHome.php">
 
-                <ion-icon class="mr-3" name="reload" onclick="resetSearchParams()"></ion-icon>
+                <ion-icon class="mr-3" name="reload" onclick="resetSearchParams()" style="font-size: 40px; color: #1977c9; --ionicon-stroke-width: 45px;"></ion-icon>
                 <select class="form-control mr-2" name="permission" aria-label="Default select example" style="width: 100px;">
                     <option selected>-권한-</option>
                     <option value="1">허용</option>
@@ -120,58 +120,50 @@ $boards = $result['boards'];
     </div>
 
     <div class="container mt-4" id="pagination-container">
-        <ul class="pagination justify-content-center">
-            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
-                    <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
-                </li>
-            <?php endfor; ?>
-        </ul>
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                <?php if ($current_page > 1): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?php echo ($current_page - 1); ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                <?php elseif($current_page<=1): ?>
+                    <a class="page-link" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                <?php endif; ?>
+
+                <?php
+
+                // 페이지 범위 설정 (첫 페이지부터 몇 개의 페이지를 보여줄 것인지)
+                $page_range = 5;
+                $start_page = max(1, $current_page - $page_range + 1);
+                $end_page = min($total_pages, $start_page + $page_range - 1);
+
+                for ($i = $start_page; $i <= $end_page; $i++): ?>
+                    <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
+                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($current_page < $total_pages): ?>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<?php echo ($current_page + 1); ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                <?php elseif($current_page >= $total_pages): ?>
+                <a class="page-link" aria-label="Previous">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+                <?php endif; ?>
+            </ul>
+        </nav>
     </div>
 </div>
+<script src="/assets/js/board/homeBoard.js"></script>
 <link rel="stylesheet" href="/assets/css/home.css">
 </body>
 </html>
 
-<!--검색 후 파라미터 유지.-->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // DOM이 로드된 후 실행되는 코드
-        var tabs = document.querySelectorAll('.nav-tabs .nav-link');
-
-        tabs.forEach(function(tab) {
-            tab.addEventListener('click', function(event) {
-                // 탭 클릭 시 실행되는 코드
-                event.preventDefault();
-
-                // 현재 페이지 URL을 기반으로한 새로운 URL을 생성
-                var url = new URL(window.location.href);
-                url.searchParams.set('order', this.getAttribute('href').includes('newest') ? 'newest' : 'oldest');
-
-                // 페이지를 리로드
-                window.location.href = url.toString();
-            });
-        });
-    });
-</script>
-
-<script>
-    function resetSearchParams() {
-        // 현재 페이지 URL을 기반으로한 새로운 URL을 생성
-        var url = new URL(window.location.href);
-
-        // 모든 파라미터 제거
-        url.search = '';
-
-        // 페이지를 리로드
-        window.location.href = url.toString();
-    }
-</script>
-
-<style>
-    ion-icon {
-        font-size: 40px;
-        color: #1977c9;
-        --ionicon-stroke-width: 45px;
-    }
-</style>
