@@ -169,6 +169,7 @@ if (isset($_SESSION['session_start_time'])) {
             <button type='submit' name='logout' class="btn btn-danger">로그아웃</button>
         </form>
         <?php
+
         // 로그아웃 버튼 클릭 시 세션 제거 및 리다이렉션
         if (isset($_POST['logout'])) {
             // 로그아웃 로그

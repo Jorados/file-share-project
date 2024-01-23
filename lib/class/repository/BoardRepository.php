@@ -151,13 +151,17 @@ class BoardRepository {
         $stmt->execute();
     }
 
-    public function getTotalBoardCount($permission = null, $searchType = null, $searchQuery = null) {
-        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery);
+    public function getTotalBoardCount($permission = null, $searchType = null, $searchQuery = null, $userId = null) {
+        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId);
         $query = "SELECT COUNT(*) as total FROM board WHERE status = 'normal' $whereClause;";
         $stmt = $this->pdo->prepare($query);
 
         if ($permission !== null) {
             $stmt->bindParam(':permission', $permission, \PDO::PARAM_STR);
+        }
+
+        if($userId !== null){
+            $stmt->bindParam(':userId',$userId, \PDO::PARAM_INT);
         }
 
         if ($searchType !== null && $searchQuery !== null) {
@@ -170,16 +174,20 @@ class BoardRepository {
         return $result['total'];
     }
 
-    public function getBoardsByPage($offset, $items_per_page, $order, $permission = null, $searchType = null, $searchQuery = null) {
+    public function getBoardsByPage($offset, $items_per_page, $order, $permission = null, $searchType = null, $searchQuery = null, $userId = null) {
         $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
-        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery);
-
+        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId);
         $query = "SELECT * FROM board WHERE status = 'normal' $whereClause $orderClause LIMIT :offset, :items_per_page;";
         $stmt = $this->pdo->prepare($query);
 
         if ($permission !== null) {
             $stmt->bindParam(':permission', $permission, \PDO::PARAM_STR);
         }
+
+        if($userId !== null){
+            $stmt->bindParam(':userId',$userId, \PDO::PARAM_INT);
+        }
+
         if ($searchType !== null && $searchQuery !== null) {
             $str = "%$searchQuery%";
             $stmt->bindParam(':search_query', $str, \PDO::PARAM_STR);
@@ -192,15 +200,21 @@ class BoardRepository {
 
 
     // 검색 조건 필터링
-    private function buildWhereClause($permission = null, $searchType = null, $searchQuery = null) {
+    private function buildWhereClause($permission = null, $searchType = null, $searchQuery = null, $userId = null) {
         $whereConditions = [];
 
         if ($permission !== null) {
             $whereConditions[] = "openclose = :permission";
         }
+
+        if ($userId !== null){
+            $whereConditions[] = "user_id = :userId";
+        }
+
         if ($searchType !== null && $searchQuery !== null) {
             $whereConditions[] = "$searchType LIKE :search_query";
         }
+
         if (!empty($whereConditions)) {
             return "AND " . implode(" AND ", $whereConditions);
         }

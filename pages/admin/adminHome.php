@@ -134,9 +134,7 @@ $boards = $result['boards'];
                     </a>
                 <?php endif; ?>
 
-                <?php
-
-                // 페이지 범위 설정 (첫 페이지부터 몇 개의 페이지를 보여줄 것인지)
+                <?php // 페이지 범위 설정 (첫 페이지부터 몇 개의 페이지를 보여줄 것인지)
                 $page_range = 5;
                 $start_page = max(1, $current_page - $page_range + 1);
                 $end_page = min($total_pages, $start_page + $page_range - 1);

@@ -4,12 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 생성</title>
-
     <link href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/dropzone.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .custom-mx-10 { margin-left: 8rem !important; margin-right: 8rem !important; }
-    </style>
 </head>
 
 <body>
@@ -21,7 +17,7 @@
             <h2 class="text-center">게시글 생성</h2>
         </div>
 
-        <div class="card-body col-md-9 custom-mx-10">
+        <div class="card-body col-md-9 " style="margin-left: 8rem !important; margin-right: 8rem !important;">
             <h5 class="card-title text-center">파일 업로드</h5>
             <form class="dropzone" action="upload.php" id="myDropzone"></form>
         </div>
