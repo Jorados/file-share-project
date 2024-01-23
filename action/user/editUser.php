@@ -1,4 +1,7 @@
 <?php
+/**
+ * 관리자 -> 사용자 계정 수정 액션
+ */
 include '/var/www/html/lib/config.php';
 
 use dataset\User;

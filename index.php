@@ -1,3 +1,8 @@
+<?php
+/**
+ * 기본 홈 페이지
+ */
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>

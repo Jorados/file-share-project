@@ -1,3 +1,7 @@
+/**
+ * 탭, 페이지네이션 버튼 클릭시 해당 페이지 파라미터 값 유지.
+ */
+
 document.addEventListener('DOMContentLoaded', function() {
     // DOM이 로드된 후 실행되는 코드
     var tabs = document.querySelectorAll('.nav-tabs .nav-link');

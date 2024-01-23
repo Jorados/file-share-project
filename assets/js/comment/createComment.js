@@ -1,3 +1,6 @@
+/**
+ * 댓글 생성
+ */
 function submitCommentForm() {
     var formData = new FormData(document.getElementById('createCommentForm'));
 

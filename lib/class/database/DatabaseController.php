@@ -1,4 +1,7 @@
 <?php
+/**
+ * 쿼리 데이터 처리해주는 controller
+ */
 
 namespace database;
 

@@ -1,4 +1,7 @@
 <?php
+/**
+ * 유저 로그
+ */
 
 namespace log;
 
@@ -21,9 +24,8 @@ class UserLogger {
         return $this->log_directory . '/' . date('Y-m-d') . '.log';
     }
 
-    /*
-     *  사용자 액션 -> 로그인, 로그아웃, 회원가입, 비밀번호 변경, 권한 변경
-     *  등등
+    /**
+     * 사용자 액션 -> 로그인, 로그아웃, 회원가입, 비밀번호 변경, 권한 변경
      */
 
     // 사용자 로그인 (admin,user)

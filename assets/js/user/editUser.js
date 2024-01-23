@@ -1,3 +1,6 @@
+/**
+ * 관리자 -> 사용자 계정 수정
+ */
 function submitForm() {
     var formData = new FormData(document.getElementById('editForm'));
 

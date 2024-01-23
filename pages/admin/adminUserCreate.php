@@ -1,3 +1,8 @@
+<?php
+/**
+ *  관리자 -> 사용자 계정 생성 페이지
+ */
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>

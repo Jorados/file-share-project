@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * 파일 업로드 액션
+ */
+
 include '/var/www/html/lib/config.php';
 
 use repository\BoardRepository;

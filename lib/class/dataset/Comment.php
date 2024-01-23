@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 댓글 - 데이터모델
+ */
 namespace dataset;
 
 class Comment extends BaseModel{

@@ -1,4 +1,8 @@
 <?php
+/**
+ * 관리자 -> 사용자의 글 작성 권한 변경 액션
+ */
+
 session_start();
 include '/var/www/html/lib/config.php';
 

@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 검색 관련 메서드를 정의한 인터페이스
+ */
 namespace service\search;
 
 use repository\BoardRepository;

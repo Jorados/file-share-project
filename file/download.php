@@ -1,5 +1,8 @@
 <?php
-// download.php
+/**
+ * 업로드 파일 다운로드 액션
+ */
+
 session_start();
 
 include '/var/www/html/lib/config.php';

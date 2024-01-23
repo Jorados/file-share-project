@@ -1,4 +1,10 @@
 <?php
+/**
+ * 글 생성 후 1일 경과 -> 글 열람 불가 상태로 변경
+ * 크론탭
+ */
+
+
 include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;

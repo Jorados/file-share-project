@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * 댓글 로그
+ */
+
 namespace log;
 
 class CommentLogger {
@@ -20,12 +25,12 @@ class CommentLogger {
         return $this->log_directory . '/' . date('Y-m-d') . '.log';
     }
 
-    /*
-     *  댓글 액션 -> 댓글 생성
-     *  등등
+    /**
+     * @param $action
+     * @param $email
+     * @param $board_title
+     * 댓글 생성
      */
-
-    // 관리자 댓글 생성
     public function createComment($action, $email , $board_title){
         $timestamp = date('Y-m-d H:i:s');
         $ip_address = $_SERVER['REMOTE_ADDR'];

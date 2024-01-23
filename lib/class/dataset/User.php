@@ -1,11 +1,12 @@
 <?php
-
+/**
+ * 유저 - 데이터 모델
+ */
 namespace dataset;
 
 use dataset\BaseModel;
 
 class User extends BaseModel{
-
     protected $user_id;
     protected $email;
     protected $password;

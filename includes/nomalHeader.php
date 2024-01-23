@@ -1,3 +1,8 @@
+<?php
+/**
+ * 단순 - 헤더파일
+ */
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>

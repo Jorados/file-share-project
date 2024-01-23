@@ -1,4 +1,7 @@
 <?php
+/**
+ * 사용자 -> 공지 조회 페이지
+ */
 include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;

@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 글 - 데이터 모델
+ */
 namespace dataset;
 
 use dataset\BaseModel;

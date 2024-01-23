@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * 헤더파일 - 권한,세션,세션시간 검사 / 네이게이션 / 로그아웃
+ */
+
 session_start();
 use log\UserLogger;
 

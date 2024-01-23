@@ -1,3 +1,9 @@
+<?php
+/**
+ * 단순 - footer
+ */
+?>
+
 <footer class="footer bg-light shadow-sm">
     <div class="container ">
         <span class="text-muted">Copyright © 2024. All rights reserved.</span>

@@ -1,4 +1,7 @@
 <?php
+/**
+ * 관리자 -> 사용자 권한을 변경하는 페이지
+ */
 session_start();
 include '/var/www/html/lib/config.php';
 

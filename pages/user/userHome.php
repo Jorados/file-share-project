@@ -1,4 +1,7 @@
 <?php
+/**
+ * 사용자 -> 홈 페이지 (로그인 후)
+ */
 session_start();
 include '/var/www/html/lib/config.php';
 

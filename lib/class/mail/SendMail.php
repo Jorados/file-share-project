@@ -1,4 +1,7 @@
 <?php
+/**
+ * 메일 처리 클래스
+ */
 namespace mail;
 
 use database\DatabaseConnection;
@@ -10,7 +13,11 @@ class SendMail {
         $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
-    // role = 'user' 글 작성 시 모든 관리자에게 메일 전송 (gmail 안됨)
+    /**
+     * @param $subject
+     * @param $message
+     * role = 'user' 글 작성 시 모든 관리자에게 메일 전송 (gmail 안됨)
+     */
     public function sendToAdmins($subject, $message) {
         $query = "SELECT email FROM user WHERE role = 'admin'";
         $stmt = $this->pdo->prepare($query);
@@ -27,8 +34,14 @@ class SendMail {
         }
     }
 
-    // 글 열람 상태 변경 시
-    // 해당 글 작성자에게 메일 전송
+    /**
+     * @param $subject
+     * @param $message
+     * @param $boardUser_email
+     * @return bool
+     * 글 열람 상태 변경 시
+     * 해당 글 작성자에게 메일 전송
+     */
     public function sendToUser($subject, $message,$boardUser_email) {
         $to = $boardUser_email;
         $headers = 'From: admin@example.com';

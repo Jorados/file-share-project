@@ -1,4 +1,8 @@
 <?php
+/**
+ * 사용자 글 생성 액션
+ */
+
 session_start();
 include '/var/www/html/lib/config.php';
 

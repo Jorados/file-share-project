@@ -1,4 +1,8 @@
 <?php
+/**
+ * 관리자 -> 게시글 상세 조회 페이지
+ */
+
 session_start();
 include '/var/www/html/lib/config.php';
 

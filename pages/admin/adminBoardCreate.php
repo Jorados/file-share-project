@@ -1,3 +1,8 @@
+<?php
+/**
+ * 관리자 -> 글 작성 페이지
+ */
+?>
 <!DOCTYPE html>
 <html lang="ko">
 

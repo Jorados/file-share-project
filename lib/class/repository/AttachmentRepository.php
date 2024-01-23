@@ -1,4 +1,7 @@
 <?php
+/**
+ * 데이터모델 Attachment sql 레포지토리
+ */
 
 namespace repository;
 
@@ -12,6 +15,11 @@ class AttachmentRepository{
         $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
+    /**
+     * @param $board_id
+     * @return Attachment[]
+     * 특정 게시글의 업로드 파일 조회
+     */
     public function getAttachmentsByBoardId($board_id) {
         $query = "SELECT * FROM attachment WHERE board_id = :board_id";
         $stmt = $this->pdo->prepare($query);
@@ -25,6 +33,11 @@ class AttachmentRepository{
         );
     }
 
+    /**
+     * @param $board_id
+     * @return bool
+     * 삭제
+     */
     public function deleteAttachment($board_id) {
         $deleteQuery = "DELETE FROM attachment WHERE board_id = :board_id";
         $stmt = $this->pdo->prepare($deleteQuery);
@@ -32,6 +45,10 @@ class AttachmentRepository{
         return $stmt->execute();
     }
 
+    /**
+     * @param $attachment
+     * 업로드 파일 저장
+     */
     public function setAttachment($attachment){
         $uploadDate = date('Y-m-d H:i:s'); // 현재 날짜와 시간을 가져옵니다.
 

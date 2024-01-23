@@ -1,3 +1,8 @@
+<?php
+/**
+ * 사용자 -> 비밀번호 변경 페이지
+ */
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>

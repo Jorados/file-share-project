@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * 데이터베이스 연결 파일
+ */
+
 namespace database;
 
 class DatabaseConnection {
@@ -26,6 +30,13 @@ class DatabaseConnection {
         }
     }
 
+    /**
+     * @return DatabaseConnection
+     * 싱글톤 인스턴스
+     * 사용하려는 클래스 생성자에 "$this->pdo = DatabaseConnection::getInstance()->getConnection();" 방식으로 사용해주면 좋다.
+     * PDO를 생성해서 주입해주는 과정이 생략된다.
+     * 결론적으로 코드가 짧아짐.
+     */
     // 메모리 하나만 이용해서 계속 인스턴스 대여.
     public static function getInstance() {
         // 인스턴스가 아직 생성되지 않았을 경우

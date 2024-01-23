@@ -1,3 +1,7 @@
+/**
+ * 로그 검색어 색 강조
+ */
+
 var originalContent = null;  // originalContent 초기화
 
 function searchLog() {
@@ -22,6 +26,10 @@ function searchLog() {
     // 화면에 검색 결과 표시
     document.getElementById("logContent").innerHTML = highlightedContent;
 }
+
+/**
+ * 로그 검색어 색 강조 -> 리셋
+ */
 
 function resetSearch() {
     // 저장된 원본 내용이 있으면 화면에 복원

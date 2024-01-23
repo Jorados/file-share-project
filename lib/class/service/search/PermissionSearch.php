@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * SearchInterface 인터페이스의 메서드를 구현하는 구현체 클래스
+ * 열람권한(permission) 검색 조건만 존재하는 경우를 처리하는 클래스
+ */
 namespace service\search;
 
 use repository\BoardRepository;

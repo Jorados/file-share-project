@@ -1,4 +1,8 @@
 <?php
+/**
+ * 관리자 글 삭제 액션
+ */
+
 session_start();
 
 include '/var/www/html/lib/config.php';

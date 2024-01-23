@@ -1,4 +1,7 @@
 <?php
+/**
+ * 글 로그
+ */
 
 namespace log;
 
@@ -21,8 +24,8 @@ class PostLogger {
         return $this->log_directory . '/' . date('Y-m-d') . '.log';
     }
 
-    /*
-     *  게시글 액션 -> 글 생성, 글(공지,일반) 상세 조회, 글 삭제
+    /**
+     * 게시글 액션 -> 글 생성, 글(공지,일반) 상세 조회, 글 삭제
      */
 
     // 관리자 및 사용자의 글 생성

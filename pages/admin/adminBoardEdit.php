@@ -1,4 +1,8 @@
 <?php
+/**
+ * 관리자 -> 글 수정 페이지
+ */
+
 session_start();
 include '/var/www/html/lib/config.php';
 

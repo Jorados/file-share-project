@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 업로드파일 - 데이터모델
+ */
 namespace dataset;
 
 class Attachment extends BaseModel{

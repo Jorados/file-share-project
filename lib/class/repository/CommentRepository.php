@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 데이터모델 Comment sql 레포지토리
+ */
 namespace repository;
 
 use database\DatabaseConnection;
@@ -14,6 +16,11 @@ class CommentRepository {
         $this->pdo = DatabaseConnection::getInstance()->getConnection();
     }
 
+    /**
+     * 특정 board에 존재하는 comment readAll
+     * @param $board_id
+     * @return array|\dataset\BaseModel[]
+     */
     public function getCommentsByBoardId($board_id) {
         $commentsQuery = "SELECT * FROM comment WHERE board_id = :board_id";
         $stmt = $this->pdo->prepare($commentsQuery);
@@ -22,6 +29,10 @@ class CommentRepository {
         return DatabaseController::arrayMapObjects(new Comment(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
+    /**
+     * 댓글 create
+     * @param Comment $comment
+     */
     public function addComment(Comment $comment) {
         $insertQuery = "INSERT INTO comment (content, date, board_id, user_id) VALUES (:content, NOW(), :board_id, :user_id)";
         $stmt = $this->pdo->prepare($insertQuery);

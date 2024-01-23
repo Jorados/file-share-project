@@ -1,3 +1,8 @@
+<?php
+/**
+ * 관리자 -> 로그 조회 페이지
+ */
+?>
 <!DOCTYPE html>
 <html lang="ko">
 <head>

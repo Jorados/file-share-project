@@ -1,3 +1,6 @@
+/**
+ * 관리자 -> 글 삭제
+ */
 function submitDeleteForm() {
     var formData = new FormData(document.getElementById('deleteForm'));
 

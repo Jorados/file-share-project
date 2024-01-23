@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * 글(승인,반려) 정보 - 데이터 모델
+ */
 namespace dataset;
 
 class Info extends BaseModel{

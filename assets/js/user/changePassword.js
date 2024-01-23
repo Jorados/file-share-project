@@ -1,3 +1,6 @@
+/**
+ * 관리자,사용자 비밀번호 변경
+ */
 function submitForm() {
     var formData = new FormData(document.getElementById('passwordForm'));
 
