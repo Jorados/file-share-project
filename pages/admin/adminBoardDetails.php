@@ -78,7 +78,6 @@ $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
                             $leftPart = substr($filename, 0, $under); // $under 이전까지의 부분
                             $rightPart = substr($filename, $dot); // $dot 이후의 부분
                             $displayFilename = $leftPart . $rightPart;
-
                             echo '<li><a href="/file/download.php?file=' . urlencode($filename) . '">' . $displayFilename . '</a></li>';
                         }
                     }

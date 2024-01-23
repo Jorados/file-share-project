@@ -3,35 +3,23 @@ session_start();
 include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
-use repository\BoardRepository;
+use service\BoardService;
 
 $userRepository = new UserRepository();
-$boardRepository = new BoardRepository();
+$boardService = new BoardService();
 
 $items_per_page = 9;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
 $offset = ($current_page - 1) * $items_per_page;
 
-$order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
+$permission = isset($_GET['permission']) ? $_GET['permission'] : null; // openclose
+$searchType = isset($_GET['search_type']) ? $_GET['search_type'] : null; // title,content
+$searchQuery = isset($_GET['search_query']) ? $_GET['search_query'] : null; // value
 
-try {
-//    $boardRepository = new BoardRepository($pdo);
-    $total_items = $boardRepository->getTotalBoardCount();
-    $total_pages = ceil($total_items / $items_per_page);
-
-    // 각 페이지의 시작 번호를 설정
-    $total = $offset + 1;
-
-    // 정렬 방식에 따라 데이터를 가져오기
-    if ($order === 'newest') {
-        $boards = $boardRepository->getBoardsByPage($offset, $items_per_page, $order);
-    } elseif ($order === 'oldest') {
-        $boards = $boardRepository->getBoardsByPage($offset, $items_per_page, $order);
-    }
-} catch (PDOException $e) {
-    throw new PDOException($e->getMessage(), (int)$e->getCode());
-}
-
+$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery);
+$total_pages = $result['total_pages'];
+$boards = $result['boards'];
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -39,14 +27,39 @@ try {
     <meta charset='utf-8'>
     <title>전체 게시글 조회</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/ionicons@latest/dist/ionicons.js"></script>
 </head>
 <body>
 <?php include '/var/www/html/includes/header.php'?>
 
 <div class="container mt-5">
-    <h2 class="text-center mb-2">전체 게시글 조회</h2>
+    <h2 class="text-center mb-5">전체 게시글 조회</h2>
 
-    <ul class="nav nav-tabs mb-4">
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+            <form class="d-flex ml-auto" method="GET" action="adminHome.php">
+
+                <ion-icon class="mr-3" name="reload" onclick="resetSearchParams()"></ion-icon>
+                <select class="form-control mr-2" name="permission" aria-label="Default select example" style="width: 100px;">
+                    <option selected>-권한-</option>
+                    <option value="1">허용</option>
+                    <option value="0">불가</option>
+                </select>
+
+                <select class="form-control mr-2" name="search_type" aria-label="Default select example" style="width: 100px;" onchange="enableSearchInput()">
+                    <option selected>-선택-</option>
+                    <option value="title">제목</option>
+                    <option value="content">내용</option>
+                </select>
+
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_query" id="searchQueryInput" autocomplete="off">
+                <button class="btn btn-outline-primary ml-1" type="submit">Search</button>
+            </form>
+        </div>
+    </nav>
+
+
+    <ul class="nav nav-tabs mt-2 mb-4">
         <li class="nav-item">
             <a class="nav-link <?php echo (!isset($_GET['order']) || $_GET['order'] === 'newest') ? 'active' : ''; ?>" href="?page=1&order=newest">최신순</a>
         </li>
@@ -58,7 +71,7 @@ try {
     <div class="row">
         <?php foreach ($boards as $board): ?>
             <div class="col-md-4 mb-4">
-                <div class="card shadow">
+                <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 1 ? '#D0E7FA' : '#FFFFFF'; ?>;">
                     <div class="card-body">
                         <h5 class="card-title">
                             <a href="adminBoardDetails.php?board_id=<?= $board->getBoardId(); ?>">
@@ -68,7 +81,19 @@ try {
                                 echo strlen($escapedTitle) > 27 ? substr($escapedTitle, 0, 27) . ".." : $escapedTitle;
                                 ?>
                             </a>
+
+                            <div style="float: right;">
+                                <?php
+                                // 현재 날짜와 게시글 작성일이 동일한 경우에만 "new" 문구를 추가
+                                $currentDate = date('Y-m-d');
+                                $boardDate = date('Y-m-d', strtotime($board->getDate()));
+                                if ($currentDate == $boardDate) {
+                                    echo '<span class="badge badge-pill badge-primary">new</span>';
+                                }
+                                ?>
+                            </div>
                         </h5>
+
                         <p class="card-text">
                             <?php
                             $content = $board->getContent();
@@ -106,5 +131,47 @@ try {
 </div>
 <link rel="stylesheet" href="/assets/css/home.css">
 </body>
-
 </html>
+
+<!--검색 후 파라미터 유지.-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM이 로드된 후 실행되는 코드
+        var tabs = document.querySelectorAll('.nav-tabs .nav-link');
+
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function(event) {
+                // 탭 클릭 시 실행되는 코드
+                event.preventDefault();
+
+                // 현재 페이지 URL을 기반으로한 새로운 URL을 생성
+                var url = new URL(window.location.href);
+                url.searchParams.set('order', this.getAttribute('href').includes('newest') ? 'newest' : 'oldest');
+
+                // 페이지를 리로드
+                window.location.href = url.toString();
+            });
+        });
+    });
+</script>
+
+<script>
+    function resetSearchParams() {
+        // 현재 페이지 URL을 기반으로한 새로운 URL을 생성
+        var url = new URL(window.location.href);
+
+        // 모든 파라미터 제거
+        url.search = '';
+
+        // 페이지를 리로드
+        window.location.href = url.toString();
+    }
+</script>
+
+<style>
+    ion-icon {
+        font-size: 40px;
+        color: #1977c9;
+        --ionicon-stroke-width: 45px;
+    }
+</style>

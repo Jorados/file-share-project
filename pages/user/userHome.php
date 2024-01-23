@@ -58,7 +58,7 @@ if ($order === 'newest') {
     <div class="row">
         <?php foreach ($boards as $board): ?>
             <div class="col-md-4 mb-4">
-                <div class="card shadow" style="background-color: <?= $board->getOpenclose() == 1 ? '#D0E7FA' : '#FFFFFF'; ?>;">
+                <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 1 ? '#D0E7FA' : '#FFFFFF'; ?>;">
                     <div class="card-body">
                         <h5 class="card-title">
                             <a href="userBoardDetails.php?board_id=<?= $board->getBoardId(); ?>">
@@ -68,6 +68,16 @@ if ($order === 'newest') {
                                 echo strlen($escapedTitle) > 27 ? substr($escapedTitle, 0, 27) . ".." : $escapedTitle;
                                 ?>
                             </a>
+                            <div style="float: right;">
+                                <?php
+                                // 현재 날짜와 게시글 작성일이 동일한 경우에만 "new" 문구를 추가
+                                $currentDate = date('Y-m-d');
+                                $boardDate = date('Y-m-d', strtotime($board->getDate()));
+                                if ($currentDate == $boardDate) {
+                                    echo '<span class="badge badge-pill badge-primary">new</span>';
+                                }
+                                ?>
+                            </div>
                         </h5>
                         <p class="card-text">
                             <?php

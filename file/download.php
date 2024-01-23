@@ -1,23 +1,4 @@
 <?php
-//$file = isset($_GET['file']) ? urldecode($_GET['file']) : '';
-//$filePath = '/var/www/html/file/uploads/' . basename($file);
-//
-//if (file_exists($filePath) && is_file($filePath)) {
-//    header('Content-Description: File Transfer');
-//    header('Content-Type: application/octet-stream');
-//    header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
-//    header('Expires: 0');
-//    header('Cache-Control: must-revalidate');
-//    header('Pragma: public');
-//    header('Content-Length: ' . filesize($filePath));
-//    readfile($filePath);
-//    exit;
-//} else {
-//    die('File not found.');
-//}
-//?>
-
-<?php
 // download.php
 session_start();
 
@@ -37,8 +18,21 @@ $logger = new PostLogger();
 if (isset($_GET['file'])) {
     $filename = $_GET['file'];
 
+    // 파일 이름에서 연,월,확장자를 구분하여 디렉토리를 세팅해줘야한다.
+    $dot = strpos($filename, '.');
+    $under = strrpos($filename, '_');
+
+    $extension = substr($filename, $dot + 1);
+    $yearMonth = substr($filename, $under + 1, 7); // 예: 2024-01
+
+    // 디렉토리를 생성합니다.
+    $baseDirectory = '/var/www/html/file/uploads/';
+    $yearDirectory = $baseDirectory . substr($yearMonth, 0, 4) . '/';
+    $monthDirectory = $yearDirectory . substr($yearMonth, 5, 2) . '/';
+    $extensionDirectory = $monthDirectory . $extension . '/';
+
     // 파일의 실제 경로를 설정합니다.
-    $filepath = '/var/www/html/file/uploads/' . $filename;
+    $filepath = $extensionDirectory . $filename;
 
     // 파일이 실제로 존재하는지 확인합니다.
     if (file_exists($filepath)) {

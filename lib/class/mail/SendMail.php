@@ -16,23 +16,14 @@ class SendMail {
         $stmt = $this->pdo->prepare($query);
         $stmt->execute();
 
-        $adminEmails = [];
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $adminEmails[] = $row['email'];
-        }
-
-        $to = implode(', ', $adminEmails);
-        $headers = 'From: admin@example.com';
-
-        // 가리자.
         $secret = include '/var/secret/secret.php';
         $username = $secret['username'];
         $password = $secret['password'];
+        $headers = 'From: admin@example.com';
 
-        if (mail($to, $subject, $message, $headers, '-f' . $username)) {
-            return true;
-        } else {
-            return false;
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $to = $row['email'];
+            mail($to, $subject, $message, $headers, '-f' . $username);
         }
     }
 

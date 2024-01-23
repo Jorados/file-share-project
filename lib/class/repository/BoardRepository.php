@@ -60,25 +60,25 @@ class BoardRepository {
         ]);
     }
 
-    public function getTotalBoardCount() {
-        $query = "SELECT COUNT(*) as total FROM board WHERE status = 'normal';";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetch();
-        return $result['total'];
-    }
-
-    public function getBoardsByPage($offset, $items_per_page, $order) {
-        $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
-
-        $query = "SELECT * FROM board WHERE status = 'normal' $orderClause LIMIT :offset, :items_per_page;";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
-        $stmt->execute();
-
-        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
-    }
+//    public function getTotalBoardCount() {
+//        $query = "SELECT COUNT(*) as total FROM board WHERE status = 'normal';";
+//        $stmt = $this->pdo->prepare($query);
+//        $stmt->execute();
+//        $result = $stmt->fetch();
+//        return $result['total'];
+//    }
+//
+//    public function getBoardsByPage($offset, $items_per_page, $order) {
+//        $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
+//
+//        $query = "SELECT * FROM board WHERE status = 'normal' $orderClause LIMIT :offset, :items_per_page;";
+//        $stmt = $this->pdo->prepare($query);
+//        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+//        $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
+//        $stmt->execute();
+//
+//        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
+//    }
 
     public function getBoardsByPageAndUser($user_id, $offset, $items_per_page, $order) {
         $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
@@ -134,6 +134,78 @@ class BoardRepository {
         $stmt->execute();
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         return new User($result);
+    }
+
+    // 허용된 글 중에서 1일 이상지난 board를 찾는 sql
+    public function getOpencloseBoard(){
+        $sql = "SELECT board_id FROM board WHERE openclose = 1 AND date <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
+    }
+
+    //허용된 글 중에서 1일 이상지난 board를 열람 불가상태로 변경하는 sql
+    public function updateOpencloseBoard(){
+        $sql = "UPDATE board SET openclose = 0 WHERE openclose = 1 AND date <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+    }
+
+    public function getTotalBoardCount($permission = null, $searchType = null, $searchQuery = null) {
+        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery);
+        $query = "SELECT COUNT(*) as total FROM board WHERE status = 'normal' $whereClause;";
+        $stmt = $this->pdo->prepare($query);
+
+        if ($permission !== null) {
+            $stmt->bindParam(':permission', $permission, \PDO::PARAM_STR);
+        }
+
+        if ($searchType !== null && $searchQuery !== null) {
+            $str = "%$searchQuery%";
+            $stmt->bindParam(':search_query', $str, \PDO::PARAM_STR);
+        }
+
+        $stmt->execute();
+        $result = $stmt->fetch();
+        return $result['total'];
+    }
+
+    public function getBoardsByPage($offset, $items_per_page, $order, $permission = null, $searchType = null, $searchQuery = null) {
+        $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
+        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery);
+
+        $query = "SELECT * FROM board WHERE status = 'normal' $whereClause $orderClause LIMIT :offset, :items_per_page;";
+        $stmt = $this->pdo->prepare($query);
+
+        if ($permission !== null) {
+            $stmt->bindParam(':permission', $permission, \PDO::PARAM_STR);
+        }
+        if ($searchType !== null && $searchQuery !== null) {
+            $str = "%$searchQuery%";
+            $stmt->bindParam(':search_query', $str, \PDO::PARAM_STR);
+        }
+        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
+        $stmt->execute();
+        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
+    }
+
+
+    // 검색 조건 필터링
+    private function buildWhereClause($permission = null, $searchType = null, $searchQuery = null) {
+        $whereConditions = [];
+
+        if ($permission !== null) {
+            $whereConditions[] = "openclose = :permission";
+        }
+        if ($searchType !== null && $searchQuery !== null) {
+            $whereConditions[] = "$searchType LIKE :search_query";
+        }
+        if (!empty($whereConditions)) {
+            return "AND " . implode(" AND ", $whereConditions);
+        }
+
+        return "";
     }
 
 }

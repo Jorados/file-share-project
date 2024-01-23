@@ -32,20 +32,20 @@ class AttachmentRepository{
         return $stmt->execute();
     }
 
-    public function setAttachment(Attachment $attachment){
+    public function setAttachment($attachment){
         $uploadDate = date('Y-m-d H:i:s'); // 현재 날짜와 시간을 가져옵니다.
 
         $query = "INSERT INTO attachment (filename, filepath, filesize, file_type, upload_date, board_id) 
-                  VALUES (:filename, :filepath, :filesize, :filetype, :upload_date, :board_id)";
+                  VALUES (:filename, :filepath, :filesize, :filetype, :uploaddate, :boardid)";
+
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            'filename'=>$attachment->getFilename(),
-            'filepath'=>$attachment->getFilepath(),
-            'filesize'=>$attachment->getFilesize(),
-            'filetype'=>$attachment->getFileType(),
-            'upload_date'=>$uploadDate,
-            'board_id'=>$attachment->getBoardId()
-        ]);
+        $stmt->bindParam(':filename', $attachment->getFilename(), \PDO::PARAM_STR);
+        $stmt->bindParam(':filepath', $attachment->getFilepath(), \PDO::PARAM_STR);
+        $stmt->bindParam(':filesize', $attachment->getFilesize(), \PDO::PARAM_INT);
+        $stmt->bindParam(':filetype', $attachment->getFileType(), \PDO::PARAM_STR);
+        $stmt->bindParam(':uploaddate', $uploadDate, \PDO::PARAM_STR);
+        $stmt->bindParam(':boardid', $attachment->getBoardId(), \PDO::PARAM_INT);
+        $stmt->execute();
     }
 }
 ?>
