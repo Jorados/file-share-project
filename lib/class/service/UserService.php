@@ -11,9 +11,9 @@ use repository\InfoRepository;
 use repository\AttachmentRepository;
 use repository\CommentRepository;
 use log\PostLogger;
-use dataset\User;
 
 class UserService{
+
 
     /**
      * 사용자 - 공지 상세 조회
@@ -21,7 +21,7 @@ class UserService{
      * @param $email
      * @return array
      */
-    public function noticeDetailsByUser($board_id,$email){
+    public function noticeDetailsByUser($board_id,$email): array{
         $boardRepository = new BoardRepository();
         $attachmentRepository = new AttachmentRepository();
         $commentRepository = new CommentRepository();
@@ -85,7 +85,7 @@ class UserService{
      * @param $board_id
      * @return array
      */
-    public function boardDetailByAdmin($email,$board_id){
+    public function boardDetailByAdmin($email,$board_id): array{
         $boardRepository = new BoardRepository();
         $userRepository = new UserRepository();
         $commentRepository = new CommentRepository();
@@ -98,8 +98,8 @@ class UserService{
         $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
         $logger = new PostLogger();
-        $title = $board->getTitle();
         $status = $board->getStatus();
+        $title = $board->getTitle();
         $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
 
         return [

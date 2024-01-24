@@ -7,38 +7,10 @@ session_start();
 include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
+$userRepository = new UserRepository();
 
 $user_id = isset($_GET['user_id']) ? $_GET['user_id'] : null;
-$userRepository = new UserRepository();
-if (!$user_id) die("사용자 ID가 제공되지 않았습니다.");
-
 $user = $userRepository -> getUserById($user_id);
-
-// 수정 버튼 클릭
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'];
-    $username = $_POST['username'];
-    $phone = $_POST['phone'];
-    $password = $_POST['password'];
-
-    $message = ""; // 초기 메시지 설정
-
-    // 비밀번호 입력 여부 확인
-    if (empty($password)) {
-        $message = "비밀번호를 입력해주세요.";
-    } else if (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/", $password)) {
-        // 비밀번호 유효성 검사 (영어와 숫자, 최소 8자)
-        $message = "비밀번호는 영어와 숫자를 포함하여 8자 이상이어야 합니다.";
-    } else {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT); // 비밀번호 암호화
-
-        $user = new User(['$user_id'=>$user_id , '$email' => $email, 'password'=>$hashedPassword, 'username'=>$username, 'phone'=>$phone]);
-        $userRepository->updateUserDetails($user);
-
-        header("Location: adminAuthority.php"); // 예시 리다이렉트
-        exit;
-    }
-}
 ?>
 
 <!DOCTYPE html>

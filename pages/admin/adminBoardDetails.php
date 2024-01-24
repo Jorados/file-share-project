@@ -4,40 +4,23 @@
  */
 
 session_start();
-include '/var/www/html/lib/config.php';
+include_once '/var/www/html/lib/config.php';
 
+use service\UserService;
 use repository\UserRepository;
-use repository\BoardRepository;
-use repository\AttachmentRepository;
-use repository\InfoRepository;
-use repository\CommentRepository;
-use log\PostLogger;
-use mail\SendMail;
 use dataset\User;
 
-$boardRepository = new BoardRepository();
-$infoRepository = new InfoRepository();
+$userService = new UserService();
 $userRepository = new UserRepository();
-$commentRepository = new CommentRepository();
-$attachmentRepository = new AttachmentRepository();
-$mailSender = new SendMail();
-$logger = new PostLogger();
 
-$board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
-if (!$board_id) die("게시글 ID가 제공되지 않았습니다.");
-
-// 글 상세 조회 로그  추가
-$board = $boardRepository -> getBoardByid($board_id);
-$status = $board->getStatus();
-$title = $board->getTitle();
 $email = $_SESSION['email'];
-$logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
+$board_id = isset($_GET['board_id']) ? $_GET['board_id'] : null;
 
-$user_id = $board->getUserId();
-$user = $userRepository -> getUserById($user_id);
-
-$comments = $commentRepository -> getCommentsByBoardId($board_id);
-$attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
+$result = $userService->boardDetailByAdmin($email,$board_id);
+$user = $result['user'];
+$board = $result['board'];
+$comments = $result['comments'];
+$attachments = $result['attachments'];
 ?>
 
 <!DOCTYPE html>
