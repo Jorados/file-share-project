@@ -4,8 +4,7 @@
  * 크론탭
  */
 
-
-include '/var/www/html/lib/config.php';
+include_once '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
 use repository\BoardRepository;
@@ -18,7 +17,7 @@ $infoRepository = new InfoRepository();
 // 허용된 글 중에서 1일 이상지난 boardId를 찾는 sql
 $boardIds = $boardRepository->getOpencloseBoard();
 
-//허용된 글 중에서 1일 이상지난 board를 열람 불가상태로 변경하는 sql
+//허용된 글 중에서 허용된 시간으로 부터 24시간 이상지난 board를 열람 불가상태로 변경하는 sql
 $boardRepository->updateOpencloseBoard();
 
 foreach ($boardIds as $boardId) {

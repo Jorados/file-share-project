@@ -16,7 +16,7 @@ class InfoRepository {
 
     /**
      * 특정 글 가장 최신 Info read
-     * @param $board_id
+     * @param int $board_id
      * @return Info
      */
     public function getLatestInfoByBoardId($board_id) {
@@ -43,7 +43,7 @@ class InfoRepository {
 
     /**
      * crontab Info create
-     * @param $board_Id
+     * @param int $board_Id
      */
     public function addInfoByBoardId($board_Id){
         $insertSql = "INSERT INTO info (date, reason_content, board_id, user_id) VALUES (NOW(), '이 게시글은 일정 시간 이상 지나서 자동 반려됩니다.', :board_id, 2)";

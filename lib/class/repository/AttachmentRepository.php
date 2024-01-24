@@ -16,7 +16,7 @@ class AttachmentRepository{
     }
 
     /**
-     * @param $board_id
+     * @param int $board_id
      * @return Attachment[]
      * 특정 게시글의 업로드 파일 조회
      */
@@ -34,7 +34,7 @@ class AttachmentRepository{
     }
 
     /**
-     * @param $board_id
+     * @param int $board_id
      * @return bool
      * 삭제
      */

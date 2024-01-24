@@ -12,13 +12,13 @@ class BoardService{
     /**
      * 모든 글 조회 또는 검색을 활용한 글 조회
      * 조회되는 글 개수와 글 리턴
-     * @param $items_per_page
-     * @param $order
-     * @param $offset
-     * @param null $permission
-     * @param null $searchType
-     * @param null $searchQuery
-     * @param null $user_id
+     * @param int $items_per_page
+     * @param int $order
+     * @param int $offset
+     * @param int|null $permission
+     * @param String|null $searchType
+     * @param String|null $searchQuery
+     * @param int|null $userId
      * @return array
      */
     public function getBoardByPage($items_per_page, $order, $offset, $permission = null, $searchType = null, $searchQuery = null, $user_id = null) {

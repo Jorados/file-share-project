@@ -72,7 +72,7 @@ class UserRepository{
 
     /**
      * role에 따른 User readAll
-     * @param $role
+     * @param string $role
      * @return array|\dataset\BaseModel[]
      */
     public function getUsersByRole($role){

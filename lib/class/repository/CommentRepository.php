@@ -18,7 +18,7 @@ class CommentRepository {
 
     /**
      * 특정 board에 존재하는 comment readAll
-     * @param $board_id
+     * @param int $board_id
      * @return array|\dataset\BaseModel[]
      */
     public function getCommentsByBoardId($board_id) {

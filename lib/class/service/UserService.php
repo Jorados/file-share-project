@@ -46,9 +46,12 @@ class UserService{
     }
 
     /**
-     * 사용자 - 글 상세 조회
+     * 사용자 글 조회
+     * @param $email
+     * @param $board_id
+     * @return array
      */
-    public function boardDetailByUser($email, $board_id){
+    public function boardDetailByUser($email, $board_id): array{
         $userRepository = new UserRepository();
         $boardRepository = new BoardRepository();
         $infoRepository = new InfoRepository();
@@ -77,7 +80,10 @@ class UserService{
     }
 
     /**
-     * 관리자 - 글 상세 조회
+     * 관리자 글 조회
+     * @param $email
+     * @param $board_id
+     * @return array
      */
     public function boardDetailByAdmin($email,$board_id){
         $boardRepository = new BoardRepository();
