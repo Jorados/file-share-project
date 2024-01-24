@@ -5,6 +5,8 @@
 
 session_start();
 include '/var/www/html/lib/config.php';
+error_log(E_ALL);
+ini_set("display_errors", 1);
 
 use repository\UserRepository;
 use service\BoardService;

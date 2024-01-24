@@ -41,6 +41,8 @@ class UserService{
             'attachments' => $attachments,
             'comments'=> $comments
         ];
+
+        //return [$board,$attachments,$comments];
     }
 
     /**

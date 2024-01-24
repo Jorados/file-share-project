@@ -191,28 +191,32 @@ class BoardRepository {
      * @return array|\dataset\BaseModel[]
      */
     public function getBoardsByPage($offset, $items_per_page, $order, $permission = null, $searchType = null, $searchQuery = null, $userId = null) {
+        $paramArr = [];
         $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
         $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId);
         $query = "SELECT * FROM board WHERE status = 'normal' $whereClause $orderClause LIMIT :offset, :items_per_page;";
         $stmt = $this->pdo->prepare($query);
 
         if ($permission !== null) {
-            $stmt->bindParam(':permission', $permission, \PDO::PARAM_STR);
+            $paramArr[':permission'] = $permission;
         }
-
-        if($userId !== null){
-            $stmt->bindParam(':userId',$userId, \PDO::PARAM_INT);
+        if($userId !== null) {
+            $paramArr[':userId'] = $userId;
         }
-
         if ($searchType !== null && $searchQuery !== null) {
             $str = "%$searchQuery%";
-            $stmt->bindParam(':search_query', $str, \PDO::PARAM_STR);
+            $paramArr[':search_query'] = $str;
         }
-        $stmt->bindParam(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->bindParam(':items_per_page', $items_per_page, \PDO::PARAM_INT);
-        $stmt->execute();
+
+        $stmt->execute(
+            array_merge($paramArr,
+            [':offset'=>$offset],
+            [':items_per_page'=>$items_per_page]
+            )
+        );
         return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
+
 
 
     /**
@@ -226,6 +230,7 @@ class BoardRepository {
 
     private function buildWhereClause($permission = null, $searchType = null, $searchQuery = null, $userId = null) {
         $whereConditions = [];
+
         if ($permission !== null) {
             $whereConditions[] = "openclose = :permission";
         }

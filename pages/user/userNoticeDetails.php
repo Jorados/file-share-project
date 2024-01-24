@@ -17,6 +17,7 @@ $userService = new UserService();
 $userRepository = new UserRepository();
 
 $result = $userService->noticeDetailsByUser($board_id, $email);
+
 $board = $result['board'];
 $attachments = $result['attachments'];
 $comments = $result['comments'];
