@@ -2,6 +2,8 @@
 /**
  * 관리자,사용자 로그인 액션
  */
+error_log(E_ALL);
+ini_set("display_errors", 1);
 
 session_start();
 include '/var/www/html/lib/config.php';
@@ -11,7 +13,6 @@ use log\UserLogger;
 use dataset\User;
 
 $userRepository = new UserRepository();
-$logger = new UserLogger();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
@@ -21,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user = $userRepository->loginUser($userInfo);
     if ($user) {
         handleUser($user);
-        handleLogin($logger,$user);
+        handleLogin($user);
         exit;
     } else {
         echo json_encode(['status'=>false,'content'=>'유효하지 않은 이메일 또는 비밀번호입니다.']);
@@ -29,13 +30,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 
-function handleLogin($logger, $user) {
+function handleLogin($user) {
+    $logger = new UserLogger();
     if ($user->getRole() == 'admin') {
         echo json_encode(['status'=>true, 'content'=> '로그인 성공!', 'role' => 1]);
-        $logger->login($_SERVER['REQUEST_URI'], $user['email']);
+        $logger->login($_SERVER['REQUEST_URI'], $user->getEmail());
     } else if ($user->getRole() == 'user') {
         echo json_encode(['status'=>true, 'content'=> '로그인 성공!', 'role' => 0]);
-        $logger->login($_SERVER['REQUEST_URI'], $user['email']);
+        $logger->login($_SERVER['REQUEST_URI'], $user->getEmail());
     } else {
         echo json_encode(['status'=>false, 'content' => "알 수 없는 역할입니다."]);
     }
