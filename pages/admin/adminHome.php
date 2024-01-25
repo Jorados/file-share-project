@@ -116,7 +116,7 @@ $boards = $result['boards'];
                             날짜: <?= date('Y-m-d', strtotime($board->getDate())); ?>
                         </p>
                         <p class="card-text">
-                            열람권한: <?= $board->getOpenclose() == 0 ? '불가' : '허용'; ?>
+                            열람권한: <span style="color: <?= $board->getOpenclose() == 0 ? 'red' : 'blue'; ?>"><?= $board->getOpenclose() == 0 ? '불가' : '허용'; ?></span>
                         </p>
                     </div>
                 </div>
