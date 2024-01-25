@@ -112,6 +112,12 @@ class UserService{
         ];
     }
 
+    /**
+     * 비밀번호 변경
+     * @param mixed $password
+     * @param String $email
+     * @return array
+     */
     public function changePassword($password, $email){
         $userRepository = new UserRepository();
         $logger = new UserLogger();
@@ -138,6 +144,15 @@ class UserService{
         return $result;
     }
 
+    /**
+     * 관리자 -> 회원 생성
+     * @param String $email_user
+     * @param String $email_admin
+     * @param String $username
+     * @param String $phone
+     * @param mixed $password
+     * @return array
+     */
     public function createUser($email_user, $email_admin, $username, $phone, $password){
         $userRepository = new UserRepository();
         $logger = new UserLogger();
@@ -188,6 +203,15 @@ class UserService{
         return $result;
     }
 
+    /**
+     * 관리자 -> 회원 정보 변경
+     * @param int $user_id
+     * @param String $email
+     * @param String $username
+     * @param String $phone
+     * @param mixed $password
+     * @return array
+     */
     public function editUser($user_id, $email,$username,$phone,$password){
         $userRepository = new UserRepository();
 
@@ -224,6 +248,12 @@ class UserService{
         return $result;
     }
 
+    /**
+     * 회원 로그인
+     * @param String $email
+     * @param String $password
+     * @return array
+     */
     public function loginUser($email,$password){
         $userRepository = new UserRepository();
         $logger = new UserLogger();
@@ -262,6 +292,13 @@ class UserService{
         return $result;
     }
 
+    /**
+     * 관리자 -> 사용자 권한 변경
+     * @param int $userId
+     * @param int $newRole
+     * @param String $adminEmail
+     * @return array
+     */
     public function updateRole($userId,$newRole,$adminEmail){
         $userRepository = new UserRepository();
         $logger = new UserLogger();

@@ -177,6 +177,14 @@ class BoardService{
         return $result;
     }
 
+    /**
+     * 사용자 글 작성
+     * @param String $title
+     * @param String $content
+     * @param String $date
+     * @param String $email
+     * @return array
+     */
     public function boardCreateUser($title,$content,$date,$email){
         $boardRepository = new BoardRepository();
         $userRepository = new UserRepository();

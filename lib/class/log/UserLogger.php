@@ -17,7 +17,7 @@ class UserLogger extends BaseLogger {
     }
 
     public function createUser($action, $adminEmail, $email) {
-        $this->logAction($action, "관리자 $adminEmail 님이  $email 계정을 생성 하셨습니다.");
+        $this->logAction($action, "관리자 $adminEmail 님이 $email 계정을 생성 하셨습니다.");
     }
 
     public function changePassword($action, $userEmail) {
