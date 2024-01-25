@@ -1,4 +1,7 @@
 <?php
+/**
+ * log 클래스 모듈화를 위한 부모클래스
+ */
 
 namespace log;
 

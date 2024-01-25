@@ -1,4 +1,7 @@
 <?php
+/**
+ * Repository 모듈화를 위한 부모클래스
+ */
 
 namespace repository;
 
