@@ -4,15 +4,9 @@
  */
 namespace repository;
 
-use database\DatabaseConnection;
 use dataset\Info;
 
-class InfoRepository {
-    public $pdo;
-
-    public function __construct() {
-        $this->pdo = DatabaseConnection::getInstance()->getConnection();
-    }
+class InfoRepository extends BaseRepository {
 
     /**
      * 특정 글 가장 최신 Info read

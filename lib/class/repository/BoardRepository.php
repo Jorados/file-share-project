@@ -4,28 +4,11 @@
  */
 namespace repository;
 
-use database\DatabaseConnection;
 use database\DatabaseController;
 use dataset\Board;
 use dataset\User;
 
-class BoardRepository {
-    public $pdo;
-
-    public function __construct() {
-        $this->pdo = DatabaseConnection::getInstance()->getConnection();
-    }
-
-    /**
-     * status가 'notification'인 board 조회
-     * @return array|\dataset\BaseModel[]
-     */
-    public function getNotificationBoardItems() {
-        $query = "SELECT * FROM board WHERE status = 'notification'";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute();
-        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
-    }
+class BoardRepository extends BaseRepository {
 
     /**
      * 특정 글 read

@@ -4,7 +4,7 @@ namespace log;
 
 abstract class BaseLogger{
 
-    protected $log_directory;
+    private $log_directory;
 
     //abstract protected function getLogFilename();
     private function getLogFilename() {

@@ -4,17 +4,11 @@
  */
 namespace repository;
 
-use database\DatabaseConnection;
 use database\DatabaseController;
 use dataset\Comment;
 
 
-class CommentRepository {
-    public $pdo;
-
-    public function __construct() {
-        $this->pdo = DatabaseConnection::getInstance()->getConnection();
-    }
+class CommentRepository extends BaseRepository {
 
     /**
      * 특정 board에 존재하는 comment readAll

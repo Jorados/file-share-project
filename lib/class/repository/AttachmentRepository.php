@@ -5,15 +5,9 @@
 
 namespace repository;
 
-use database\DatabaseConnection;
 use dataset\Attachment;
 
-class AttachmentRepository{
-    public $pdo;
-
-    public function __construct(){
-        $this->pdo = DatabaseConnection::getInstance()->getConnection();
-    }
+class AttachmentRepository extends BaseRepository {
 
     /**
      * @param int $board_id

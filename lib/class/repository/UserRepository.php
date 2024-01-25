@@ -4,17 +4,10 @@
  */
 namespace repository;
 
-use database\DatabaseConnection;
 use database\DatabaseController;
 use dataset\User;
 
-class UserRepository{
-
-    public $pdo;
-
-    public function __construct(){
-        $this->pdo = DatabaseConnection::getInstance()->getConnection();
-    }
+class UserRepository extends BaseRepository {
 
     /**
      * 로그인

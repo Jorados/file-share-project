@@ -14,7 +14,7 @@ class PostLogger extends BaseLogger {
     // 관리자 및 사용자의 글 생성
     public function createPost($action, $email, $status){
         $status = ($status=='notification') ? "공지" : "일반";
-        $this->logAction($action, "$email 님이 $status 글을 상세 조회하셨습니다.");
+        $this->logAction($action, "$email 님이 $status 글을 작성하셨습니다.");
     }
 
     // 관리자,사용자의 글(일반,공지) 상세 조회
