@@ -14,8 +14,8 @@ class SendMail {
     }
 
     /**
-     * @param $subject
-     * @param $message
+     * @param string $subject
+     * @param string $message
      * role = 'user' 글 작성 시 모든 관리자에게 메일 전송 (gmail 안됨)
      */
     public function sendToAdmins($subject, $message) {
@@ -35,9 +35,9 @@ class SendMail {
     }
 
     /**
-     * @param $subject
-     * @param $message
-     * @param $boardUser_email
+     * @param string $subject
+     * @param string $message
+     * @param string $boardUser_email
      * @return bool
      * 글 열람 상태 변경 시
      * 해당 글 작성자에게 메일 전송

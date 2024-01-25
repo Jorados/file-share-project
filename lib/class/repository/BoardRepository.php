@@ -159,11 +159,12 @@ class BoardRepository {
      * @param String|null $searchType
      * @param String|null $searchQuery
      * @param int|null $userId
+     * @param String $status
      * @return mixed
      */
-    public function getTotalBoardCount($permission = null, $searchType = null, $searchQuery = null, $userId = null) {
-        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId);
-        $query = "SELECT COUNT(*) as total FROM board WHERE status = 'normal' {$whereClause['strArr']};";
+    public function getTotalBoardCount($permission = null, $searchType = null, $searchQuery = null, $userId = null, $status) {
+        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId, $status);
+        $query = "SELECT COUNT(*) as total FROM board WHERE {$whereClause['strArr']};";
         $stmt = $this->pdo->prepare($query);
 
         $stmt->execute($whereClause['paramArr']);
@@ -180,13 +181,15 @@ class BoardRepository {
      * @param String|null $searchType
      * @param String|null $searchQuery
      * @param int|null $userId
+     * @param String $status
      * @return array|\dataset\BaseModel[]
      */
 
-    public function getBoardsByPage($offset, $items_per_page, $order, $permission = null, $searchType = null, $searchQuery = null, $userId = null) {
+    public function getBoardsByPage($offset, $items_per_page, $order, $permission = null, $searchType = null, $searchQuery = null, $userId = null, $status) {
         $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
-        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId);
-        $query = "SELECT * FROM board WHERE status = 'normal' {$whereClause['strArr']} {$orderClause} LIMIT :offset, :items_per_page;";
+        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId, $status);
+        //$query = "SELECT * FROM board WHERE status = 'normal' {$whereClause['strArr']} {$orderClause} LIMIT :offset, :items_per_page;";
+        $query = "SELECT * FROM board WHERE {$whereClause['strArr']} {$orderClause} LIMIT :offset, :items_per_page;";
         $stmt = $this->pdo->prepare($query);
 
         $stmt->execute(array_merge($whereClause['paramArr'],[':offset'=>$offset],[':items_per_page'=>$items_per_page]));
@@ -202,9 +205,12 @@ class BoardRepository {
      * @return array
      */
 
-    private function buildWhereClause($permission = null, $searchType = null, $searchQuery = null, $userId = null) {
+    private function buildWhereClause($permission = null, $searchType = null, $searchQuery = null, $userId = null, $status) {
         $whereConditions = [];
         $paramArr = [];
+
+        $whereConditions[] = "status = :status";
+        $paramArr[':status'] = $status;
 
         if ($permission !== null) {
             $whereConditions[] = "openclose = :permission";
@@ -221,8 +227,7 @@ class BoardRepository {
             $paramArr[':search_query'] = "%{$searchQuery}%";
         }
 
-        $strArr = !empty($whereConditions) ? "AND " . implode(" AND ", $whereConditions) : "";
-
+        $strArr = !empty($whereConditions) ? implode(" AND ", $whereConditions) : "";
         return ['paramArr' => $paramArr, 'strArr' => $strArr];
     }
 

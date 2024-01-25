@@ -25,13 +25,12 @@ class UserService{
         $boardRepository = new BoardRepository();
         $attachmentRepository = new AttachmentRepository();
         $commentRepository = new CommentRepository();
+        $logger = new PostLogger();
 
         $board = $boardRepository->getBoardById($board_id);
         $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
         $comments = $commentRepository -> getCommentsByBoardId($board_id);
 
-        // 글 상세 조회 로그
-        $logger = new PostLogger();
         $title = $board->getTitle();
         $status = $board->getStatus();
         $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
@@ -57,6 +56,7 @@ class UserService{
         $infoRepository = new InfoRepository();
         $commentRepository = new CommentRepository();
         $attachmentRepository = new AttachmentRepository();
+        $logger = new PostLogger();
 
         $board = $boardRepository -> getBoardById($board_id);
         $info = $infoRepository -> getLatestInfoByBoardId($board_id);
@@ -64,8 +64,6 @@ class UserService{
         $comments = $commentRepository -> getCommentsByBoardId($board_id);
         $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
-        // 글 상세 조회 로그
-        $logger = new PostLogger();
         $title = $board->getTitle();
         $status = $board->getStatus();
         $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);
@@ -90,6 +88,7 @@ class UserService{
         $userRepository = new UserRepository();
         $commentRepository = new CommentRepository();
         $attachmentRepository = new AttachmentRepository();
+        $logger = new PostLogger();
 
         $board = $boardRepository -> getBoardByid($board_id);
         $user_id = $board->getUserId();
@@ -97,7 +96,6 @@ class UserService{
         $comments = $commentRepository -> getCommentsByBoardId($board_id);
         $attachments = $attachmentRepository->getAttachmentsByBoardId($board_id);
 
-        $logger = new PostLogger();
         $status = $board->getStatus();
         $title = $board->getTitle();
         $logger->readPost($_SERVER['REQUEST_URI'], $email, $status, $title);

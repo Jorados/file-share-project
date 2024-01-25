@@ -16,12 +16,13 @@ $items_per_page = 9;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
 $offset = ($current_page - 1) * $items_per_page;
+$status = "normal";
 
 $permission = isset($_GET['permission']) ? $_GET['permission'] : null; // openclose
 $searchType = isset($_GET['search_type']) ? $_GET['search_type'] : null; // title,content
 $searchQuery = isset($_GET['search_query']) ? $_GET['search_query'] : null; // value
 
-$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery);
+$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery,null, $status);
 $total_pages = $result['total_pages'];
 $boards = $result['boards'];
 ?>
@@ -65,10 +66,10 @@ $boards = $result['boards'];
 
     <ul class="nav nav-tabs mt-2 mb-4">
         <li class="nav-item">
-            <a class="nav-link <?php echo (!isset($_GET['order']) || $_GET['order'] === 'newest') ? 'active' : ''; ?>" href="?page=1&order=newest">최신순</a>
+            <a class="nav-link <?= (!isset($_GET['order']) || $_GET['order'] === 'newest') ? 'active' : ''; ?>" href="?page=1&order=newest">최신순</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link <?php echo isset($_GET['order']) && $_GET['order'] === 'oldest' ? 'active' : ''; ?>" href="?page=1&order=oldest">오래된순</a>
+            <a class="nav-link <?= isset($_GET['order']) && $_GET['order'] === 'oldest' ? 'active' : ''; ?>" href="?page=1&order=oldest">오래된순</a>
         </li>
     </ul>
 
@@ -128,7 +129,7 @@ $boards = $result['boards'];
             <ul class="pagination justify-content-center">
                 <?php if ($current_page > 1): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?page=<?php echo ($current_page - 1); ?>" aria-label="Previous">
+                        <a class="page-link" href="?page=<?= ($current_page - 1); ?>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -144,14 +145,14 @@ $boards = $result['boards'];
                 $end_page = min($total_pages, $start_page + $page_range - 1);
 
                 for ($i = $start_page; $i <= $end_page; $i++): ?>
-                    <li class="page-item <?php echo $current_page == $i ? 'active' : ''; ?>">
-                        <a class="page-link" href="?page=<?php echo $i; ?>"><?php echo $i; ?></a>
+                    <li class="page-item <?= $current_page == $i ? 'active' : ''; ?>">
+                        <a class="page-link" href="?page=<?= $i; ?>"><?= $i; ?></a>
                     </li>
                 <?php endfor; ?>
 
                 <?php if ($current_page < $total_pages): ?>
                     <li class="page-item">
-                        <a class="page-link" href="?page=<?php echo ($current_page + 1); ?>" aria-label="Next">
+                        <a class="page-link" href="?page=<?= ($current_page + 1); ?>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>

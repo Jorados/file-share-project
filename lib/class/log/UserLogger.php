@@ -88,9 +88,6 @@ class UserLogger {
         file_put_contents($this->getLogFilename(), $log_entry2, FILE_APPEND | LOCK_EX);
     }
 
-//    public function logSetting($action){
-//
-//    }
 }
 
 

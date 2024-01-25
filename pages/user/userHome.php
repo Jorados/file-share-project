@@ -16,12 +16,13 @@ $items_per_page = 9;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $items_per_page;
 $order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
+$status = "normal";
 
 $permission = isset($_GET['permission']) ? $_GET['permission'] : null; // openclose
 $searchType = isset($_GET['search_type']) ? $_GET['search_type'] : null; // title,content
 $searchQuery = isset($_GET['search_query']) ? $_GET['search_query'] : null; // value
 
-$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery, $user_id);
+$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery, $user_id, $status);
 $total_pages = $result['total_pages'];
 $boards = $result['boards'];
 ?>

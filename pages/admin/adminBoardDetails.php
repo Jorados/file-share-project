@@ -6,8 +6,8 @@
 session_start();
 include_once '/var/www/html/lib/config.php';
 
-use service\UserService;
 use repository\UserRepository;
+use service\UserService;
 use dataset\User;
 
 $userService = new UserService();

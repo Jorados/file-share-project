@@ -19,15 +19,16 @@ class BoardService{
      * @param String|null $searchType
      * @param String|null $searchQuery
      * @param int|null $userId
+     * @param String $status
      * @return array
      */
-    public function getBoardByPage($items_per_page, $order, $offset, $permission = null, $searchType = null, $searchQuery = null, $user_id = null) {
+    public function getBoardByPage($items_per_page, $order, $offset, $permission = null, $searchType = null, $searchQuery = null, $user_id = null, $status) {
         $boardRepository = new BoardRepository();
 
         if($permission=='-권한-') $permission=null;
         if($searchType=='-선택-') $searchType=null;
-        $total_items = $boardRepository->getTotalBoardCount($permission, $searchType, $searchQuery, $user_id);
-        $boards = $boardRepository->getBoardsByPage($offset, $items_per_page, $order, $permission, $searchType, $searchQuery, $user_id);
+        $total_items = $boardRepository->getTotalBoardCount($permission, $searchType, $searchQuery, $user_id, $status);
+        $boards = $boardRepository->getBoardsByPage($offset, $items_per_page, $order, $permission, $searchType, $searchQuery, $user_id, $status);
 
         $total_pages = ceil($total_items / $items_per_page);
 
