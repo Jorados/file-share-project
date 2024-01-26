@@ -7,7 +7,9 @@ include '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
 use service\BoardService;
+use repository\CommentRepository;
 
+$commentRepository = new CommentRepository();
 $userRepository = new UserRepository();
 $boardService = new BoardService();
 
@@ -38,8 +40,9 @@ $boards = $result['boards'];
     <script src="https://unpkg.com/ionicons@latest/dist/ionicons.js"></script>
 </head>
 <body>
+<!--<div class="container-fluid mt-5" style="max-width: 70%;">-->
 <div class="container mt-5">
-    <h2 class="text-center mb-5">게시글 조회</h2>
+    <h2 class="text-center mb-5">사용자 게시글 조회</h2>
 
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
@@ -113,6 +116,9 @@ $boards = $result['boards'];
                         </p>
                         <p class="card-text">
                             열람권한: <span style="color: <?= $board->getOpenclose() == 0 ? 'red' : 'blue'; ?>"><?= $board->getOpenclose() == 0 ? '불가' : '허용'; ?></span>
+                        </p>
+                        <p class="card-text" style="float: right;">
+                            댓글 <?= $commentRepository->getCountComments($board->getBoardId()); ?> 개
                         </p>
                     </div>
                 </div>

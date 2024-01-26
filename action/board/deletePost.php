@@ -5,11 +5,12 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
+use util\Constant;
 use service\BoardService;
 
 $boardService = new BoardService();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === Constant::METHOD_POST) {
     $board_id = isset($_POST['board_id']) ? $_POST['board_id'] : null;
 
     $email = $_SESSION['email'];

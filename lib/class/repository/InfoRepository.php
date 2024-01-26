@@ -7,6 +7,12 @@ namespace repository;
 use dataset\Info;
 
 class InfoRepository extends BaseRepository {
+    /**
+     * InfoRepository constructor.
+     */
+    public function __construct(){
+        parent::__construct('info');
+    }
 
     /**
      * 특정 글 가장 최신 Info read
@@ -14,10 +20,9 @@ class InfoRepository extends BaseRepository {
      * @return Info
      */
     public function getLatestInfoByBoardId($board_id) {
-        $infoQuery = "SELECT * FROM info WHERE board_id = :board_id ORDER BY info_id DESC LIMIT 1";
+        $infoQuery = "SELECT * FROM {$this->table} WHERE board_id = :board_id ORDER BY info_id DESC LIMIT 1";
         $stmt = $this->pdo->prepare($infoQuery);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute(['board_id'=>$board_id]);
         return new Info($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -26,24 +31,27 @@ class InfoRepository extends BaseRepository {
      * @param Info $info
      */
     public function addInfo(Info $info) {
-        $insertQuery = "INSERT INTO info (reason_content, date, user_id, board_id) VALUES (:reason_content, NOW(), :user_id, :board_id)";
-        $stmt = $this->pdo->prepare($insertQuery);
-        $stmt->execute([
-            'reason_content'=>$info->getReasonContent(),
-            'user_id'=>$info->getUserId(),
-            'board_id'=>$info->getBoardId()
-        ]);
+        $data = [
+            'reason_content' => $info->getReasonContent(),
+            'user_id' => $info->getUserId(),
+            'board_id' => $info->getBoardId(),
+            'date' => date('Y-m-d H:i:s') // 현재 날짜와 시간을 포맷에 맞춰 전달
+        ];
+        $this->insert($this->table, $data);
     }
 
     /**
      * crontab Info create
-     * @param int $board_Id
+     * @param int $board_id
      */
-    public function addInfoByBoardId($board_Id){
-        $insertSql = "INSERT INTO info (date, reason_content, board_id, user_id) VALUES (NOW(), '이 게시글은 일정 시간 이상 지나서 자동 반려됩니다.', :board_id, 2)";
-        $stmt = $this->pdo->prepare($insertSql);
-        $stmt->bindParam(':board_id', $board_Id, PDO::PARAM_INT);
-        $stmt->execute();
+    public function addInfoByBoardId($board_id){
+        $data = [
+            'date' => date('Y-m-d H:i:s'), // Use the current date and time
+            'reason_content' => '이 게시글은 일정 시간 이상 지나서 자동 반려됩니다.',
+            'board_id' => $board_id,
+            'user_id' => 2
+        ];
+        $this->insert($this->table,$data);
     }
 }
 ?>

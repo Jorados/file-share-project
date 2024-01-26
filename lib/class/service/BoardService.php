@@ -15,6 +15,7 @@ use dataset\User;
 
 use mail\SendMail;
 use log\PostLogger;
+use util\Constant;
 
 class BoardService{
 
@@ -34,8 +35,8 @@ class BoardService{
     public function getBoardByPage($items_per_page, $order, $offset, $permission = null, $searchType = null, $searchQuery = null, $user_id = null, $status) {
         $boardRepository = new BoardRepository();
 
-        if($permission=='-권한-') $permission=null;
-        if($searchType=='-선택-') $searchType=null;
+        if($permission === Constant::PERMISSION_NOT_SELECT) $permission=null;
+        if($searchType === Constant::SEARCHTYPE_NOT_SELECT) $searchType=null;
         $total_items = $boardRepository->getTotalBoardCount($permission, $searchType, $searchQuery, $user_id, $status);
         $boards = $boardRepository->getBoardsByPage($offset, $items_per_page, $order, $permission, $searchType, $searchQuery, $user_id, $status);
 

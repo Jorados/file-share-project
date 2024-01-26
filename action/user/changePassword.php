@@ -8,14 +8,21 @@ session_start();
 include '/var/www/html/lib/config.php';
 
 use service\UserService;
+use util\Constant;
 
-$userService = new UserService();
+if ($_SERVER['REQUEST_METHOD'] === Constant::METHOD_POST){
+    $userService = new UserService();
+    convertJsonAndExit(
+        array_merge($userService->changePassword($_POST['password'], $_SESSION['email']),['error' => false])
+    );
+}
+else convertJsonAndExit(['error' => true , 'content' => "userService->changePassword 에 문제생김"]);
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $password = $_POST['password'];
-    $email = $_SESSION['email'];
-
-    $result = $userService->changePassword($password, $email);
-    echo json_encode(['status'=>$result['status'], 'content'=>$result['content']]);
+function convertJsonAndExit($jsonArr){
+    echo json_encode($jsonArr);
+    exit();
 }
 ?>
+
+
+

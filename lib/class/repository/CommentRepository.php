@@ -36,6 +36,14 @@ class CommentRepository extends BaseRepository {
             'user_id'=>$comment->getUserId()
         ]);
     }
+
+    public function getCountComments($board_id){
+        $query = "SELECT COUNT(*) as total FROM comment WHERE board_id = :board_id;";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['board_id'=>$board_id]);
+        $result = $stmt->fetch();
+        return $result['total'];
+    }
 }
 
 ?>

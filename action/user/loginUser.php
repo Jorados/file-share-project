@@ -6,10 +6,11 @@ session_start();
 include '/var/www/html/lib/config.php';
 
 use service\UserService;
+use util\Constant;
 
 $userService = new UserService();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_SERVER["REQUEST_METHOD"] == Constant::METHOD_POST) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 

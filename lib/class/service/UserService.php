@@ -119,29 +119,29 @@ class UserService{
      * @return array
      */
     public function changePassword($password, $email){
+        if (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/", $password)) {
+            return [
+                'status' => false,
+                'content' => '비밀번호는 영문자와 숫자를 모두 포함하고, 최소 8자 이상이어야 합니다.'
+            ];
+        }
+
         $userRepository = new UserRepository();
         $logger = new UserLogger();
 
         // 비밀번호 유효성 검사
-        $result = [];
-        if (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/", $password)) {
-            $result['status'] = false;
-            $result['content'] = '비밀번호는 영문자와 숫자를 모두 포함하고, 최소 8자 이상이어야 합니다.';
-        }
-        else{
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-            $user = new User(['email' => $email,'password'=>$hashed_password]);
-            $userRepository->updateUserPassword($user);
-            $userRepository->updateAvailableStatus($user);
+        $user = new User(['email' => $email,'password'=>$hashed_password]);
+        $userRepository->updateUserPassword($user);
+        $userRepository->updateAvailableStatus($user);
 
-            $logger->changePassword($_SERVER['REQUEST_URI'], $email);
+        $logger->changePassword($_SERVER['REQUEST_URI'], $email);
 
-            $result['status'] = true;
-            $result['content'] = '성공적으로 비밀번호가 변경되었습니다. 다시 로그인 해주세요.';
-        }
-
-        return $result;
+        return [
+            'status'=>true,
+            'content'=>'성공적으로 비밀번호가 변경되었습니다. 다시 로그인 해주세요.'
+        ];
     }
 
     /**

@@ -5,12 +5,13 @@
 session_start();
 include '/var/www/html/lib/config.php';
 
+use util\Constant;
 use service\BoardService;
 
 $boardService = new BoardService();
 
 try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SERVER['REQUEST_METHOD'] === Constant::METHOD_POST) {
         $title = $_POST['title'];
         $content = $_POST['content'];
         $date = date('Y-m-d H:i:s');

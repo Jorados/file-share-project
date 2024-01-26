@@ -7,7 +7,9 @@ include_once '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
 use service\BoardService;
+use repository\CommentRepository;
 
+$commentRepository = new CommentRepository();
 $userRepository = new UserRepository();
 $boardService = new BoardService();
 
@@ -100,6 +102,9 @@ $boards = $result['boards'];
                         </p>
                         <p class="card-text">날짜: <?= date('Y-m-d', strtotime($board->getDate())); ?></p>
                         <p class="card-text">열람권한: 허용</p>
+                        <p class="card-text" style="float: right;">
+                            댓글 <?= $commentRepository->getCountComments($board->getBoardId()); ?> 개
+                        </p>
                     </div>
                 </div>
             </div>
