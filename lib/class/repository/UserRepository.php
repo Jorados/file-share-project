@@ -9,6 +9,12 @@ use dataset\User;
 
 class UserRepository extends BaseRepository {
 
+    /** 생성자 */
+    public function __construct(){
+        parent::__construct();
+        $this->setTable('user');
+    }
+
     /**
      * 로그인
      * @param User $user
@@ -131,14 +137,13 @@ class UserRepository extends BaseRepository {
      * @param User $user
      */
     public function createUser(User $user){
-        $query = "INSERT INTO user (email, password, username, phone) VALUES (:email, :password, :username, :phone)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
+        $data = [
             'email'=>$user->getEmail(),
             'password'=>$user->getPassword(),
             'username'=>$user->getUsername(),
             'phone'=>$user->getPhone()
-        ]);
+        ];
+        $this->insert($this->table, $data);
     }
 
     /**

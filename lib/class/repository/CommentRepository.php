@@ -10,6 +10,12 @@ use dataset\Comment;
 
 class CommentRepository extends BaseRepository {
 
+    /** 생성자 */
+    public function __construct(){
+        parent::__construct();
+        $this->setTable('comment');
+    }
+
     /**
      * 특정 board에 존재하는 comment readAll
      * @param int $board_id
@@ -28,13 +34,13 @@ class CommentRepository extends BaseRepository {
      * @param Comment $comment
      */
     public function addComment(Comment $comment) {
-        $insertQuery = "INSERT INTO comment (content, date, board_id, user_id) VALUES (:content, NOW(), :board_id, :user_id)";
-        $stmt = $this->pdo->prepare($insertQuery);
-        $stmt->execute([
-            'content'=>$comment->getContent(),
-            'board_id'=>$comment->getBoardId(),
-            'user_id'=>$comment->getUserId()
-        ]);
+        $data = [
+            'content' => $comment->getContent(),
+            'board_id' => $comment->getBoardId(),
+            'user_id' => $comment->getUserId(),
+            'date' => date('Y-m-d H:i:s') // 현재 날짜와 시간을 포맷에 맞춰 전달
+        ];
+        $this->insert($this->table, $data);
     }
 
     public function getCountComments($board_id){

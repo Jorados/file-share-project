@@ -10,6 +10,12 @@ use dataset\User;
 
 class BoardRepository extends BaseRepository {
 
+    /** 생성자 */
+    public function __construct(){
+        parent::__construct();
+        $this->setTable('board');
+    }
+
     /**
      * 특정 글 read
      * @param int $board_id
@@ -40,15 +46,16 @@ class BoardRepository extends BaseRepository {
      * @param Board $board
      */
     public function addBoard(Board $board) {
-        $query = "INSERT INTO board (title, content, date, user_id) VALUES (:title, :content, :date, :user_id)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
+        $data = [
             'title'=>$board->getTitle(),
             'content'=>$board->getContent(),
             'date'=>$board->getDate(),
             'user_id'=>$board->getUserId()
-        ]);
+        ];
+        $this->insert($this->table, $data);
     }
+
+
 
     /**
      * 글 update
@@ -68,16 +75,16 @@ class BoardRepository extends BaseRepository {
      * @param Board $board
      */
     public function adminCreateBoard(Board $board) {
-        $query = "INSERT INTO board (title, content, date, user_id, status) VALUES (:title, :content, :date, :user_id, :status)";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
+        $data = [
             'title'=>$board->getTitle(),
             'content'=>$board->getContent(),
             'date'=>$board->getDate(),
             'user_id'=>$board->getUserId(),
             'status'=>$board->getStatus()
-        ]);
+        ];
+        $this->insert($this->table, $data);
     }
+
 
     /**
      * 가장 최신 글 1개 조회

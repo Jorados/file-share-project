@@ -34,23 +34,32 @@ abstract class BaseRepository{
     }
 
     protected function update($table, $data, $whereArr){
-        // SET 부분 변수
-        $set = implode(', ', array_map(function ($column) {
-            return "$column = :$column";
-        }, array_keys($data)));
+        try {
+            // SET 부분 변수
+            $set = implode(', ', array_map(function ($column) {
+                return "$column = :$column";
+            }, array_keys($data)));
 
-        // WHERE 부분 변수
-        $where = '';
-        if (!empty($whereArr)) {
-            $where = 'WHERE ' . implode(' AND ', array_map(function ($column) {
-                    return "$column = :$column";
-                }, array_keys($whereArr)));
+            // WHERE 부분 변수
+            $where = '';
+            if (!empty($whereArr)) {
+                $where = 'WHERE ' . implode(' AND ', array_map(function ($column) {
+                        return "$column = :$column";
+                    }, array_keys($whereArr)));
+            }
+
+            $query = "UPDATE $table SET {$set} {$where}";
+            $params = array_merge($data, $whereArr);
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute($params);
+        } catch (\PDOException $e) {
+            // 오류 메시지를 기록하거나 출력합니다.
+            echo '오류: ' . $e->getMessage();
         }
+    }
 
-        $query = "UPDATE $table SET {$set} {$where}";
-        $params = array_merge($data, $whereArr);
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute($params);
+    protected function delete($table, $where){
+
     }
 
     // select 하는게 sql마다 다를 수 있음 ,,,,,
