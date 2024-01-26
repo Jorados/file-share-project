@@ -7,11 +7,11 @@ namespace repository;
 use dataset\Info;
 
 class InfoRepository extends BaseRepository {
-    /**
-     * InfoRepository constructor.
-     */
+
+    /** 생성자 */
     public function __construct(){
-        parent::__construct('info');
+        parent::__construct();
+        $this->setTable('info');
     }
 
     /**
