@@ -32,31 +32,6 @@ class UserRepository extends BaseRepository {
     }
 
     /**
-     * 이메일을 사용하여 User read 및 password update
-     * @param User $user
-     */
-    public function updateUserPassword(User $user){
-        $query = "UPDATE user SET password = :password WHERE email = :email";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            'password' => $user->getPassword(),
-            'email' => $user->getEmail()
-        ]);
-    }
-
-    /**
-     * available 값을 1로 update
-     * @param User $user
-     */
-    public function updateAvailableStatus(User $user) {
-        $query = "UPDATE user SET available = 1 WHERE email = :email";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            'email'=> $user->getEmail()
-        ]);
-    }
-
-    /**
      * User read
      * @param $user_id
      * @return User
@@ -81,27 +56,19 @@ class UserRepository extends BaseRepository {
     }
 
     /**
-     * User role update
+     * 중복 User cound read
      * @param User $user
+     * @return bool
      */
-    public function updateUserRole(User $user){
-        $stmt = $this->pdo->prepare('UPDATE user SET authority = :newRole WHERE user_id = :userId');
-        $stmt->execute(['newRole' => $user->getRole(), 'userId' => $user->getUserId()]);
-    }
-
-    /**
-     * User update
-     * @param User $user
-     */
-    public function updateUserDetails(User $user){
-        $updateStmt = $this->pdo->prepare('UPDATE user SET email = :email, password = :password, username = :username, phone = :phone WHERE user_id = :user_id');
-        $updateStmt->execute([
-            'email' => $user->getEmail(),
-            'password' => $user->getPassword(),
-            'username' => $user->getUsername(),
-            'phone' => $user->getPhone(),
-            'user_id' => $user->getUserId()
+    public function isEmailDuplicate(User $user) {
+        $query = 'SELECT COUNT(*) FROM user WHERE email = :email';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([
+            'email'=>$user->getEmail()
         ]);
+        $count = $stmt->fetchColumn();
+
+        return $count > 0;
     }
 
     /**
@@ -133,6 +100,54 @@ class UserRepository extends BaseRepository {
     }
 
     /**
+     * 이메일을 사용하여 User read 및 password update
+     * @param User $user
+     */
+    public function updateUserPassword(User $user){
+        $data = ['password' => $user->getPassword()];
+        $where = ['email' => $user->getEmail()];
+        $this->update($this->table, $data, $where);
+    }
+
+    /**
+     * available 값을 1로 update
+     * @param User $user
+     */
+    public function updateAvailableStatus(User $user) {
+        $data = ['available' => 1];
+        $where = ['email' => $user->getEmail()];
+        $this->update($this->table, $data, $where);
+    }
+
+    /**
+     * User role update
+     * @param User $user
+     */
+    public function updateUserRole(User $user){
+        $data = ['authority' => $user->getRole()];
+        $where = ['user_id' => $user->getUserId()];
+        $this->update($this->table, $data, $where);
+    }
+
+
+    /**
+     * User update
+     * @param User $user
+     */
+    public function updateUserDetails(User $user){
+        $data = [
+            'email' => $user->getEmail(),
+            'password' => $user->getPassword(),
+            'username' => $user->getUsername(),
+            'phone' => $user->getPhone()
+        ];
+        $where = [
+            'user_id' => $user->getUserId()
+        ];
+        $this->update($this->table, $data, $where);
+    }
+
+    /**
      * User create
      * @param User $user
      */
@@ -146,19 +161,5 @@ class UserRepository extends BaseRepository {
         $this->insert($this->table, $data);
     }
 
-    /**
-     * 중복 User cound read
-     * @param User $user
-     * @return bool
-     */
-    public function isEmailDuplicate(User $user) {
-        $query = 'SELECT COUNT(*) FROM user WHERE email = :email';
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            'email'=>$user->getEmail()
-        ]);
-        $count = $stmt->fetchColumn();
 
-        return $count > 0;
-    }
 }

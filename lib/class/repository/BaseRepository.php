@@ -74,10 +74,10 @@ abstract class BaseRepository{
         }
     }
 
-    // select 하는게 sql마다 다를 수 있음 ,,,,,
-    protected function select($table, $where){
-
-    }
+    // select 하는게 sql마다 다를 수 있음 , 조인 , 서브쿼리 ??
+//    protected function select($table, $where){
+//
+//    }
 }
 
 ?>

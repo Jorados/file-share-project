@@ -30,63 +30,6 @@ class BoardRepository extends BaseRepository {
     }
 
     /**
-     * 특정 글 delete
-     * @param int $board_id
-     * @return bool
-     */
-    public function deleteBoardById($board_id) {
-        $deleteQuery = "DELETE FROM board WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($deleteQuery);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        return $stmt->execute();
-    }
-
-    /**
-     * 글 create
-     * @param Board $board
-     */
-    public function addBoard(Board $board) {
-        $data = [
-            'title'=>$board->getTitle(),
-            'content'=>$board->getContent(),
-            'date'=>$board->getDate(),
-            'user_id'=>$board->getUserId()
-        ];
-        $this->insert($this->table, $data);
-    }
-
-
-
-    /**
-     * 글 update
-     * @param Board $board
-     */
-    public function updateBoardPermission(Board $board) {
-        $updateQuery = "UPDATE board SET openclose = :openclose, openclose_time = CURRENT_TIMESTAMP WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($updateQuery);
-        $stmt->execute([
-            'openclose'=>$board->getOpenclose(),
-            'board_id'=>$board->getBoardId()
-        ]);
-    }
-
-    /**
-     * 관리자 글 생성
-     * @param Board $board
-     */
-    public function adminCreateBoard(Board $board) {
-        $data = [
-            'title'=>$board->getTitle(),
-            'content'=>$board->getContent(),
-            'date'=>$board->getDate(),
-            'user_id'=>$board->getUserId(),
-            'status'=>$board->getStatus()
-        ];
-        $this->insert($this->table, $data);
-    }
-
-
-    /**
      * 가장 최신 글 1개 조회
      * @return Board
      */
@@ -129,18 +72,32 @@ class BoardRepository extends BaseRepository {
     }
 
 
+//    /**
+//     * 허용된 글 중에서 허용된 시점을 기반으로 1일 이상지난 board를 열람 불가상태로 update
+//     */
+//    public function updateOpencloseBoard(){
+//        $sql = "UPDATE board
+//            SET openclose = 0
+//            WHERE openclose = 1
+//            AND TIMESTAMPDIFF(HOUR, openclose_time, NOW()) >= 24
+//            AND status = 'normal'";
+//
+//        $stmt = $this->pdo->prepare($sql);
+//        $stmt->execute();
+//    }
+
     /**
      * 허용된 글 중에서 허용된 시점을 기반으로 1일 이상지난 board를 열람 불가상태로 update
      */
-    public function updateOpencloseBoard(){
-        $sql = "UPDATE board 
-            SET openclose = 0 
-            WHERE openclose = 1 
-            AND TIMESTAMPDIFF(HOUR, openclose_time, NOW()) >= 24
-            AND status = 'normal'";
+    public function updateOpencloseBoard() {
+        $set = ['openclose' => 0];
+        $where = [
+            'openclose' => 1,
+            'status' => 'normal',
+            ['TIMESTAMPDIFF(HOUR, openclose_time, NOW()) >= 24', []],
+        ];
 
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
+        $this->update($this->table, $set, $where);
     }
 
     /**
@@ -219,6 +176,62 @@ class BoardRepository extends BaseRepository {
 
         $strArr = !empty($whereConditions) ? implode(" AND ", $whereConditions) : "";
         return ['paramArr' => $paramArr, 'strArr' => $strArr];
+    }
+
+
+    /**
+     * 특정 글 delete
+     * @param int $board_id
+     * @return bool
+     */
+    public function deleteBoardById($board_id) {
+        $deleteQuery = "DELETE FROM board WHERE board_id = :board_id";
+        $stmt = $this->pdo->prepare($deleteQuery);
+        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
+        return $stmt->execute();
+    }
+
+    /**
+     * 글 create
+     * @param Board $board
+     */
+    public function addBoard(Board $board) {
+        $data = [
+            'title'=>$board->getTitle(),
+            'content'=>$board->getContent(),
+            'date'=>$board->getDate(),
+            'user_id'=>$board->getUserId()
+        ];
+        $this->insert($this->table, $data);
+    }
+
+    /**
+     * 글 update
+     * @param Board $board
+     */
+    public function updateBoardPermission(Board $board) {
+        $set = [
+            'openclose' => $board->getOpenclose(),
+            'openclose_time' => date('Y-m-d H:i:s')
+        ];
+        $where = ['board_id' => $board->getBoardId()];
+
+        $this->update($this->table, $set, $where);
+    }
+
+    /**
+     * 관리자 글 생성
+     * @param Board $board
+     */
+    public function adminCreateBoard(Board $board) {
+        $data = [
+            'title'=>$board->getTitle(),
+            'content'=>$board->getContent(),
+            'date'=>$board->getDate(),
+            'user_id'=>$board->getUserId(),
+            'status'=>$board->getStatus()
+        ];
+        $this->insert($this->table, $data);
     }
 
 }

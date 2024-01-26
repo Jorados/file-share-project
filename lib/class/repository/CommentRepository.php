@@ -30,6 +30,19 @@ class CommentRepository extends BaseRepository {
     }
 
     /**
+     * 게시글에 존재하는 댓글 count
+     * @param int $board_id
+     * @return mixed
+     */
+    public function getCountComments($board_id){
+        $query = "SELECT COUNT(*) as total FROM comment WHERE board_id = :board_id;";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['board_id'=>$board_id]);
+        $result = $stmt->fetch();
+        return $result['total'];
+    }
+
+    /**
      * 댓글 create
      * @param Comment $comment
      */
@@ -41,14 +54,6 @@ class CommentRepository extends BaseRepository {
             'date' => date('Y-m-d H:i:s') // 현재 날짜와 시간을 포맷에 맞춰 전달
         ];
         $this->insert($this->table, $data);
-    }
-
-    public function getCountComments($board_id){
-        $query = "SELECT COUNT(*) as total FROM comment WHERE board_id = :board_id;";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute(['board_id'=>$board_id]);
-        $result = $stmt->fetch();
-        return $result['total'];
     }
 }
 
