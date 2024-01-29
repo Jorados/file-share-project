@@ -179,7 +179,7 @@ if (isset($_SESSION['session_start_time'])) {
     </div>
 
     <div class="d-flex align-items-center">
-        <p class="m-0 mr-4"><strong>환영합니다, <?php echo $_SESSION['email']; ?> 님</strong></p>
+        <p class="m-0 mr-4"><strong>환영합니다, <?= ($_SESSION['role'] == 'admin') ? '관리자 ' : '사용자 ' ?> <?= $_SESSION['email']; ?> 님</strong></p>
 
         <p class="m-0 mr-2">세션 남은 시간:</p>
         <p id="session_timer" class="m-0 mr-2"></p>

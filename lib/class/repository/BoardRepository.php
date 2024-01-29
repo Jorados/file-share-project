@@ -65,34 +65,19 @@ class BoardRepository extends BaseRepository {
      * @return array|\dataset\BaseModel[]
      */
     public function getOpencloseBoard(){
-        $sql = "SELECT board_id FROM board WHERE openclose = 1 AND date <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
+        $sql = "SELECT board_id FROM board WHERE openclose = 'open' AND date <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
-
-//    /**
-//     * 허용된 글 중에서 허용된 시점을 기반으로 1일 이상지난 board를 열람 불가상태로 update
-//     */
-//    public function updateOpencloseBoard(){
-//        $sql = "UPDATE board
-//            SET openclose = 0
-//            WHERE openclose = 1
-//            AND TIMESTAMPDIFF(HOUR, openclose_time, NOW()) >= 24
-//            AND status = 'normal'";
-//
-//        $stmt = $this->pdo->prepare($sql);
-//        $stmt->execute();
-//    }
-
     /**
      * 허용된 글 중에서 허용된 시점을 기반으로 1일 이상지난 board를 열람 불가상태로 update
      */
     public function updateOpencloseBoard() {
-        $set = ['openclose' => 0];
+        $set = ['openclose' => 'close'];
         $where = [
-            'openclose' => 1,
+            'openclose' => 'open',
             'status' => 'normal',
             ['TIMESTAMPDIFF(HOUR, openclose_time, NOW()) >= 24', []],
         ];
@@ -135,7 +120,6 @@ class BoardRepository extends BaseRepository {
     public function getBoardsByPage($offset, $items_per_page, $order, $permission = null, $searchType = null, $searchQuery = null, $userId = null, $status) {
         $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
         $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId, $status);
-        //$query = "SELECT * FROM board WHERE status = 'normal' {$whereClause['strArr']} {$orderClause} LIMIT :offset, :items_per_page;";
         $query = "SELECT * FROM board WHERE {$whereClause['strArr']} {$orderClause} LIMIT :offset, :items_per_page;";
         $stmt = $this->pdo->prepare($query);
 

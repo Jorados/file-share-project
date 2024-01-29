@@ -1,8 +1,10 @@
 /**
  * 관리자 -> 사용자 글 열람 권한 변경
  */
-function submitBoardAuthority() {
+
+function submitBoardAuthority(newPermission) {
     var formData = new FormData(document.getElementById('authorityForm'));
+    formData.append('change_permission', newPermission);
 
     fetch('/action/board/boardAuthorityChange.php', {
         method: 'POST',
@@ -14,7 +16,7 @@ function submitBoardAuthority() {
             console.log(data.status + " " + data.content);
             if (data.status) {
                 alert(data.content);
-                window.location.href = '/pages/admin/adminHome.php';
+                window.location.href = '/pages/home.php';
             } else {
                 alert(data.content);
             }

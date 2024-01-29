@@ -36,12 +36,16 @@ $attachments = $result['attachments'];
     <!-- 게시글 상세 정보 -->
     <div class="card mx-auto mb-4" style="max-width: 1000px;">
         <div class="card-header bg-dark text-white" style="max-height: 90px;">
-            <h3 class="text-center">글 상세 조회</h3>
+            <?php if ($board->getStatus() == 'normal'): ?>
+                <h3 class="text-center">글 상세 조회</h3>
+            <?php elseif ($board->getStatus() == 'notification'):?>
+                <h3 class="text-center">공지 상세 조회</h3>
+            <?php endif ?>
         </div>
 
 
         <div class="card-body">
-            <?php if ($board->getOpenclose() == 0 && $_SESSION['role'] == 'user'): ?>
+            <?php if ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user'): ?>
                 <div class="form-group">
                     <label class="card-title">제목</label>
                     <textarea class="form-control mb-3" id="title" rows="1" readonly><?= $board->getTitle(); ?></textarea>
@@ -60,7 +64,16 @@ $attachments = $result['attachments'];
                 </div>
                 <div class="form-group">
                     <label for="openclose">열람 권한</label>
-                    <textarea class="form-control mb-3" id="openclose" rows="1" readonly style="color: red;">불가</textarea>
+                    <textarea class="form-control mb-3" id="openclose" rows="1" readonly style="color:
+                    <?php
+                    if ($board->getOpenclose() == 'open') {
+                        echo 'blue';
+                    } elseif ($board->getOpenclose() == 'close') {
+                        echo 'red';
+                    } elseif ($board->getOpenclose() == 'wait') {
+                        echo 'green';
+                    }
+                    ?>;"><?= $board->getOpenclose() == 'open' ? '허용' : ($board->getOpenclose() == 'close' ? '불가' : '대기'); ?></textarea>
                 </div>
             <?php else: ?>
                 <label for="title">제목</label>
@@ -103,8 +116,19 @@ $attachments = $result['attachments'];
                 <label for="date">작성일</label>
                 <textarea class="form-control mb-3" id="date" rows="1" readonly><?= date('Y-m-d', strtotime($board->getDate())); ?></textarea>
 
-                <label for="openclose">열람 권한</label>
-                <textarea class="form-control mb-3" id="openclose" rows="1" readonly style="color: <?= $board->getOpenclose() == 0 ? 'red' : 'blue'; ?>"><?= trim($board->getOpenclose() == 0 ? '불가' : '허용'); ?></textarea>
+                <?php if ($board->getStatus() == 'normal'): ?>
+                    <label for="openclose">열람 권한</label>
+                    <textarea class="form-control mb-3" id="openclose" rows="1" readonly style="color:
+                <?php
+                if ($board->getOpenclose() == 'open') {
+                    echo 'blue';
+                } elseif ($board->getOpenclose() == 'close') {
+                    echo 'red';
+                } elseif ($board->getOpenclose() == 'wait') {
+                    echo '#09de00';
+                }
+                ?>;"><?= $board->getOpenclose() == 'open' ? '허용' : ($board->getOpenclose() == 'close' ? '불가' : '대기'); ?></textarea>
+                <?php endif; ?>
             <?php endif; ?>
 
             <?php if ($info && $_SESSION['role'] == 'user'): ?>
@@ -123,21 +147,21 @@ $attachments = $result['attachments'];
                     <p class="mb-0">이메일 : <?php echo !empty($user->getEmail()) ? $user->getEmail() : '없음'; ?></p>
                     <p class="mb-1">전화번호 : <?php echo !empty($user->getPhone()) ? $user->getPhone() : '없음'; ?></p>
                 </div>
-            <?php elseif ($_SESSION['role'] == 'admin'):?>
+            <?php elseif ($_SESSION['role'] == 'admin' && $board->getStatus() == 'normal'):?>
                 <form action="/action/board/boardAuthorityChange.php" method="post"  class="mt-3" id="authorityForm">
                     <label for="reason_content">사유</label>
                     <textarea name="reason_content" id="reason_content" rows="3" class="form-control" placeholder="열람 권한 변경의 사유를 입력하세요." required></textarea>
                     <input type="hidden" name="board_id" value="<?= $board->getBoardId(); ?>">
 
-                    <?php if ($board->getOpenclose() == 0): ?>
-                        <input type="hidden" name="change_permission" value="1">
-                        <button type="button" name="change_permission" value="1" class="btn btn-primary mt-3" onclick="submitBoardAuthority()">열람 허용</button>
-                    <?php else: ?>
-                        <input type="hidden" name="change_permission" value="0">
-                        <button type="button" name="change_permission" value="0" class="btn btn-primary mt-3" onclick="submitBoardAuthority()">열람 불가</button>
+                    <?php if ($board->getOpenclose() == 'close'): ?>
+                        <button type="button" class="btn btn-primary mt-3" onclick="submitBoardAuthority('open')">열람 허용</button>
+                    <?php elseif ($board->getOpenclose() == 'open'): ?>
+                        <button type="button" class="btn btn-warning mt-3" onclick="submitBoardAuthority('close')">열람 불가</button>
+                    <?php elseif ($board->getOpenclose() == 'wait'): ?>
+                        <button type="button" class="btn btn-primary mt-3" onclick="submitBoardAuthority('open')">열람 허용</button>
+                        <button type="button" class="btn btn-warning mt-3" onclick="submitBoardAuthority('close')">열람 불가</button>
                     <?php endif; ?>
                 </form>
-
             <?php endif; ?>
         </div>
     </div>
@@ -157,7 +181,7 @@ $attachments = $result['attachments'];
         </div>
     <?php else: ?>
         <div class="card mx-auto mb-4" style="max-width: 1000px;">
-            <div class="card-body p-2"> <!-- 여기서 p-2는 상하좌우 패딩을 최소화합니다. -->
+            <div class="card-body p-2">
                 <div class="alert alert-warning mb-0" role="alert">
                     댓글 작성 권한이 없습니다.
                 </div>
@@ -191,6 +215,8 @@ $attachments = $result['attachments'];
         </div>
     </div>
 </div>
+<script src="/assets/js/board/changeBoardAuthority.js"></script>
+<script src="/assets/js/comment/createComment.js"></script>
 </body>
 <footer>
     <?php include '/var/www/html/includes/footer.php'?>

@@ -80,7 +80,7 @@ $boards = $result['boards'];
     <div class="row">
         <?php foreach ($boards as $board): ?>
             <div class="col-md-4 mb-4">
-                <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 1 ? '#D0E7FA' : '#FFFFFF'; ?>;">
+                <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 'open' ? '#D0E7FA' : '#FFFFFF'; ?>;">
                     <div class="card-body">
                         <h5 class="card-title">
                             <a href="boardDetails.php?board_id=<?= $board->getBoardId(); ?>">
@@ -103,20 +103,28 @@ $boards = $result['boards'];
                         </h5>
                         <p class="card-text">
                             <?php
-                            $content = ($board->getOpenclose() == 0 && $_SESSION['role'] == 'user') ? '볼 수 없음' : (strlen($board->getContent()) > 100 ? substr($board->getContent(), 0, 50) . ".." : $board->getContent());
+                            $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : (strlen($board->getContent()) > 100 ? substr($board->getContent(), 0, 50) . ".." : $board->getContent());
                             $escapedContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
                             echo '내용: ' . $escapedContent;
                             ?>
                         </p>
                         <p class="card-text">
-                            작성자:
-                            <?= $userRepository->getUserById($board->getUserId())->getEmail(); ?>
+                            작성자: <?= $userRepository->getUserById($board->getUserId())->getEmail(); ?>
                         </p>
                         <p class="card-text">
-                            날짜: <?= ($board->getOpenclose() == 0 && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
+                            날짜: <?= ($board->getOpenclose() == 'close' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
                         </p>
                         <p class="card-text">
-                            열람권한: <span style="color: <?= $board->getOpenclose() == 0 ? 'red' : 'blue'; ?>"><?= $board->getOpenclose() == 0 ? '불가' : '허용'; ?></span>
+                            열람권한:
+                            <?php
+                            if ($board->getOpenclose() == 'open') {
+                                echo '<span style="color: blue;">허용</span>';
+                            } elseif ($board->getOpenclose() == 'close') {
+                                echo '<span style="color: red;">불가</span>';
+                            } elseif ($board->getOpenclose() == 'wait') {
+                                echo '<span style="color: #09de00;">대기</span>';
+                            }
+                            ?>
                         </p>
                         <p class="card-text" style="float: right;">
                             댓글 <?= $commentRepository->getCountComments($board->getBoardId()); ?> 개
