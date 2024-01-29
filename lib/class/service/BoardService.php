@@ -62,7 +62,6 @@ class BoardService{
      */
     public function deleteBoard($board_id=null, $email): array{
         $boardRepository = new BoardRepository();
-        $attachmentRepository = new AttachmentRepository();
         $logger = new PostLogger();
 
         if (!$board_id) {
@@ -76,9 +75,8 @@ class BoardService{
                 $content = '게시글을 찾을 수 없습니다.';
             }
             else{
-                // 삭제 로직
-                $boardRepository->deleteBoardById($board_id);
-                $attachmentRepository->deleteAttachment($board_id);
+                // 논리적 삭제
+                $boardRepository->updateDeleteType($board_id);
 
                 // 글 삭제 로그
                 $title = $board->getTitle();

@@ -97,11 +97,11 @@ $boards = $result['boards'];
                         </h5>
                         <p class="card-text"><?= $board->getContent(); ?></p>
                         <p class="card-text">
-                            작성자:
+                            작성자 :
                             <?= $user = $userRepository->getUserById($board->getUserId())->getEmail(); ?>
                         </p>
-                        <p class="card-text">날짜: <?= date('Y-m-d', strtotime($board->getDate())); ?></p>
-                        <p class="card-text">열람권한: 허용</p>
+                        <p class="card-text">날짜 : <?= date('Y-m-d', strtotime($board->getDate())); ?></p>
+                        <p class="card-text">열람권한 : <span style="color: blue;">허용</span></p>
                         <p class="card-text" style="float: right;">
                             댓글 <?= $commentRepository->getCountComments($board->getBoardId()); ?> 개
                         </p>

@@ -3,7 +3,7 @@
  * 사용자 -> 홈 페이지 (로그인 후)
  */
 session_start();
-include '/var/www/html/lib/config.php';
+include_once '/var/www/html/lib/config.php';
 
 use repository\UserRepository;
 use service\BoardService;
@@ -105,17 +105,17 @@ $boards = $result['boards'];
                             <?php
                             $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : (strlen($board->getContent()) > 100 ? substr($board->getContent(), 0, 50) . ".." : $board->getContent());
                             $escapedContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
-                            echo '내용: ' . $escapedContent;
+                            echo '내용 : ' . $escapedContent;
                             ?>
                         </p>
                         <p class="card-text">
-                            작성자: <?= $userRepository->getUserById($board->getUserId())->getEmail(); ?>
+                            작성자 : <?= $userRepository->getUserById($board->getUserId())->getEmail(); ?>
                         </p>
                         <p class="card-text">
-                            날짜: <?= ($board->getOpenclose() == 'close' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
+                            날짜 : <?= ($board->getOpenclose() == 'close' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
                         </p>
                         <p class="card-text">
-                            열람권한:
+                            열람권한 :
                             <?php
                             if ($board->getOpenclose() == 'open') {
                                 echo '<span style="color: blue;">허용</span>';

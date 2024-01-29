@@ -41,6 +41,17 @@ class BoardRepository extends BaseRepository {
     }
 
     /**
+     * 논리적 삭제 상태의 게시글 조회
+     * @return array|\dataset\BaseModel[]
+     */
+    public function getDeleteType(){
+        $updateQuery = "SELECT * FROM board WHERE delete_type = 1";
+        $stmt = $this->pdo->prepare($updateQuery);
+        $stmt->execute();
+        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
+    }
+
+    /**
      * 특정 글 작성한 유저의 email read
      * @param int $board_id
      * @return User
@@ -158,6 +169,9 @@ class BoardRepository extends BaseRepository {
             $paramArr[':search_query'] = "%{$searchQuery}%";
         }
 
+        $whereConditions[] = "delete_type = :delete_type";
+        $paramArr[':delete_type'] = 0;
+
         $strArr = !empty($whereConditions) ? implode(" AND ", $whereConditions) : "";
         return ['paramArr' => $paramArr, 'strArr' => $strArr];
     }
@@ -216,6 +230,16 @@ class BoardRepository extends BaseRepository {
             'status'=>$board->getStatus()
         ];
         $this->insert($this->table, $data);
+    }
+
+    /**
+     * 논리적 글 삭제
+     * @param $board_id
+     */
+    public function updateDeleteType($board_id){
+        $set  = ['delete_type' => 1];
+        $where = ['board_id' => $board_id];
+        $this->update($this->table, $set, $where);
     }
 
 }

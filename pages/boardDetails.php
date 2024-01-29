@@ -45,7 +45,7 @@ $attachments = $result['attachments'];
 
 
         <div class="card-body">
-            <?php if ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user'): ?>
+            <?php if ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user' && $board->getStatus() == 'normal'): ?>
                 <div class="form-group">
                     <label class="card-title">제목</label>
                     <textarea class="form-control mb-3" id="title" rows="1" readonly><?= $board->getTitle(); ?></textarea>
@@ -129,9 +129,20 @@ $attachments = $result['attachments'];
                 }
                 ?>;"><?= $board->getOpenclose() == 'open' ? '허용' : ($board->getOpenclose() == 'close' ? '불가' : '대기'); ?></textarea>
                 <?php endif; ?>
+
+                <?php if($board->getStatus() == 'notification' && $_SESSION['role'] == 'admin'): ?>
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <form action="/action/board/deleteForm.php" method="post"  class="d-inline-block" id="deleteForm">
+                                <input type="hidden" name="board_id" value="<?= $board->getBoardId() ?>">
+                                <input type="button" name="delete_post" value="공지 삭제" class="btn btn-danger" onclick="submitDeleteForm()">
+                            </form>
+                        </div>
+                    </div>
+                <?php endif; ?>
             <?php endif; ?>
 
-            <?php if ($info && $_SESSION['role'] == 'user'): ?>
+            <?php if ($info && $_SESSION['role'] == 'user' && $board->getStatus() == 'normal'): ?>
                 <div class="info-container bg-light p-3 rounded mt-4">
                     <?php if ($board->getOpenclose() == 0): ?>
                         <h5 class="font-weight-bold mb-3">반려 사유</h5>
@@ -162,6 +173,15 @@ $attachments = $result['attachments'];
                         <button type="button" class="btn btn-warning mt-3" onclick="submitBoardAuthority('close')">열람 불가</button>
                     <?php endif; ?>
                 </form>
+
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <form action="/action/board/deleteForm.php" method="post"  class="d-inline-block" id="deleteForm">
+                            <input type="hidden" name="board_id" value="<?= $board->getBoardId() ?>">
+                            <input type="button" name="delete_post" value="글 삭제" class="btn btn-danger" onclick="submitDeleteForm()">
+                        </form>
+                    </div>
+                </div>
             <?php endif; ?>
         </div>
     </div>
@@ -217,6 +237,7 @@ $attachments = $result['attachments'];
 </div>
 <script src="/assets/js/board/changeBoardAuthority.js"></script>
 <script src="/assets/js/comment/createComment.js"></script>
+<script src="/assets/js/board/deleteBoard.js"></script>
 </body>
 <footer>
     <?php include '/var/www/html/includes/footer.php'?>

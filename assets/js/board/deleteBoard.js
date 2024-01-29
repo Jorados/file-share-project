@@ -4,6 +4,11 @@
 function submitDeleteForm() {
     var formData = new FormData(document.getElementById('deleteForm'));
 
+    var confirmDelete = window.confirm("정말 해당 게시글을 삭제하시겠습니까?");
+    if (!confirmDelete) {
+        return;
+    }
+
     fetch('/action/board/deletePost.php', {
         method: 'POST',
         body: formData

@@ -1,11 +1,8 @@
 <?php
-
 /**
  * 헤더파일 - 권한,세션,세션시간 검사 / 네이게이션 / 로그아웃
  */
 session_start();
-include_once '/var/www/html/lib/config.php';
-use log\UserLogger;
 
 // 페이지가 처음 로드되었거나 세션 시작 시간이 설정되지 않았을 때
 if (!isset($_SESSION['session_start_time'])) {
@@ -184,51 +181,15 @@ if (isset($_SESSION['session_start_time'])) {
         <p class="m-0 mr-2">세션 남은 시간:</p>
         <p id="session_timer" class="m-0 mr-2"></p>
 
-        <form method='post' class='m-0 mr-2'>
+        <form method='post' class='m-0 mr-2' onclick="logoutAndRedirect()">
             <button type='submit' name='logout' class="btn btn-danger">로그아웃</button>
         </form>
-        <?php
-        // 로그아웃 버튼 클릭 시 세션 제거 및 리다이렉션
-        if (isset($_POST['logout'])) {
-            // 로그아웃 로그
-            $logger = new UserLogger();
-            $email = $_SESSION['email'];
-            $logger->logout($_SERVER['REQUEST_URI'],$email);
-
-            // 세션 파기
-            session_unset();
-            session_destroy();
-            header("Location: /index.php");
-            exit;
-        }
-        ?>
     </div>
-
 </div>
+<script>
+    const remainingTime = <?= $remaining_time ?>;
+    let remainingSeconds = remainingTime;
+</script>
+<script src="/assets/js/header.js"></script>
 </body>
 
-
-
-<!--위에서 받아온 남은 시간을 계산하는 곳 (1초단위로 시간을 -1씩해서 분/초 형태로  표현-->
-<script>
-    const remainingTime = <?php echo $remaining_time; ?>;
-    let remainingSeconds = remainingTime;
-
-    // 시간 형태로 계산 후 표현
-    function updateSessionTimer() {
-        if (remainingSeconds > 0) {
-            remainingSeconds--;
-            const minutes = Math.floor(remainingSeconds / 60); // floor -> 소수점 버림 -> 몇 분 남았는지
-            const seconds = remainingSeconds % 60; // 나머지 값 -> 몇 초 남았는지
-            document.getElementById('session_timer').innerText = `${minutes}분 ${seconds}초`;
-        } else {
-            document.getElementById('session_timer').innerText = '세션 종료';
-        }
-    }
-
-    // 1초 마다 updateSessionTimer 함수호출
-    window.onload = function() {
-        updateSessionTimer();
-        setInterval(updateSessionTimer, 1000);
-    };
-</script>
