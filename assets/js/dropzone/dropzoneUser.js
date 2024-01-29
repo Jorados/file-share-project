@@ -36,7 +36,7 @@ Dropzone.options.myDropzone = {
             const result = JSON.parse(response); // json 데이터 받기.
 
             if(this.options.currentFileNum == result.totalCount){
-                window.location.href = "../../../pages/user/userHome.php";
+                window.location.href = "../../../pages/home.php";
             }
         });
 
@@ -50,13 +50,13 @@ Dropzone.options.myDropzone = {
             };
 
             $.ajax({
-                url: '/action/board/boardCreate_user.php',
+                url: '/action/board/boardCreate.php',
                 type: 'POST',
                 data: formData,
                 success: function(response) {
                     console.log("Ajax Success:", response);
                     if (myDropzone.getQueuedFiles().length === 0) {
-                        window.location.href = "../../../pages/user/userHome.php";
+                        window.location.href = "../../../pages/home.php";
                     }
                     myDropzone.processQueue();
                     console.log("asdasdadasd");

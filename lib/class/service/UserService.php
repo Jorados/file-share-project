@@ -280,6 +280,7 @@ class UserService{
                 $result['status'] = true;
                 $result['content'] = '로그인 성공!';
                 $result['role'] = 1;
+                $result['available'] = $user->getAvailable();
                 $logger->login($_SERVER['REQUEST_URI'], $user->getEmail());
             } else {
                 $result['status'] = false;

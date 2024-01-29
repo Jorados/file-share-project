@@ -41,7 +41,7 @@ $attachments = $result['attachments'];
 
 
         <div class="card-body">
-            <?php if ($board->getOpenclose() == 0): ?>
+            <?php if ($board->getOpenclose() == 0 && $_SESSION['role'] == 'user'): ?>
                 <p class="card-text">제목 : <?= $board->getTitle(); ?></p>
                 <p class="card-text">내용 : 볼 수 없음</p>
                 <p class="card-text">첨부 파일 : 볼 수 없음</p>
@@ -83,7 +83,7 @@ $attachments = $result['attachments'];
                 <p class="card-text">열람 권한 : <?= $board->getOpenclose() == 0 ? '불가' : '허용'; ?></p>
             <?php endif; ?>
 
-            <?php if ($info): ?>
+            <?php if ($info && $_SESSION['role'] == 'user'): ?>
                 <div class="info-container bg-light p-3 rounded mt-4">
                     <?php if ($board->getOpenclose() == 0): ?>
                         <h5 class="font-weight-bold mb-3">반려 사유</h5>
@@ -102,6 +102,29 @@ $attachments = $result['attachments'];
             <?php endif; ?>
         </div>
     </div>
+
+    <?php if ($_SESSION['role'] == 'admin'): ?>
+        <div class="card mx-auto mb-5 " style="max-width: 1000px";>
+            <div class="card-body">
+                <form action="/action/comment/createComment.php" method="post" id="createCommentForm">
+                    <div class="form-group">
+                        <label for="content">댓글 내용</label>
+                        <textarea name="content" id="content" rows="3" class="form-control" required></textarea>
+                    </div>
+                    <input type="hidden" name="board_id" value="<?= $board->getBoardId(); ?>">
+                    <button type="button" name="submit_comment" class="btn btn-primary" onclick="submitCommentForm()">댓글 작성</button>
+                </form>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="card mx-auto mb-5" style="max-width: 1000px;">
+            <div class="card-body">
+                <div class="alert alert-warning" role="alert">
+                    댓글 작성이 현재 불가능합니다.
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <div class="card mx-auto mb-5" style="max-width: 1000px;">
         <div class="card-body">

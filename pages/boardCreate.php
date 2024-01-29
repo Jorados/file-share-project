@@ -1,33 +1,50 @@
 <?php
 /**
- * 사용자 -> 게시글 생성 페이지
+ * 관리자 -> 글 작성 페이지
  */
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>게시글 생성</title>
     <link href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/dropzone.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .custom-mx-10 { margin-left: 8rem !important; margin-right: 8rem !important; }
+    </style>
 </head>
 
 <body>
 <?php include '/var/www/html/includes/header.php'?>
-
+<?php include '/var/www/html/includes/adminNavibar.php'?>
 <div class="container mt-5">
     <div class="card mx-auto mb-5" style="max-width: 1000px;">
-        <div class="card-header bg-dark text-white mb-3" style="max-height: 90px;">
+        <div class="card-header bg-dark text-white" style="max-height: 90px;">
             <h2 class="text-center">게시글 생성</h2>
         </div>
 
-        <div class="card-body col-md-9 " style="margin-left: 8rem !important; margin-right: 8rem !important;">
+        <!-- 게시글 유형 선택 -->
+        <?php if($_SESSION['role']=='admin'):?>
+            <div class="btn-group mt-3 mx-auto" role="group" aria-label="게시글 유형 선택">
+                <label for="normalPost" class="ml-6 mr-4 mt-3">일반 :
+                    <input type="radio" class="btn-check" name="postType" id="normalPost" value="normal" onclick="setPostType('normal')" autocomplete="off" checked>
+                </label>
+                <label for="noticePost" class="ml-6 mr-3 mt-3">공지 :
+                    <input type="radio" class="btn-check" name="postType" id="noticePost" value="notification" onclick="setPostType('notification')" autocomplete="off">
+                </label>
+            </div>
+        <?php endif; ?>
+
+        <div class="card-body col-md-9 custom-mx-10">
             <h5 class="card-title text-center">파일 업로드</h5>
             <form class="dropzone" action="upload.php" id="myDropzone"></form>
         </div>
 
-        <div class="card-body mt-2">
+        <div class="card-body">
             <div class="d-flex justify-content-center">
                 <form action="" method="post" class="col-md-9">
                     <div class="form-group">
@@ -40,7 +57,9 @@
                         <textarea id="content" name="content" rows="5" class="form-control" required></textarea>
                     </div>
 
-                    <div class="text-center mt-4">
+                    <input type="hidden" id="postStatus" name="status" value="normal">
+
+                    <div class="text-center">
                         <input type="submit" value="게시글 등록" class="btn btn-primary">
                     </div>
                 </form>
@@ -49,9 +68,10 @@
     </div>
 </div>
 
+<?php $dropzoneScriptPath = ($_SESSION['role'] == 'user') ? '/assets/js/dropzone/dropzoneUser.js' : '/assets/js/dropzone/dropzoneAdmin.js'; ?>
 <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="/assets/js/dropzone/dropzoneUser.js"></script>
+<script src="<?php echo $dropzoneScriptPath; ?>"></script>
 </body>
 <footer>
     <?php include '/var/www/html/includes/footer.php'?>

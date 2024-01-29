@@ -34,9 +34,15 @@ class BoardService{
      */
     public function getBoardByPage($items_per_page, $order, $offset, $permission = null, $searchType = null, $searchQuery = null, $user_id = null, $status) {
         $boardRepository = new BoardRepository();
+        $userRepository = new UserRepository();
 
         if($permission === Constant::PERMISSION_NOT_SELECT) $permission=null;
         if($searchType === Constant::SEARCHTYPE_NOT_SELECT) $searchType=null;
+
+        // 여기서 해당 user_id가 일반회원이면 null , 아니면 그대로. 넘기면된다.
+        $user = $userRepository->getUserById($user_id);
+        if($user->getRole() === "admin") $user_id = null;
+
         $total_items = $boardRepository->getTotalBoardCount($permission, $searchType, $searchQuery, $user_id, $status);
         $boards = $boardRepository->getBoardsByPage($offset, $items_per_page, $order, $permission, $searchType, $searchQuery, $user_id, $status);
 

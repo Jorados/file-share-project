@@ -18,7 +18,7 @@ if (isset($_GET['change_role']) && isset($_GET['user_id'])) {
     $result = $userService->updateRole($userId,$newRole,$adminEmail);
     echo json_encode(['status'=>$result['status'], 'content'=>$result['content']]);
 
-    header("Location: /pages/admin/adminAuthority.php");
+    header("Location: /pages/admin/adminUserAuthority.php");
     exit;
 }
 ?>

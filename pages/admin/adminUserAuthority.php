@@ -48,7 +48,9 @@ $total = 1;
                             <td class="text-center"><?= $user->getEmail() ?></td>
                             <td class="text-center"><?= $user->getUsername() ?></td>
                             <td class="text-center"><?= $user->getPhone() ?></td>
-                            <td class="text-center"><?= ($user->getAuthority() == 1) ? '허용' : '불가'; ?></td>
+                            <td class="text-center" style="color: <?= ($user->getAuthority() == 1) ? 'blue' : 'red'; ?>">
+                                <?= ($user->getAuthority() == 1) ? '허용' : '불가'; ?>
+                            </td>
                             <td class="text-center">
                                 <a href="/action/user/updateRole.php?change_role=<?= $user->getAuthority() ?>&user_id=<?= $user->getUserId() ?>" class="btn btn-sm btn-primary">
                                     권한 변경하기

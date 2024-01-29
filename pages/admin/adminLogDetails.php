@@ -15,7 +15,7 @@
 
 <div class="container mt-5">
     <h2 class="mb-4">로그 보기</h2>
-    <form method="post" action="logDetails.php" class="mb-4">
+    <form method="post" action="adminLogDetails.php" class="mb-4">
         <div class="mb-3">
             <label for="date" class="form-label">날짜 선택</label>
             <input type="date" id="date" name="date" class="form-control" required>

@@ -2,6 +2,8 @@
 /**
  * 사용자 -> 비밀번호 변경 페이지
  */
+error_log(E_ALL);
+ini_set("display_errors", 1);
 
 ?>
 <!DOCTYPE html>
@@ -16,7 +18,7 @@
 <body>
 <div class="container mt-5">
     <!-- 게시글 상세 정보 -->
-    <div class="card mx-auto mb-5" style="max-width: 500px;">
+    <div class="card mx-auto mb-5" style="max-width: 600px;">
         <div class="card-header bg-dark text-white" style="max-height: 90px;">
             <h3 class="text-center">비밀번호 변경</h3>
         </div>
@@ -28,6 +30,12 @@
                     <div class="form-group">
                         <label for="password">비밀번호</label>
                         <input type="password" id="password" name="password" class="form-control">
+                        <small class="form-text text-muted">영어와 숫자를 포함한 8자 이상의 비밀번호를 입력하세요.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">비밀번호 확인</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-control">
+                        <small class="form-text text-muted">동일한 비밀번호를 입력해주세요.</small>
                     </div>
                     <button type="button" class="btn btn-primary btn-block" onclick="submitForm()">변경</button>
                 </form>

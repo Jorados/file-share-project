@@ -42,7 +42,7 @@ $boards = $result['boards'];
 
     <nav class="navbar bg-body-tertiary">
         <div class="container-fluid">
-            <form class="d-flex ml-auto" method="GET" action="adminNotice.php">
+            <form class="d-flex ml-auto" method="GET" action="notice.php">
 
                 <ion-icon class="mr-3" name="reload" onclick="resetSearchParams()" style="font-size: 40px; color: #1977c9; --ionicon-stroke-width: 45px;"></ion-icon>
 
@@ -73,7 +73,7 @@ $boards = $result['boards'];
                 <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 1 ? '#D0E7FA' : '#FFFFFF'; ?>;">
                     <div class="card-body">
                         <h5 class="card-title">
-                            <a href="adminBoardDetails.php?board_id=<?= $board->getBoardId(); ?>">
+                            <a href="boardDetails.php?board_id=<?= $board->getBoardId(); ?>">
                                 <?php
                                 $title = $board->getTitle();
                                 if (strlen($title) > 27) {

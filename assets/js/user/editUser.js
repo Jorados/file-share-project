@@ -14,7 +14,7 @@ function submitForm() {
             // 서버에서 반환한 데이터를 처리
             if (data.status) {
                 alert(data.content);
-                window.location.href = '/pages/admin/adminAuthority.php';
+                window.location.href = '../../../pages/admin/adminUserAuthority.php';
             } else {
                 alert(data.content);
             }

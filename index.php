@@ -52,12 +52,11 @@
                 // 서버에서 반환한 데이터를 처리
                 if (data.status) {
                     alert(data.content);
-                    if(data.role == 1){
-                        window.location.href = '/pages/admin/adminHome.php';
+                    if(data.available == 0) {
+                        alert("최초 로그인 사용자는 비밀번호를 변경해주시기 바랍니다.");
+                        window.location.href = '/pages/changePassword.php';
                     }
-                    else if(data.role == 0){
-                        window.location.href = '/pages/user/userHome.php';
-                    }
+                    else window.location.href = '/pages/home.php';
                 } else {
                     alert(data.content);
                 }
