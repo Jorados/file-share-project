@@ -34,7 +34,7 @@ $attachments = $result['attachments'];
 <?php include '/var/www/html/includes/header.php'?>
 <div class="container mt-5">
     <!-- 게시글 상세 정보 -->
-    <div class="card mx-auto mb-5" style="max-width: 1000px;">
+    <div class="card mx-auto mb-4" style="max-width: 1000px;">
         <div class="card-header bg-dark text-white" style="max-height: 90px;">
             <h3 class="text-center">글 상세 조회</h3>
         </div>
@@ -42,20 +42,39 @@ $attachments = $result['attachments'];
 
         <div class="card-body">
             <?php if ($board->getOpenclose() == 0 && $_SESSION['role'] == 'user'): ?>
-                <p class="card-text">제목 : <?= $board->getTitle(); ?></p>
-                <p class="card-text">내용 : 볼 수 없음</p>
-                <p class="card-text">첨부 파일 : 볼 수 없음</p>
-                <p class="card-text">작성일 : 볼 수 없음</p>
-                <p class="card-text">열람 권한 : 불가</p>
+                <div class="form-group">
+                    <label class="card-title">제목</label>
+                    <textarea class="form-control mb-3" id="title" rows="1" readonly><?= $board->getTitle(); ?></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="content">내용</label>
+                    <textarea class="form-control mb-3" id="content" rows="1" readonly>볼 수 없음</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="attachments">첨부 파일</label>
+                    <textarea class="form-control mb-3" id="attachments" rows="1" readonly>볼 수 없음</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="date">작성일</label>
+                    <textarea class="form-control mb-3" id="date" rows="1" readonly>볼 수 없음</textarea>
+                </div>
+                <div class="form-group">
+                    <label for="openclose">열람 권한</label>
+                    <textarea class="form-control mb-3" id="openclose" rows="1" readonly style="color: red;">불가</textarea>
+                </div>
             <?php else: ?>
-                <p class="card-text">제목 : <?= htmlspecialchars($board->getTitle(), ENT_QUOTES, 'UTF-8'); ?></p>
-                <p class="card-text">내용 : <?= htmlspecialchars($board->getContent(), ENT_QUOTES, 'UTF-8'); ?></p>
-                <p class="card-text">파일목록
-                <ul>
+                <label for="title">제목</label>
+                <textarea class="form-control mb-3" id="title" rows="1" readonly><?= htmlspecialchars($board->getTitle(), ENT_QUOTES, 'UTF-8'); ?></textarea>
+
+                <label for="content">내용</label>
+                <textarea class="form-control mb-3" id="content" rows="1" readonly><?= htmlspecialchars($board->getContent(), ENT_QUOTES, 'UTF-8'); ?></textarea>
+
+                <label for="attachments">파일목록</label>
+                <ul class="list-group mb-3">
                     <?php
                     $filepath = '/var/www/html/file/uploads/';
                     if (empty($attachments)) {
-                        echo '<li>첨부파일이 없습니다.</li>';
+                        echo '<li class="list-group-item">첨부파일이 없습니다.</li>';
                     } else {
                         foreach ($attachments as $attachment) {
                             if (file_exists($filepath)) {
@@ -72,15 +91,20 @@ $attachments = $result['attachments'];
                                 $rightPart = substr($filename, $dot); // $dot 이후의 부분
                                 $displayFilename = $leftPart . $rightPart;
 
-                                echo '<li><a href="/file/download.php?file=' . urlencode($filename) . '">' . $displayFilename . '</a></li>';
+                                echo '<li class="list-group-item">
+                        <a href="/file/download.php?file=' . urlencode($filename) . '">' . $displayFilename . '</a>
+                      </li>';
                             }
                         }
                     }
                     ?>
                 </ul>
-                </p>
-                <p class="card-text">작성일 : <?= date('Y-m-d', strtotime($board->getDate())); ?></p>
-                <p class="card-text">열람 권한 : <?= $board->getOpenclose() == 0 ? '불가' : '허용'; ?></p>
+
+                <label for="date">작성일</label>
+                <textarea class="form-control mb-3" id="date" rows="1" readonly><?= date('Y-m-d', strtotime($board->getDate())); ?></textarea>
+
+                <label for="openclose">열람 권한</label>
+                <textarea class="form-control mb-3" id="openclose" rows="1" readonly style="color: <?= $board->getOpenclose() == 0 ? 'red' : 'blue'; ?>"><?= trim($board->getOpenclose() == 0 ? '불가' : '허용'); ?></textarea>
             <?php endif; ?>
 
             <?php if ($info && $_SESSION['role'] == 'user'): ?>
@@ -99,12 +123,27 @@ $attachments = $result['attachments'];
                     <p class="mb-0">이메일 : <?php echo !empty($user->getEmail()) ? $user->getEmail() : '없음'; ?></p>
                     <p class="mb-1">전화번호 : <?php echo !empty($user->getPhone()) ? $user->getPhone() : '없음'; ?></p>
                 </div>
+            <?php elseif ($_SESSION['role'] == 'admin'):?>
+                <form action="/action/board/boardAuthorityChange.php" method="post"  class="mt-3" id="authorityForm">
+                    <label for="reason_content">사유</label>
+                    <textarea name="reason_content" id="reason_content" rows="3" class="form-control" placeholder="열람 권한 변경의 사유를 입력하세요." required></textarea>
+                    <input type="hidden" name="board_id" value="<?= $board->getBoardId(); ?>">
+
+                    <?php if ($board->getOpenclose() == 0): ?>
+                        <input type="hidden" name="change_permission" value="1">
+                        <button type="button" name="change_permission" value="1" class="btn btn-primary mt-3" onclick="submitBoardAuthority()">열람 허용</button>
+                    <?php else: ?>
+                        <input type="hidden" name="change_permission" value="0">
+                        <button type="button" name="change_permission" value="0" class="btn btn-primary mt-3" onclick="submitBoardAuthority()">열람 불가</button>
+                    <?php endif; ?>
+                </form>
+
             <?php endif; ?>
         </div>
     </div>
 
     <?php if ($_SESSION['role'] == 'admin'): ?>
-        <div class="card mx-auto mb-5 " style="max-width: 1000px";>
+        <div class="card mx-auto mb-4 " style="max-width: 1000px";>
             <div class="card-body">
                 <form action="/action/comment/createComment.php" method="post" id="createCommentForm">
                     <div class="form-group">
@@ -117,10 +156,10 @@ $attachments = $result['attachments'];
             </div>
         </div>
     <?php else: ?>
-        <div class="card mx-auto mb-5" style="max-width: 1000px;">
-            <div class="card-body">
-                <div class="alert alert-warning" role="alert">
-                    댓글 작성이 현재 불가능합니다.
+        <div class="card mx-auto mb-4" style="max-width: 1000px;">
+            <div class="card-body p-2"> <!-- 여기서 p-2는 상하좌우 패딩을 최소화합니다. -->
+                <div class="alert alert-warning mb-0" role="alert">
+                    댓글 작성 권한이 없습니다.
                 </div>
             </div>
         </div>
@@ -129,22 +168,26 @@ $attachments = $result['attachments'];
     <div class="card mx-auto mb-5" style="max-width: 1000px;">
         <div class="card-body">
             <label for="comment_content">댓글 내용</label>
-            <?php foreach ($comments as $comment): ?>
-                <div class="card mb-2">
-                    <div class="card-body d-flex justify-content-between">
-                        <div>
-                            <p class="card-text"><?= $comment->getContent();?></p>
-                            <small class="text-muted">
-                                작성자:
-                                <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
-                            </small>
-                        </div>
-                        <div class="text-right"> <!-- text-right 추가 -->
-                            <small class="text-muted"><?= date('Y-m-d', strtotime($comment->getDate())); ?></small>
+            <?php if (empty($comments)): ?>
+                <p class="text-muted mt-2">댓글이 없습니다.</p>
+            <?php else: ?>
+                <?php foreach ($comments as $comment): ?>
+                    <div class="card mb-2">
+                        <div class="card-body d-flex justify-content-between">
+                            <div>
+                                <p class="card-text"><?= $comment->getContent(); ?></p>
+                                <small class="text-muted">
+                                    작성자:
+                                    <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
+                                </small>
+                            </div>
+                            <div class="text-right">
+                                <small class="text-muted"><?= date('Y-m-d', strtotime($comment->getDate())); ?></small>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
         </div>
     </div>
 </div>

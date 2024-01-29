@@ -51,8 +51,9 @@ $boards = $result['boards'];
 
                 <select class="form-control mr-2" name="permission" aria-label="Default select example" style="width: 100px;">
                     <option selected>-권한-</option>
-                    <option value="1">허용</option>
-                    <option value="0">불가</option>
+                    <option value="open">허용</option>
+                    <option value="close">불가</option>
+                    <option value="wait">대기</option>
                 </select>
 
                 <select class="form-control mr-2" name="search_type" aria-label="Default select example" style="width: 100px;" onchange="enableSearchInput()">
