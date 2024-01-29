@@ -177,16 +177,24 @@ class BoardRepository extends BaseRepository {
     }
 
 
+
+//    public function deleteBoardById($board_id) {
+//        $deleteQuery = "DELETE FROM board WHERE board_id = :board_id";
+//        $stmt = $this->pdo->prepare($deleteQuery);
+//        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
+//        return $stmt->execute();
+//    }
+
     /**
      * 특정 글 delete
      * @param int $board_id
      * @return bool
      */
     public function deleteBoardById($board_id) {
-        $deleteQuery = "DELETE FROM board WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($deleteQuery);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        return $stmt->execute();
+        $data = [
+            'board_id'=>$board_id
+        ];
+        $this->delete($this->table,$data);
     }
 
     /**

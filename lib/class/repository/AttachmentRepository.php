@@ -9,6 +9,12 @@ use dataset\Attachment;
 
 class AttachmentRepository extends BaseRepository {
 
+    /** 생성자 */
+    public function __construct(){
+        parent::__construct();
+        $this->setTable('attachment');
+    }
+
     /**
      * @param int $board_id
      * @return Attachment[]
@@ -27,16 +33,23 @@ class AttachmentRepository extends BaseRepository {
         );
     }
 
+//    public function deleteAttachment($board_id) {
+//        $deleteQuery = "DELETE FROM attachment WHERE board_id = :board_id";
+//        $stmt = $this->pdo->prepare($deleteQuery);
+//        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
+//        return $stmt->execute();
+//    }
+
     /**
      * @param int $board_id
      * @return bool
      * 삭제
      */
     public function deleteAttachment($board_id) {
-        $deleteQuery = "DELETE FROM attachment WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($deleteQuery);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        return $stmt->execute();
+        $data = [
+            'board_id'=>$board_id
+        ];
+        $this->delete($this->table,$data);
     }
 
     /**

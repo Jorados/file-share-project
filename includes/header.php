@@ -97,7 +97,7 @@ if (isset($_SESSION['session_start_time'])) {
                                     게시글 관리
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="boardDropdown">
-                                    <a class="dropdown-item" href="/pages/home.php">게시글 관리</a>
+                                    <a class="dropdown-item" href="/pages/home.php">일반글 관리</a>
                                     <a class="dropdown-item" href="/pages/notice.php">공지글 관리</a>
                                     <a class="dropdown-item" href="/pages/boardCreate.php">게시글 작성</a>
                                 </div>
@@ -129,21 +129,14 @@ if (isset($_SESSION['session_start_time'])) {
 
                             <?php if ($_SESSION['available'] == 1): ?>
                                 <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="noticeDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        공지 글
-                                    </a>
-                                    <div class="dropdown-menu" aria-labelledby="noticeDropdown">
-                                        <a class="dropdown-item" href="notice.php">공지글 보기</a>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="userBoardDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        게시 글
+                                        글 관리
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="userBoardDropdown">
-                                        <a class="dropdown-item" href="home.php">게시글 보기</a>
+                                        <a class="dropdown-item" href="notice.php">공지글 보기</a>
+                                        <a class="dropdown-item" href="home.php">일반글 보기</a>
                                         <?php if ($_SESSION['authority'] == 1): ?>
-                                            <a class="dropdown-item" href="boardCreate.php">게시글 작성</a>
+                                            <a class="dropdown-item" href="boardCreate.php">글 작성</a>
                                         <?php endif; ?>
                                     </div>
                                 </li>

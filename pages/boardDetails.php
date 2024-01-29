@@ -199,14 +199,14 @@ $attachments = $result['attachments'];
                 </form>
             </div>
         </div>
-    <?php else: ?>
-        <div class="card mx-auto mb-4" style="max-width: 1000px;">
-            <div class="card-body p-2">
-                <div class="alert alert-warning mb-0" role="alert">
-                    댓글 작성 권한이 없습니다.
-                </div>
-            </div>
-        </div>
+<!--    --><?php //else: ?>
+<!--        <div class="card mx-auto mb-4" style="max-width: 1000px;">-->
+<!--            <div class="card-body p-2">-->
+<!--                <div class="alert alert-warning mb-0" role="alert">-->
+<!--                    댓글 작성 권한이 없습니다.-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
     <?php endif; ?>
 
     <div class="card mx-auto mb-5" style="max-width: 1000px;">
