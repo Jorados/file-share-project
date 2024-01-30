@@ -5,6 +5,7 @@
 
 namespace repository;
 
+use database\DatabaseController;
 use dataset\Attachment;
 
 class AttachmentRepository extends BaseRepository {
@@ -21,24 +22,10 @@ class AttachmentRepository extends BaseRepository {
      * 특정 게시글의 업로드 파일 조회
      */
     public function getAttachmentsByBoardId($board_id) {
-        $query = "SELECT * FROM attachment WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        $stmt->execute();
-        return array_map(
-            function ($attachment){
-                return new Attachment($attachment);
-            },
-            $stmt->fetchAll(\PDO::FETCH_ASSOC)
-        );
+        $data = ['board_id'=>$board_id];
+        $stmt = $this->select($this->table,null,$data);
+        return DatabaseController::arrayMapObjects(new Attachment(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
-
-//    public function deleteAttachment($board_id) {
-//        $deleteQuery = "DELETE FROM attachment WHERE board_id = :board_id";
-//        $stmt = $this->pdo->prepare($deleteQuery);
-//        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-//        return $stmt->execute();
-//    }
 
     /**
      * @param int $board_id
@@ -46,9 +33,7 @@ class AttachmentRepository extends BaseRepository {
      * 삭제
      */
     public function deleteAttachment($board_id) {
-        $data = [
-            'board_id'=>$board_id
-        ];
+        $data = ['board_id'=>$board_id];
         $this->delete($this->table,$data);
     }
 

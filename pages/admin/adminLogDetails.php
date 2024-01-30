@@ -43,9 +43,11 @@
         $logFilePath = "/var/www/html/file/logs/{$year}/{$month}/{$selectedDate}.log";
 
         if (file_exists($logFilePath)) {
+            echo "<div class='scrollable-log'>";
             echo "<pre class='bg-light p-3' id='logContent'>";   //--> <pre> 이 태그 안에 있는 문자들은 공백, 줄바꿈 등 그대로 유지됨.
             echo htmlspecialchars(file_get_contents($logFilePath)); // htmlspecialchars --> 자바스크립트 입력 방지
             echo "</pre>";
+            echo "</div>";
         } else {
             echo "<p class='text-danger'>날짜를 선택 해주세요. 해당 날짜의 로그 정보가 없습니다.</p>";
         }
@@ -53,6 +55,6 @@
     ?>
     <script src="/assets/js/searchLog.js"></script>
 </div>
-
+<link rel="stylesheet" href="/assets/css/log.css">
 </body>
 </html>

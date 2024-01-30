@@ -6,6 +6,7 @@
 namespace repository;
 
 use database\DatabaseConnection;
+//use database\DatabaseController;
 
 abstract class BaseRepository{
 
@@ -48,9 +49,9 @@ abstract class BaseRepository{
                     }, array_keys($where_data)));
             }
 
-            $query = "UPDATE $table SET {$set} {$where}";
+            $sql = "UPDATE $table SET {$set} {$where}";
             $params = array_merge($data, $where_data);
-            $stmt = $this->pdo->prepare($query);
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute($params);
         } catch (\PDOException $e) {
             echo '오류: ' . $e->getMessage();
@@ -66,18 +67,35 @@ abstract class BaseRepository{
                     }, array_keys($where_data)));
             }
 
-            $query = "DELETE FROM {$table} {$where}";
-            $stmt = $this->pdo->prepare($query);
+            $sql = "DELETE FROM {$table} {$where}";
+            $stmt = $this->pdo->prepare($sql);
             $stmt->execute($where_data);
         } catch (\PDOException $e) {
             echo '오류: ' . $e->getMessage();
         }
     }
 
-    // select 하는게 sql마다 다를 수 있음 , 조인 , 서브쿼리 ??
-    protected function select($table, $where){  // 매기변수로 뭘 조회할건지도 받아서?
+    // 어떤 걸 조회할건지는 가능.
+    protected function select($table, $read = null, $where_data){
         try{
+            $select = '';
+            $where = '';
 
+            // select
+            if(empty($read) || $read == null) $select = '*';
+            else $select = implode(', ', $read);
+
+            // where
+            if (!empty($where_data)) {
+                $where = 'WHERE ' . implode(' AND ', array_map(function ($column) {
+                        return "$column = :$column";
+                    }, array_keys($where_data)));
+            }
+
+            $sql = "SELECT {$select} FROM {$table} {$where}";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($where_data);
+            return $stmt;
         } catch (\PDOException $e){
             echo '오류: ' . $e->getMessage();
         }

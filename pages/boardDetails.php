@@ -218,10 +218,10 @@ $attachments = $result['attachments'];
             <?php else: ?>
                 <ul class="list-group">
                     <?php foreach ($comments as $comment): ?>
-                        <li class="list-group-item">
-                            <div class="card-body d-flex justify-content-between" style="min-height: 100px;">
-                                <div>
-                                    <p class="card-text"><?= $comment->getContent(); ?></p>
+                        <li class="list-group-item" style="padding: 1px;">
+                            <div class="card-body d-flex justify-content-between">
+                                <div style="max-width: 80%;">
+                                    <p class="card-text mb-2" style="margin: 0;"><?= $comment->getContent(); ?></p>
                                     <small class="text-muted">
                                         작성자: <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
                                     </small>

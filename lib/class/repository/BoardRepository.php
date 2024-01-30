@@ -22,10 +22,8 @@ class BoardRepository extends BaseRepository {
      * @return Board
      */
     public function getBoardById($board_id) {
-        $query = "SELECT * FROM board WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        $stmt->execute();
+        $data = ['board_id'=>$board_id];
+        $stmt = $this->select($this->table,null,$data);
         return new Board($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -45,9 +43,8 @@ class BoardRepository extends BaseRepository {
      * @return array|\dataset\BaseModel[]
      */
     public function getDeleteType(){
-        $updateQuery = "SELECT * FROM board WHERE delete_type = 1";
-        $stmt = $this->pdo->prepare($updateQuery);
-        $stmt->execute();
+        $data = ['delete_type' => 1];
+        $stmt = $this->select($this->table,null,$data);
         return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
@@ -92,7 +89,6 @@ class BoardRepository extends BaseRepository {
             'status' => 'normal',
             ['TIMESTAMPDIFF(HOUR, openclose_time, NOW()) >= 24', []],
         ];
-
         $this->update($this->table, $set, $where);
     }
 
@@ -176,24 +172,13 @@ class BoardRepository extends BaseRepository {
         return ['paramArr' => $paramArr, 'strArr' => $strArr];
     }
 
-
-
-//    public function deleteBoardById($board_id) {
-//        $deleteQuery = "DELETE FROM board WHERE board_id = :board_id";
-//        $stmt = $this->pdo->prepare($deleteQuery);
-//        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-//        return $stmt->execute();
-//    }
-
     /**
      * 특정 글 delete
      * @param int $board_id
      * @return bool
      */
     public function deleteBoardById($board_id) {
-        $data = [
-            'board_id'=>$board_id
-        ];
+        $data = ['board_id'=>$board_id];
         $this->delete($this->table,$data);
     }
 

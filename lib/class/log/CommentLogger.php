@@ -15,10 +15,9 @@ class CommentLogger extends BaseLogger {
      * 댓글 생성
      */
     public function createComment($action, $email , $board_title){
-        $this->logAction($action,"$email 님이 제목 : '$board_title' 글에 댓글을 작성하였습니다.");
+        $this->logAction($action,"{$email} 님이 제목 : '{$board_title}' 글에 댓글을 작성하였습니다.");
     }
 
 }
-
 
 ?>

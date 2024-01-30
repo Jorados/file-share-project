@@ -21,15 +21,11 @@ class UserRepository extends BaseRepository {
      * @return User|null
      */
     public function loginUser(User $user){
-        $stmt = $this->pdo->prepare("SELECT * FROM user WHERE email = :email");
-        $stmt->execute([
-            'email' => $user->getEmail()
-        ]);
-        $userData = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-        if ($userData && password_verify($user->getPassword(), $userData['password'])) return new User($userData);
-        return null;
+        $data = ['email' => $user->getEmail()];
+        $stmt = $this->select($this->table, null, $data);
+        return ($userData = $stmt->fetch(\PDO::FETCH_ASSOC)) && password_verify($user->getPassword(), $userData['password']) ? new User($userData) : null;
     }
+
 
     /**
      * User read
@@ -37,10 +33,8 @@ class UserRepository extends BaseRepository {
      * @return User
      */
     public function getUserById($user_id){
-        $userQuery = "SELECT * FROM user WHERE user_id = :user_id";
-        $stmt = $this->pdo->prepare($userQuery);
-        $stmt->bindParam(':user_id', $user_id, \PDO::PARAM_INT);
-        $stmt->execute();
+        $data = ['user_id'=>$user_id];
+        $stmt = $this->select($this->table,null,$data);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -50,10 +44,11 @@ class UserRepository extends BaseRepository {
      * @return array|\dataset\BaseModel[]
      */
     public function getUsersByRole($role){
-        $stmt = $this->pdo->prepare('SELECT * FROM user WHERE role = :role');
-        $stmt->execute(['role' => $role]);
+        $data = ['role'=>$role];
+        $stmt = $this->select($this->table, null, $data);
         return DatabaseController::arrayMapObjects(new User(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
+
 
     /**
      * 중복 User cound read
@@ -63,11 +58,8 @@ class UserRepository extends BaseRepository {
     public function isEmailDuplicate(User $user) {
         $query = 'SELECT COUNT(*) FROM user WHERE email = :email';
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            'email'=>$user->getEmail()
-        ]);
+        $stmt->execute(['email'=>$user->getEmail()]);
         $count = $stmt->fetchColumn();
-
         return $count > 0;
     }
 
@@ -77,11 +69,9 @@ class UserRepository extends BaseRepository {
      * @return User
      */
     public function getUserEmailById(User $user){
-        $query = "SELECT email FROM user WHERE user_id = :user_id";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            'user_id'=>$user->getUserId()
-        ]);
+        $read = ['email'];
+        $data = ['user_id'=>$user->getUserId()];
+        $stmt = $this->select($this->table, $read, $data);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -91,11 +81,9 @@ class UserRepository extends BaseRepository {
      * @return User
      */
     public function getUserIdByEmail(User $user){
-        $query = "SELECT user_id FROM user WHERE email = :email";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([
-            'email'=>$user->getEmail()
-        ]);
+        $read = ['user_id'];
+        $data = ['email'=>$user->getEmail()];
+        $stmt = $this->select($this->table,$read,$data);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -141,9 +129,7 @@ class UserRepository extends BaseRepository {
             'username' => $user->getUsername(),
             'phone' => $user->getPhone()
         ];
-        $where = [
-            'user_id' => $user->getUserId()
-        ];
+        $where = ['user_id' => $user->getUserId()];
         $this->update($this->table, $data, $where);
     }
 
