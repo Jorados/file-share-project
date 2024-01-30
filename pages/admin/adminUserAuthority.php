@@ -24,12 +24,12 @@ $total = 1;
 
 <body>
     <div class="container mt-5">
-        <h2 class="text-center mb-4">사용자 목록</h2>
+        <h2 class="text-center mb-5">사용자 목록</h2>
 
         <!-- .scrollable-table 클래스를 추가한 div로 감싼 테이블 -->
         <div class="scrollable-table">
             <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
+                <thead class="card-header">
                     <tr>
                         <th scope="col" width="200" class="text-center">이메일</th>
                         <th scope="col" width="200" class="text-center">이름</th>

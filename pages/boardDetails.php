@@ -29,13 +29,14 @@ $attachments = $result['attachments'];
     <meta charset='utf-8'>
     <title>게시글 상세보기</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/index.css">
 </head>
 <body>
 <?php include '/var/www/html/includes/header.php'?>
 <div class="container mt-5">
     <!-- 게시글 상세 정보 -->
     <div class="card mx-auto mb-4" style="max-width: 1000px;">
-        <div class="card-header bg-dark text-white" style="max-height: 90px;">
+        <div class="card-header custom-header" style="max-height: 90px;">
             <?php if ($board->getStatus() == 'normal'): ?>
                 <h3 class="text-center">글 상세 조회</h3>
             <?php elseif ($board->getStatus() == 'notification'):?>
@@ -211,26 +212,27 @@ $attachments = $result['attachments'];
 
     <div class="card mx-auto mb-5" style="max-width: 1000px;">
         <div class="card-body">
-            <label for="comment_content">댓글 내용</label>
+            <label for="comment_content mb-2">댓글 내용</label>
             <?php if (empty($comments)): ?>
                 <p class="text-muted mt-2">댓글이 없습니다.</p>
             <?php else: ?>
-                <?php foreach ($comments as $comment): ?>
-                    <div class="card mb-2">
-                        <div class="card-body d-flex justify-content-between">
-                            <div>
-                                <p class="card-text"><?= $comment->getContent(); ?></p>
-                                <small class="text-muted">
-                                    작성자:
-                                    <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
-                                </small>
+                <ul class="list-group">
+                    <?php foreach ($comments as $comment): ?>
+                        <li class="list-group-item">
+                            <div class="card-body d-flex justify-content-between" style="min-height: 100px;">
+                                <div>
+                                    <p class="card-text"><?= $comment->getContent(); ?></p>
+                                    <small class="text-muted">
+                                        작성자: <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
+                                    </small>
+                                </div>
+                                <div class="text-right">
+                                    <small class="text-muted"><?= date('Y-m-d', strtotime($comment->getDate())); ?></small>
+                                </div>
                             </div>
-                            <div class="text-right">
-                                <small class="text-muted"><?= date('Y-m-d', strtotime($comment->getDate())); ?></small>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
             <?php endif; ?>
         </div>
     </div>

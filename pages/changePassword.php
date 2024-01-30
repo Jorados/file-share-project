@@ -2,8 +2,6 @@
 /**
  * 사용자 -> 비밀번호 변경 페이지
  */
-error_log(E_ALL);
-ini_set("display_errors", 1);
 
 ?>
 <!DOCTYPE html>
@@ -13,16 +11,16 @@ ini_set("display_errors", 1);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>회원 생성</title>
+    <link rel="stylesheet" href="/assets/css/index.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-5">
     <!-- 게시글 상세 정보 -->
     <div class="card mx-auto mb-5" style="max-width: 600px;">
-        <div class="card-header bg-dark text-white" style="max-height: 90px;">
+        <div class="card-header custom-header">
             <h3 class="text-center">비밀번호 변경</h3>
         </div>
-
 
         <div class="card-body">
             <div class="d-flex justify-content-center">

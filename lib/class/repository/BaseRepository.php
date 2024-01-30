@@ -75,9 +75,13 @@ abstract class BaseRepository{
     }
 
     // select 하는게 sql마다 다를 수 있음 , 조인 , 서브쿼리 ??
-//    protected function select($table, $where){
-//
-//    }
+    protected function select($table, $where){  // 매기변수로 뭘 조회할건지도 받아서?
+        try{
+
+        } catch (\PDOException $e){
+            echo '오류: ' . $e->getMessage();
+        }
+    }
 }
 
 ?>

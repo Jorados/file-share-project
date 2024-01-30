@@ -71,6 +71,11 @@ if (isset($_SESSION['session_start_time'])) {
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        const remainingTime = <?= $remaining_time ?>;
+        let remainingSeconds = remainingTime;
+    </script>
+    <script src="/assets/js/header.js"></script>
 </head>
 
 <body>
@@ -179,10 +184,6 @@ if (isset($_SESSION['session_start_time'])) {
         </form>
     </div>
 </div>
-<script>
-    const remainingTime = <?= $remaining_time ?>;
-    let remainingSeconds = remainingTime;
-</script>
-<script src="/assets/js/header.js"></script>
+
 </body>
 

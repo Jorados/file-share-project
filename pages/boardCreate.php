@@ -13,6 +13,7 @@ session_start();
     <title>게시글 생성</title>
     <link href="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/dropzone.css" rel="stylesheet">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/index.css">
     <style>
         .custom-mx-10 { margin-left: 8rem !important; margin-right: 8rem !important; }
     </style>
@@ -20,11 +21,10 @@ session_start();
 
 <body>
 <?php include '/var/www/html/includes/header.php'?>
-<?php include '/var/www/html/includes/adminNavibar.php'?>
 <div class="container mt-5">
     <div class="card mx-auto mb-5" style="max-width: 1000px;">
-        <div class="card-header bg-dark text-white" style="max-height: 90px;">
-            <h2 class="text-center">게시글 생성</h2>
+        <div class="card-header custom-header" style="max-height: 90px;">
+            <h3 class="text-center">게시글 생성</h3>
         </div>
 
         <!-- 게시글 유형 선택 -->
