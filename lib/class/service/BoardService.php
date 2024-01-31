@@ -4,17 +4,14 @@
  */
 namespace service;
 
-use repository\AttachmentRepository;
-use repository\BoardRepository;
-use repository\UserRepository;
-use repository\InfoRepository;
-
 use dataset\Board;
 use dataset\Info;
 use dataset\User;
-
-use mail\SendMail;
 use log\PostLogger;
+use mail\SendMail;
+use repository\BoardRepository;
+use repository\InfoRepository;
+use repository\UserRepository;
 use util\Constant;
 
 class BoardService{
@@ -168,12 +165,7 @@ class BoardService{
          */
         $subject = '관리자 게시글이 작성되었습니다.';
         $message = '관리자 ' . $_SESSION['email'] . ' 님의 게시글이 작성되었습니다.';
-
-        if ($mailSender->sendToAdmins($subject, $message)) {
-            echo "메일이 성공적으로 전송되었습니다.";
-        } else {
-            echo "메일 전송에 실패했습니다.";
-        }
+        $mailSender->sendToAdmins($subject, $message);
 
         // 로그 작성
         $logger->createPost($_SERVER['REQUEST_URI'], $email, $postStatus);
@@ -207,12 +199,7 @@ class BoardService{
          */
         $subject = 'post has been written.';
         $message = $email . ' post has been written.';
-
-        if ($mailSender->sendToAdmins($subject, $message)) {
-            echo "메일이 성공적으로 전송되었습니다.";
-        } else {
-            echo "메일 전송에 실패했습니다.";
-        }
+        $mailSender->sendToAdmins($subject, $message);
 
         // 로그 작성
         $status = 'normal';

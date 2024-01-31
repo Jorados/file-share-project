@@ -7,6 +7,7 @@ session_start();
 include '/var/www/html/lib/config.php';
 
 use service\UserService;
+use util\Util;
 
 $userService = new UserService();
 
@@ -18,7 +19,7 @@ if (isset($_GET['change_role']) && isset($_GET['user_id'])) {
     $result = $userService->updateRole($userId,$newRole,$adminEmail);
     echo json_encode(['status'=>$result['status'], 'content'=>$result['content']]);
 
-    header("Location: /pages/admin/adminUserAuthority.php");
+    Util::serverRedirect("/pages/admin/adminUserAuthority.php");
     exit;
 }
 ?>

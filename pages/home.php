@@ -103,7 +103,7 @@ $boards = $result['boards'];
                         </h5>
                         <p class="card-text">
                             <?php
-                            $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : (strlen($board->getContent()) > 100 ? substr($board->getContent(), 0, 50) . ".." : $board->getContent());
+                            $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : (strlen($board->getContent()) > 27 ? substr($board->getContent(), 0, 27) . ".." : $board->getContent());
                             $escapedContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
                             echo '내용 : ' . $escapedContent;
                             ?>

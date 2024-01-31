@@ -18,5 +18,6 @@ if ($_SERVER["REQUEST_METHOD"] == Constant::METHOD_POST) {
     // 세션 파기
     session_unset();
     session_destroy();
+    exit();
 }
 ?>

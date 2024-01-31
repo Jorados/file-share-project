@@ -3,6 +3,10 @@
  * 관리자 -> 글 작성 페이지
  */
 session_start();
+
+include_once  '/var/www/html/lib/config.php';
+use util\Util;
+if($_SESSION['authority']==0) Util::serverRedirect("/pages/home.php");
 ?>
 <!DOCTYPE html>
 <html lang="ko">

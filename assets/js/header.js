@@ -15,7 +15,7 @@ function logoutAndRedirect() {
             if (data.status) {
                 alert(data.content); // 성공 또는 실패 메시지 표시
                 // 페이지 리다이렉션
-                window.location.href = "/index.php";
+                //window.location.href = "/index.php";
             } else {
                 alert(data.content);
             }

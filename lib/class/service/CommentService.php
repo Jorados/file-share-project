@@ -40,6 +40,30 @@ class CommentService{
         }
         return $result;
     }
+
+
+    /**
+     * 댓글 삭제
+     * @param $comment_id
+     * @return array
+     */
+    public function deleteComment($comment_id){
+        $commentRepository = new CommentRepository();
+        $comment = $commentRepository->findCommentById(new Comment(['comment_id'=>$comment_id]));
+
+        $result = [];
+        if(empty($comment)){
+            $result['status'] = false;
+            $result['content'] = "댓글을 찾을 수 없습니다.";
+        }
+        else{
+            $commentRepository->deleteComment($comment);
+            $result['status'] = true;
+            $result['content'] = "댓글이 삭제되었습니다.";
+        }
+
+        return $result;
+    }
 }
 
 ?>

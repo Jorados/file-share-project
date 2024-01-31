@@ -1,12 +1,13 @@
 <?php
 /**
  * Repository 모듈화를 위한 부모클래스
+ * 기본적인 CRUD 기능을 하는 DML에 대해서만 SQL 모듈화 진행
+ * 그 이상의 모듈화는 오히려 복잡성을 불러온다.
  */
 
 namespace repository;
 
 use database\DatabaseConnection;
-//use database\DatabaseController;
 
 abstract class BaseRepository{
 
@@ -21,6 +22,11 @@ abstract class BaseRepository{
         $this->table=$table;
     }
 
+    /**
+     * 기본 insert sql 구현 메서드
+     * @param $table
+     * @param $data
+     */
     protected function insert($table, $data){
         try {
             $columns = implode(', ', array_keys($data));
@@ -29,11 +35,16 @@ abstract class BaseRepository{
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute($data);
         } catch (\PDOException $e) {
-            // 오류 메시지를 기록하거나 출력합니다.
             echo '오류: ' . $e->getMessage();
         }
     }
 
+    /**
+     * 기본 update sql 구현 메서드
+     * @param $table
+     * @param $data
+     * @param $where_data
+     */
     protected function update($table, $data, $where_data){
         try {
             // SET 부분 변수
@@ -58,6 +69,11 @@ abstract class BaseRepository{
         }
     }
 
+    /**
+     * 기본 delete sql 구현 메서드
+     * @param $table
+     * @param $where_data
+     */
     protected function delete($table, $where_data) {
         try {
             $where = '';
@@ -75,7 +91,13 @@ abstract class BaseRepository{
         }
     }
 
-    // 어떤 걸 조회할건지는 가능.
+    /**
+     * 기본 select sql 구현 메서드
+     * @param $table
+     * @param null $read
+     * @param $where_data
+     * @return false|\PDOStatement
+     */
     protected function select($table, $read = null, $where_data){
         try{
             $select = '';

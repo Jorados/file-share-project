@@ -22,10 +22,8 @@ class CommentRepository extends BaseRepository {
      * @return array|\dataset\BaseModel[]
      */
     public function getCommentsByBoardId($board_id) {
-        $commentsQuery = "SELECT * FROM comment WHERE board_id = :board_id";
-        $stmt = $this->pdo->prepare($commentsQuery);
-        $stmt->bindParam(':board_id', $board_id, \PDO::PARAM_INT);
-        $stmt->execute();
+        $data = ['board_id'=>$board_id];
+        $stmt = $this->select($this->table,null,$data);
         return DatabaseController::arrayMapObjects(new Comment(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
@@ -42,6 +40,7 @@ class CommentRepository extends BaseRepository {
         return $result['total'];
     }
 
+
     /**
      * 댓글 create
      * @param Comment $comment
@@ -54,6 +53,26 @@ class CommentRepository extends BaseRepository {
             'date' => date('Y-m-d H:i:s') // 현재 날짜와 시간을 포맷에 맞춰 전달
         ];
         $this->insert($this->table, $data);
+    }
+
+    /**
+     * 댓글 삭제
+     * @param Comment $comment
+     */
+    public function deleteComment(Comment $comment){
+        $data=['comment_id'=>$comment->getCommentId()];
+        $this->delete($this->table, $data);
+    }
+
+    /**
+     * 특정 댓글 조회
+     * @param Comment $comment
+     * @return Comment
+     */
+    public function findCommentById(Comment $comment){
+        $data=['comment_id'=>$comment->getCommentId()];
+        $stmt = $this->select($this->table,null,$data);
+        return new Comment($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 }
 

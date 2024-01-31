@@ -36,14 +36,15 @@ $attachments = $result['attachments'];
 <div class="container mt-5">
     <!-- 게시글 상세 정보 -->
     <div class="card mx-auto mb-4" style="max-width: 1000px;">
-        <div class="card-header custom-header" style="max-height: 90px;">
+        <div class="card-header custom-header d-flex justify-content-between align-items-center" style="max-height: 90px;">
             <?php if ($board->getStatus() == 'normal'): ?>
-                <h3 class="text-center">글 상세 조회</h3>
+                <h2 class="text-center" style="color: black">글 상세 조회</h2>
             <?php elseif ($board->getStatus() == 'notification'):?>
-                <h3 class="text-center">공지 상세 조회</h3>
+                <h2 class="text-center" style="color: black">공지 상세 조회</h2>
             <?php endif ?>
+<!--            <button class="btn btn-primary" onclick="goBack()">돌아가기</button>-->
+            <a onclick="goBack()" class="btn btn-primary">돌아가기</a>
         </div>
-
 
         <div class="card-body">
             <?php if ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user' && $board->getStatus() == 'normal'): ?>
@@ -222,12 +223,19 @@ $attachments = $result['attachments'];
                             <div class="card-body d-flex justify-content-between">
                                 <div style="max-width: 80%;">
                                     <p class="card-text mb-2" style="margin: 0;"><?= $comment->getContent(); ?></p>
-                                    <small class="text-muted">
+                                    <small class="text-muted mr-4"> 작성일: <?= date('Y-m-d', strtotime($comment->getDate())); ?></small>
+                                    <small class="text-muted ">
                                         작성자: <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
                                     </small>
                                 </div>
+
                                 <div class="text-right">
-                                    <small class="text-muted"><?= date('Y-m-d', strtotime($comment->getDate())); ?></small>
+                                    <?php if ($_SESSION['email'] == $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail()): ?>
+                                        <form action="/action/comment/deleteComment.php" method="post" id="deleteFormComment">
+                                            <input type="hidden" name="comment_id" value="<?= $comment->getCommentId() ?>">
+                                            <button type="button" name="delete_comment" class="btn btn-danger" onclick="submitDeleteFormComment()">삭제</button>
+                                        </form>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </li>
@@ -237,8 +245,14 @@ $attachments = $result['attachments'];
         </div>
     </div>
 </div>
+<script>
+    function goBack() {
+        window.history.back();
+    }
+</script>
 <script src="/assets/js/board/changeBoardAuthority.js"></script>
 <script src="/assets/js/comment/createComment.js"></script>
+<script src="/assets/js/comment/deleteComment.js"></script>
 <script src="/assets/js/board/deleteBoard.js"></script>
 </body>
 <footer>
