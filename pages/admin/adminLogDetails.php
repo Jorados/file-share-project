@@ -9,11 +9,13 @@
     <meta charset="UTF-8">
     <title>Log Details</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 <body>
 <?php include '/var/www/html/includes/header.php'?>
 
-<div class="container mt-5">
+<div class="container-fluid mt-5" style="max-width: 70%;">
+<!--<div class="container mt-5">-->
     <h2 class="mb-4">로그 보기</h2>
     <form method="post" action="adminLogDetails.php" class="mb-4">
         <div class="mb-3">

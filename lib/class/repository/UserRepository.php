@@ -81,7 +81,7 @@ class UserRepository extends BaseRepository {
      * @return User
      */
     public function getUserEmailById(User $user){
-        $read = ['email'];
+        $read = ['email','username'];
         $data = ['user_id'=>$user->getUserId()];
         $stmt = $this->select($this->table, $read, $data);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));

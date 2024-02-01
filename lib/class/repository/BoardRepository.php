@@ -216,7 +216,7 @@ class BoardRepository extends BaseRepository {
      * @return array|\dataset\BaseModel[]
      */
     public function getOpencloseBoard(){
-        $sql = "SELECT board_id FROM board WHERE openclose = 'open' AND openclose_time <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
+        $sql = "SELECT board_id FROM board WHERE {$this->getOpencloseWhere()}";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
@@ -226,9 +226,13 @@ class BoardRepository extends BaseRepository {
      * 허용된 글 중에서 허용된 시점을 기반으로 1일 이상지난 board를 열람 불가상태로 update
      */
     public function updateOpencloseBoard() {
-        $sql = "UPDATE board SET openclose = 'close' WHERE openclose = 'open' AND openclose_time <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
+        $sql = "UPDATE board SET openclose = 'close' WHERE {$this->getOpencloseWhere()}";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
+    }
+
+    public function getOpencloseWhere(){
+        return "openclose = 'open' AND openclose_time <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
     }
 
     /**

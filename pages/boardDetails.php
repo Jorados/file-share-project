@@ -118,7 +118,7 @@ $attachments = $result['attachments'];
                 <textarea class="form-control mb-3" id="date" rows="1" readonly><?= date('Y-m-d', strtotime($board->getDate())); ?></textarea>
 
                 <label for="date">작성자</label>
-                <textarea class="form-control mb-3" id="email" rows="1" readonly><?= $userRepository->getUserById($board->getUserId())->getEmail() ?></textarea>
+                <textarea class="form-control mb-3" id="email" rows="1" readonly><?= $userRepository->getUserById($board->getUserId())->getUsername() ?></textarea>
 
                 <?php if ($board->getStatus() == 'normal'): ?>
                     <label for="openclose">열람 권한</label>
@@ -174,7 +174,7 @@ $attachments = $result['attachments'];
                     <?php elseif ($board->getOpenclose() == 'open'): ?>
                         <button type="button" class="btn btn-warning mt-3" onclick="submitBoardAuthority('close')">열람 불가</button>
                     <?php elseif ($board->getOpenclose() == 'wait'): ?>
-                        <button type="button" class="btn btn-primary mt-3" onclick="submitBoardAuthority('open')">열람 허용</button>
+                        <button type="button" class="btn btn-primary mt-3 mr-2" onclick="submitBoardAuthority('open')">열람 허용</button>
                         <button type="button" class="btn btn-warning mt-3" onclick="submitBoardAuthority('close')">열람 불가</button>
                     <?php endif; ?>
                 </form>
@@ -183,7 +183,7 @@ $attachments = $result['attachments'];
                     <div class="col-md-6">
                         <form action="/action/board/deleteForm.php" method="post"  class="d-inline-block" id="deleteForm">
                             <input type="hidden" name="board_id" value="<?= $board->getBoardId() ?>">
-                            <input type="button" name="delete_post" value="글 삭제" class="btn btn-danger" onclick="submitDeleteForm()">
+                            <input type="button" name="delete_post" value="삭제 하기" class="btn btn-danger" onclick="submitDeleteForm()">
                         </form>
                     </div>
                 </div>
@@ -226,9 +226,9 @@ $attachments = $result['attachments'];
                             <div class="card-body d-flex justify-content-between">
                                 <div style="max-width: 80%;">
                                     <p class="card-text mb-2" style="margin: 0;"><?= $comment->getContent(); ?></p>
-                                    <small class="text-muted mr-4"> 작성일: <?= date('Y-m-d', strtotime($comment->getDate())); ?></small>
+                                    <small class="text-muted mr-3"> 작성일 : <?= date('Y-m-d H:i', strtotime($comment->getDate())); ?></small>
                                     <small class="text-muted ">
-                                        작성자: <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getEmail(); ?>
+                                        작성자 : <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getUsername(); ?>
                                     </small>
                                 </div>
 
