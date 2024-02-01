@@ -61,6 +61,7 @@ $boards = $result['boards'];
                     <option selected>-선택-</option>
                     <option value="title">제목</option>
                     <option value="content">내용</option>
+                    <option value="username">작성자</option>
                 </select>
 
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_query" id="searchQueryInput" autocomplete="off">

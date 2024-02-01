@@ -227,16 +227,15 @@ class UserService{
             $result['content'] = "유효한 이메일 형식이 아닙니다. 올바른 이메일 주소를 입력해주세요.";
         } else {
             // 중복 이메일 검사
-            $existingUser = $userRepository->getUserByEmail(new User(['email'=>$email]));
-
+            $existingUser = $userRepository->getUserByEmail(new User(['email'=>$email])); //-> 객체를 받아온거라 값자체는 있음. 변수를 비교해야함
             // 해당 이메일이 존재하는지,
-            if ($existingUser && $existingUser->getUserId() != $user_id) {
+            if ($existingUser->getEmail() == $email && $existingUser->getUserId() != $user_id) {
                 $result['status'] = false;
                 $result['content'] = "이미 사용 중인 이메일 주소입니다.";
             } else {
                 // 중복 사용자 이름 검사
                 $existingUsername = $userRepository->getUserByUsername(new User(['username'=>$username]));
-                if ($existingUsername && $existingUsername->getUserId() != $user_id) {
+                if ($existingUsername->getUsername() == $username && $existingUsername->getUserId() != $user_id) {
                     $result['status'] = false;
                     $result['content'] = "이미 사용 중인 사용자 이름입니다. 다른 사용자 이름을 선택해주세요.";
                 } else {

@@ -131,15 +131,37 @@ class BoardRepository extends BaseRepository {
             $paramArr[':permission'] = $permission;
         }
 
-        if ($userId !== null){
+        if ($userId !== null) {
             $whereConditions[] = "user_id = :userId";
             $paramArr[':userId'] = $userId;
         }
 
+        // 복수 행 처리가 안 되어 있음.
         if ($searchType !== null && $searchQuery !== null) {
-            $whereConditions[] = "$searchType LIKE :search_query";
-            $paramArr[':search_query'] = "%{$searchQuery}%";
+            // 검색 타입이 'username'이면 사용자 이름으로 검색
+            if ($searchType === 'username') {
+                // 사용자 이름으로 검색할 때는 해당 사용자의 user_id를 찾아 조건에 추가
+                $userIdsByUserName = $this->getUserIdByUsername($searchQuery);
+
+                if (!empty($userIdsByUserName)) {
+                    // IN 연산자를 사용하여 여러 값을 비교
+                    $inConditions = [];
+                    foreach ($userIdsByUserName as $index => $userId) {
+                        $inConditions[] = ":userIdByUserName{$index}";
+                        $paramArr[":userIdByUserName{$index}"] = $userId->getUserId();
+                    }
+                    $whereConditions[] = "user_id IN (" . implode(", ", $inConditions) . ")";
+                } else {
+                    // 사용자를 찾지 못한 경우에는 빈 결과를 반환
+                    return ['paramArr' => [], 'strArr' => '1 = 0'];
+                }
+            } else {
+                // 다른 검색 타입인 경우 (예: title, content 등)는 LIKE 검색을 수행
+                $whereConditions[] = "$searchType LIKE :search_query";
+                $paramArr[':search_query'] = "%{$searchQuery}%";
+            }
         }
+
 
         $whereConditions[] = "delete_type = :delete_type";
         $paramArr[':delete_type'] = 0;
@@ -244,5 +266,12 @@ class BoardRepository extends BaseRepository {
 //        $stmt->execute();
 //    }
 
+
+    public function getUserIdByUsername($username) {
+        $query = "SELECT user_id FROM user WHERE username LIKE :username";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':username' => "%{$username}%"]);
+        return DatabaseController::arrayMapObjects(new User(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
+    }
 }
 ?>
