@@ -46,12 +46,20 @@ class InfoRepository extends BaseRepository {
      */
     public function addInfoByBoardId($board_id){
         $data = [
-            'date' => date('Y-m-d H:i:s'), // Use the current date and time
+            'date' => NOW(),
             'reason_content' => '이 게시글은 일정 시간 이상 지나서 자동 반려됩니다.',
             'board_id' => $board_id,
             'user_id' => 2
         ];
         $this->insert($this->table,$data);
     }
+
+//    public function addInfoByBoardId($board_Id){
+//        $insertSql = "INSERT INTO info (date, reason_content, board_id, user_id) VALUES (NOW(), '이 게시글은 일정 시간 이상 지나서 자동 반려됩니다.', :board_id, 2)";
+//        $stmt = $this->pdo->prepare($insertSql);
+//        $stmt->bindParam(':board_id', $board_Id, PDO::PARAM_INT);
+//        $stmt->execute();
+//    }
+
 }
 ?>

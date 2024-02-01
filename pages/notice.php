@@ -76,11 +76,9 @@ $boards = $result['boards'];
                             <a href="boardDetails.php?board_id=<?= $board->getBoardId(); ?>">
                                 <?php
                                 $title = $board->getTitle();
-                                if (strlen($title) > 27) {
-                                    echo substr($title, 0, 27) . "..";
-                                } else {
-                                    echo $title;
-                                }
+                                $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+                                $truncatedTitle = mb_strimwidth($escapedTitle, 0, 15, '...'); // 문자열 주어진 너비로 자르기
+                                echo $truncatedTitle;
                                 ?>
                             </a>
 
@@ -95,10 +93,20 @@ $boards = $result['boards'];
                                 ?>
                             </div>
                         </h5>
-                        <p class="card-text"><?= $board->getContent(); ?></p>
                         <p class="card-text">
-                            작성자 :
-                            <?= $user = $userRepository->getUserById($board->getUserId())->getEmail(); ?>
+                            <?php
+                            $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ?
+                                '볼 수 없음' : $board->getContent();
+                            $truncatedContent = mb_strimwidth($content, 0, 15, '...');
+                            echo '<p>내용 : ' . htmlspecialchars($truncatedContent, ENT_QUOTES, 'UTF-8') . '</p>';
+                            ?>
+                        </p>
+                        <p class="card-text">
+                            <?php
+                            $author = $userRepository->getUserById($board->getUserId())->getUsername();
+                            $truncatedAuthor = mb_strimwidth($author, 0, 30, '...'); // 작성자 표시 부분 수정
+                            echo '작성자 : ' . htmlspecialchars($truncatedAuthor, ENT_QUOTES, 'UTF-8');
+                            ?>
                         </p>
                         <p class="card-text">날짜 : <?= date('Y-m-d', strtotime($board->getDate())); ?></p>
                         <p class="card-text">열람권한 : <span style="color: blue;">허용</span></p>

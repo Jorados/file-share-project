@@ -49,9 +49,8 @@ class UserRepository extends BaseRepository {
         return DatabaseController::arrayMapObjects(new User(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
-
     /**
-     * 중복 User cound read
+     * 중복 User email count read
      * @param User $user
      * @return bool
      */
@@ -59,6 +58,19 @@ class UserRepository extends BaseRepository {
         $query = 'SELECT COUNT(*) FROM user WHERE email = :email';
         $stmt = $this->pdo->prepare($query);
         $stmt->execute(['email'=>$user->getEmail()]);
+        $count = $stmt->fetchColumn();
+        return $count > 0;
+    }
+
+    /**
+     * 중복 User username count read
+     * @param User $user
+     * @return bool
+     */
+    public function isUsernameDuplicate(User $user) {
+        $query = 'SELECT COUNT(*) FROM user WHERE username = :username';
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['username'=>$user->getUsername()]);
         $count = $stmt->fetchColumn();
         return $count > 0;
     }
@@ -145,6 +157,18 @@ class UserRepository extends BaseRepository {
             'phone'=>$user->getPhone()
         ];
         $this->insert($this->table, $data);
+    }
+
+    public function getUserByEmail(User $user){
+        $data = ['email'=>$user->getEmail()];
+        $stmt = $this->select($this->table,null,$data);
+        return new User($stmt->fetch(\PDO::FETCH_ASSOC));
+    }
+
+    public function getUserByUsername(User $user){
+        $data = ['username'=>$user->getUsername()];
+        $stmt = $this->select($this->table,null,$data);
+        return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
 

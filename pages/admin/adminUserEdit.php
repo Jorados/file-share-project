@@ -18,6 +18,7 @@ $user = $userRepository -> getUserById($user_id);
 <head>
     <meta charset='utf-8'>
     <title>사용자 정보 변경</title>
+    <link rel="stylesheet" href="/assets/css/index.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -25,8 +26,8 @@ $user = $userRepository -> getUserById($user_id);
 
 <div class="container mt-5">
     <!-- 게시글 상세 정보 -->
-    <div class="card mx-auto mb-5" style="max-width: 600px;">
-        <div class="card-header bg-dark text-white" style="max-height: 90px;">
+    <div class="card mx-auto mb-5" style="max-width: 700px;">
+        <div class="card-header custom-header" style="max-height: 90px;">
             <h3 class="text-center">사용자 정보 변경</h3>
         </div>
 
@@ -60,8 +61,9 @@ $user = $userRepository -> getUserById($user_id);
                         <input type="text" class="form-control" id="phone" name="phone" value="<?=$user->getPhone(); ?>">
                     </div>
 
+                    <br>
                     <input type="hidden" name="user_id" value="<?=$user->getUserId(); ?>">
-                    <button type="button" class="btn btn-warning" onclick="submitForm()">정보 수정</button>
+                    <button type="button" class="btn btn-warning btn-block" onclick="submitForm()">정보 수정</button>
                 </form>
             </div>
         </div>

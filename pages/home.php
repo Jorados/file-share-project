@@ -1,3 +1,4 @@
+
 <?php
 /**
  * 사용자 -> 홈 페이지 (로그인 후)
@@ -14,7 +15,7 @@ $userRepository = new UserRepository();
 $boardService = new BoardService();
 
 $user_id = $_SESSION['user_id'];
-$items_per_page = 9;
+$items_per_page = 16;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $items_per_page;
 $order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
@@ -79,53 +80,61 @@ $boards = $result['boards'];
 
     <div class="row">
         <?php foreach ($boards as $board): ?>
-            <div class="col-md-4 mb-4">
-                <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 'open' ? '#D0E7FA' : '#FFFFFF'; ?>;">
+            <div class="col-md-3 mb-4">
+                <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 'open' ? '#D0E7FA' : '#FFFFFF'; ?>;"> <!--'#D0E7FA'-->
                     <div class="card-body">
                         <h5 class="card-title">
                             <a href="boardDetails.php?board_id=<?= $board->getBoardId(); ?>">
                                 <?php
                                 $title = $board->getTitle();
                                 $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
-                                echo strlen($escapedTitle) > 27 ? substr($escapedTitle, 0, 27) . ".." : $escapedTitle;
+                                $truncatedTitle = mb_strimwidth($escapedTitle, 0, 15, '...'); // 문자열 주어진 너비로 자르기
+                                echo $truncatedTitle;
                                 ?>
                             </a>
                             <div style="float: right;">
-                                <?php
-                                // 현재 날짜와 게시글 작성일이 동일한 경우에만 "new" 문구를 추가
-                                $currentDate = date('Y-m-d');
-                                $boardDate = date('Y-m-d', strtotime($board->getDate()));
-                                if ($currentDate == $boardDate) {
-                                    echo '<span class="badge badge-pill badge-primary">new</span>';
-                                }
-                                ?>
+                                <!--                                --><?php
+                                //                                // 현재 날짜와 게시글 작성일이 동일한 경우에만 "new" 문구를 추가
+                                //                                $currentDate = date('Y-m-d');
+                                //                                $boardDate = date('Y-m-d', strtotime($board->getDate()));
+                                //                                if ($currentDate == $boardDate) {
+                                //                                    echo '<span class="badge badge-pill badge-primary">new</span>';
+                                //                                }
+                                //                                ?>
+                                <p class="card-text">
+                                    <strong>
+                                        <?php
+                                        if ($board->getOpenclose() == 'open') {
+                                            echo '<span style="color: blue;">허용</span>';
+                                        } elseif ($board->getOpenclose() == 'close') {
+                                            echo '<span style="color: red;">불가</span>';
+                                        } elseif ($board->getOpenclose() == 'wait') {
+                                            echo '<span style="color: #09de00;">대기</span>';
+                                        }
+                                        ?>
+                                    </strong>
+                                </p>
                             </div>
                         </h5>
                         <p class="card-text">
                             <?php
-                            $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : (strlen($board->getContent()) > 27 ? substr($board->getContent(), 0, 27) . ".." : $board->getContent());
-                            $escapedContent = htmlspecialchars($content, ENT_QUOTES, 'UTF-8');
-                            echo '내용 : ' . $escapedContent;
+                            $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ?
+                                '볼 수 없음' : $board->getContent();
+                            $truncatedContent = mb_strimwidth($content, 0, 15, '...');
+                            echo '<p>내용 : ' . htmlspecialchars($truncatedContent, ENT_QUOTES, 'UTF-8') . '</p>';
                             ?>
                         </p>
                         <p class="card-text">
-                            작성자 : <?= $userRepository->getUserById($board->getUserId())->getEmail(); ?>
-                        </p>
-                        <p class="card-text">
-                            날짜 : <?= ($board->getOpenclose() == 'close' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
-                        </p>
-                        <p class="card-text">
-                            열람권한 :
                             <?php
-                            if ($board->getOpenclose() == 'open') {
-                                echo '<span style="color: blue;">허용</span>';
-                            } elseif ($board->getOpenclose() == 'close') {
-                                echo '<span style="color: red;">불가</span>';
-                            } elseif ($board->getOpenclose() == 'wait') {
-                                echo '<span style="color: #09de00;">대기</span>';
-                            }
+                            $author = $userRepository->getUserById($board->getUserId())->getUsername();
+                            $truncatedAuthor = mb_strimwidth($author, 0, 15, '...'); // 작성자 표시 부분 수정
+                            echo '작성자 : ' . htmlspecialchars($truncatedAuthor, ENT_QUOTES, 'UTF-8');
                             ?>
                         </p>
+                        <p class="card-text">
+                            날짜 : <?= ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
+                        </p>
+
                         <p class="card-text" style="float: right;">
                             댓글 <?= $commentRepository->getCountComments($board->getBoardId()); ?> 개
                         </p>

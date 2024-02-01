@@ -18,7 +18,7 @@ function submitDeleteForm() {
             // 서버에서 반환한 데이터를 처리
             if (data.status) {
                 alert(data.content);
-                window.location.href = '/pages/admin/adminHome.php';
+                window.location.href = '/pages/home.php';
             } else {
                 alert(data.content);
             }

@@ -69,30 +69,6 @@ class BoardRepository extends BaseRepository {
     }
 
     /**
-     * 허용된 글 중에서 1일 이상지난 board read
-     * @return array|\dataset\BaseModel[]
-     */
-    public function getOpencloseBoard(){
-        $sql = "SELECT board_id FROM board WHERE openclose = 'open' AND date <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute();
-        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
-    }
-
-    /**
-     * 허용된 글 중에서 허용된 시점을 기반으로 1일 이상지난 board를 열람 불가상태로 update
-     */
-    public function updateOpencloseBoard() {
-        $set = ['openclose' => 'close'];
-        $where = [
-            'openclose' => 'open',
-            'status' => 'normal',
-            ['TIMESTAMPDIFF(HOUR, openclose_time, NOW()) >= 24', []],
-        ];
-        $this->update($this->table, $set, $where);
-    }
-
-    /**
      * 매개변수(검색 조건) 고려하여 board의 count read
      * @param int|null $permission
      * @param String|null $searchType
@@ -234,6 +210,35 @@ class BoardRepository extends BaseRepository {
         $where = ['board_id' => $board_id];
         $this->update($this->table, $set, $where);
     }
+
+    /**
+     * 허용된 글 중에서 1일 이상지난 board read
+     * @return array|\dataset\BaseModel[]
+     */
+    public function getOpencloseBoard(){
+        $sql = "SELECT board_id FROM board WHERE openclose = 'open' AND openclose_time <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
+    }
+
+    /**
+     * 허용된 글 중에서 허용된 시점을 기반으로 1일 이상지난 board를 열람 불가상태로 update
+     */
+    public function updateOpencloseBoard() {
+        $sql = "UPDATE board SET openclose = 'close' WHERE openclose = 'open' AND openclose_time <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+    }
+
+    /**
+     *  대기상태에서 하루 이상 경과 시 자동 반려 -> 보류
+     */
+//    public function updateOpencloseBoardToWait() {
+//        $sql = "UPDATE board SET openclose = 'close' WHERE openclose = 'wait' AND date <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
+//        $stmt = $this->pdo->prepare($sql);
+//        $stmt->execute();
+//    }
 
 }
 ?>

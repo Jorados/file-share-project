@@ -42,7 +42,6 @@ $attachments = $result['attachments'];
             <?php elseif ($board->getStatus() == 'notification'):?>
                 <h2 class="text-center" style="color: black">공지 상세 조회</h2>
             <?php endif ?>
-<!--            <button class="btn btn-primary" onclick="goBack()">돌아가기</button>-->
             <a onclick="goBack()" class="btn btn-primary">돌아가기</a>
         </div>
 
@@ -82,7 +81,7 @@ $attachments = $result['attachments'];
                 <textarea class="form-control mb-3" id="title" rows="1" readonly><?= htmlspecialchars($board->getTitle(), ENT_QUOTES, 'UTF-8'); ?></textarea>
 
                 <label for="content">내용</label>
-                <textarea class="form-control mb-3" id="content" rows="1" readonly><?= htmlspecialchars($board->getContent(), ENT_QUOTES, 'UTF-8'); ?></textarea>
+                <textarea class="form-control mb-3" id="content" rows="4" readonly><?= htmlspecialchars($board->getContent(), ENT_QUOTES, 'UTF-8'); ?></textarea>
 
                 <label for="attachments">파일목록</label>
                 <ul class="list-group mb-3">
@@ -118,18 +117,22 @@ $attachments = $result['attachments'];
                 <label for="date">작성일</label>
                 <textarea class="form-control mb-3" id="date" rows="1" readonly><?= date('Y-m-d', strtotime($board->getDate())); ?></textarea>
 
+                <label for="date">작성자</label>
+                <textarea class="form-control mb-3" id="email" rows="1" readonly><?= $userRepository->getUserById($board->getUserId())->getEmail() ?></textarea>
+
                 <?php if ($board->getStatus() == 'normal'): ?>
                     <label for="openclose">열람 권한</label>
                     <textarea class="form-control mb-3" id="openclose" rows="1" readonly style="color:
-                <?php
-                if ($board->getOpenclose() == 'open') {
-                    echo 'blue';
-                } elseif ($board->getOpenclose() == 'close') {
-                    echo 'red';
-                } elseif ($board->getOpenclose() == 'wait') {
-                    echo '#09de00';
-                }
-                ?>;"><?= $board->getOpenclose() == 'open' ? '허용' : ($board->getOpenclose() == 'close' ? '불가' : '대기'); ?></textarea>
+                        <?php
+                        if ($board->getOpenclose() == 'open') {
+                            echo 'blue';
+                        } elseif ($board->getOpenclose() == 'close') {
+                            echo 'red';
+                        } elseif ($board->getOpenclose() == 'wait') {
+                            echo '#09de00';
+                        }
+                        ?>;"><?= $board->getOpenclose() == 'open' ? '허용' : ($board->getOpenclose() == 'close' ? '불가' : '대기'); ?>
+                    </textarea>
                 <?php endif; ?>
 
                 <?php if($board->getStatus() == 'notification' && $_SESSION['role'] == 'admin'): ?>
