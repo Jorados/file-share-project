@@ -9,7 +9,7 @@ function submitDeleteForm() {
         return;
     }
 
-    fetch('/action/board/deletePost.php', {
+    fetch('/action/board/deleteBoard.php', {
         method: 'POST',
         body: formData
     })

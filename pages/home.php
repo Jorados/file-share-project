@@ -94,14 +94,6 @@ $boards = $result['boards'];
                                 ?>
                             </a>
                             <div style="float: right;">
-                                <!--                                --><?php
-                                //                                // 현재 날짜와 게시글 작성일이 동일한 경우에만 "new" 문구를 추가
-                                //                                $currentDate = date('Y-m-d');
-                                //                                $boardDate = date('Y-m-d', strtotime($board->getDate()));
-                                //                                if ($currentDate == $boardDate) {
-                                //                                    echo '<span class="badge badge-pill badge-primary">new</span>';
-                                //                                }
-                                //                                ?>
                                 <p class="card-text">
                                     <strong>
                                         <?php

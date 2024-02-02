@@ -71,11 +71,9 @@ if($_SESSION['authority']==0) Util::serverRedirect("/pages/home.php");
         </div>
     </div>
 </div>
-
-<?php $dropzoneScriptPath = ($_SESSION['role'] == 'user') ? '/assets/js/dropzone/dropzoneUser.js' : '/assets/js/dropzone/dropzoneAdmin.js'; ?>
 <script src="https://cdn.jsdelivr.net/npm/dropzone@5.9.3/dist/min/dropzone.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="<?php echo $dropzoneScriptPath; ?>"></script>
+<script src="/assets/js/dropzone/dropzoneBoardCreate.js"></script>
 </body>
 <footer>
     <?php include '/var/www/html/includes/footer.php'?>

@@ -164,7 +164,7 @@ $attachments = $result['attachments'];
                     <p class="mb-1">전화번호 : <?php echo !empty($user->getPhone()) ? $user->getPhone() : '없음'; ?></p>
                 </div>
             <?php elseif ($_SESSION['role'] == 'admin' && $board->getStatus() == 'normal'):?>
-                <form action="/action/board/boardAuthorityChange.php" method="post"  class="mt-3" id="authorityForm">
+                <form action="/action/board/authorityChangeBoard.php" method="post" class="mt-3" id="authorityForm">
                     <label for="reason_content">사유</label>
                     <textarea name="reason_content" id="reason_content" rows="3" class="form-control" placeholder="열람 권한 변경의 사유를 입력하세요." required></textarea>
                     <input type="hidden" name="board_id" value="<?= $board->getBoardId(); ?>">

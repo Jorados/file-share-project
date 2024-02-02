@@ -257,6 +257,13 @@ class BoardRepository extends BaseRepository {
         return "openclose = 'open' AND openclose_time <= DATE_SUB(NOW(), INTERVAL 1 DAY) AND status = 'normal'";
     }
 
+    public function getUserIdByUsername($username) {
+        $query = "SELECT user_id FROM user WHERE username LIKE :username";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute([':username' => "%{$username}%"]);
+        return DatabaseController::arrayMapObjects(new User(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
+    }
+
     /**
      *  대기상태에서 하루 이상 경과 시 자동 반려 -> 보류
      */
@@ -265,13 +272,5 @@ class BoardRepository extends BaseRepository {
 //        $stmt = $this->pdo->prepare($sql);
 //        $stmt->execute();
 //    }
-
-
-    public function getUserIdByUsername($username) {
-        $query = "SELECT user_id FROM user WHERE username LIKE :username";
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute([':username' => "%{$username}%"]);
-        return DatabaseController::arrayMapObjects(new User(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
-    }
 }
 ?>

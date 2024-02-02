@@ -55,11 +55,7 @@ class UserRepository extends BaseRepository {
      * @return bool
      */
     public function isEmailDuplicate(User $user) {
-        $query = 'SELECT COUNT(*) FROM user WHERE email = :email';
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute(['email'=>$user->getEmail()]);
-        $count = $stmt->fetchColumn();
-        return $count > 0;
+        return $this->isDuplicate('email', $user->getEmail());
     }
 
     /**
@@ -68,9 +64,13 @@ class UserRepository extends BaseRepository {
      * @return bool
      */
     public function isUsernameDuplicate(User $user) {
-        $query = 'SELECT COUNT(*) FROM user WHERE username = :username';
+        return $this->isDuplicate('username', $user->getUsername());
+    }
+
+    private function isDuplicate($columnName, $columnValue) {
+        $query = "SELECT COUNT(*) FROM user WHERE $columnName = :columnValue";
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute(['username'=>$user->getUsername()]);
+        $stmt->execute([$columnName => $columnValue]);
         $count = $stmt->fetchColumn();
         return $count > 0;
     }

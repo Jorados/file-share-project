@@ -6,7 +6,7 @@ function submitBoardAuthority(newPermission) {
     var formData = new FormData(document.getElementById('authorityForm'));
     formData.append('change_permission', newPermission);
 
-    fetch('/action/board/boardAuthorityChange.php', {
+    fetch('/action/board/authorityChangeBoard.php', {
         method: 'POST',
         body: formData
     })
