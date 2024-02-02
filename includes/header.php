@@ -5,34 +5,8 @@
 session_start();
 
 include_once  '/var/www/html/lib/config.php';
+include_once  LIB_PATH . '/sessionCheck.php';
 use util\Util;
-
-// 페이지가 처음 로드되었거나 세션 시작 시간이 설정되지 않았을 때
-if (!isset($_SESSION['session_start_time'])) {
-    $_SESSION['session_start_time'] = time(); // 현재 시간으로 세션 시작 시간 설정
-}
-
-// 세션값 체크 + 해당 http요청 회원의 role값 파악 후 요청 처리
-if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
-    Util::serverRedirect("/index.php");
-    exit;
-} elseif (isset($_SESSION['role'])) {
-    $currentPath = $_SERVER['REQUEST_URI'];
-    if ($_SESSION['role'] == 'user' && (in_array('admin', explode("/", $currentPath)))) {
-        Util::serverRedirect("/pages/home.php");
-        exit;
-    }
-} else {
-    Util::serverRedirect("/index.php"); // 세션 값이 없으면 index.php로 리디렉션
-    exit;
-}
-
-// available 값 체크 해서 경로 제어
-if ($_SESSION['available'] == 0 && strpos($_SERVER['REQUEST_URI'], '/pages/changePassword.php') === false) {
-    Util::serverRedirect("/pages/changePassword.php");
-    exit;
-}
-
 
 // 세션 시작 시간을 현재 시간으로 업데이트
 $_SESSION['session_start_time'] = time();

@@ -15,6 +15,7 @@ use log\PostLogger;
 use log\UserLogger;
 
 use dataset\User;
+use util\Constant;
 
 class UserService{
 
@@ -346,6 +347,15 @@ class UserService{
         return $result;
     }
 
+
+    public function getUserAuthorityList($role , $searchType = null , $searchQuery = null){
+        $userRepository = new UserRepository();
+
+        if($searchType === Constant::SEARCHTYPE_NOT_SELECT) $searchType=null;
+
+        $users = $userRepository->getUserAuthorityList($role , $searchType, $searchQuery);
+        return $users;
+    }
 }
 
 ?>

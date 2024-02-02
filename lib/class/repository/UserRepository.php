@@ -39,14 +39,35 @@ class UserRepository extends BaseRepository {
     }
 
     /**
-     * role에 따른 User readAll
+     * role에 따른 User readAll ( 이메일, 이름 검색 추가 )
      * @param string $role
      * @return array|\dataset\BaseModel[]
      */
-    public function getUsersByRole($role){
-        $data = ['role'=>$role];
-        $stmt = $this->select($this->table, null, $data);
+    public function getUserAuthorityList($role, $searchType = null, $searchQuery = null) {
+        $whereClause = $this->buildWhereClause($role, $searchType, $searchQuery);
+        $query = "SELECT * FROM user WHERE {$whereClause['strArr']}";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute($whereClause['paramArr']);
         return DatabaseController::arrayMapObjects(new User(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
+    }
+
+    private function buildWhereClause($role, $searchType = null, $searchQuery = null) {
+        $whereConditions = [];
+        $paramArr = [];
+
+        if ($searchType == 'email') {
+            $whereConditions[] = "email LIKE :email";
+            $paramArr[':email'] = "%{$searchQuery}%";
+        } else if ($searchType == 'username') {
+            $whereConditions[] = "username LIKE :username";
+            $paramArr[':username'] = "%{$searchQuery}%";
+        }
+
+        $whereConditions[] = "role = :role";
+        $paramArr[':role'] = $role;
+
+        $strArr = !empty($whereConditions) ? implode(" AND ", $whereConditions) : "";
+        return ['paramArr'=>$paramArr, 'strArr'=>$strArr];
     }
 
     /**
