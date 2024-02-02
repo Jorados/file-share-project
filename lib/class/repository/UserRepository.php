@@ -22,7 +22,7 @@ class UserRepository extends BaseRepository {
      */
     public function loginUser(User $user){
         $data = ['email' => $user->getEmail()];
-        $stmt = $this->select($this->table, null, $data);
+        $stmt = $this->select($this->table,  $data);
         return ($userData = $stmt->fetch(\PDO::FETCH_ASSOC)) && password_verify($user->getPassword(), $userData['password']) ? new User($userData) : null;
     }
 
@@ -34,7 +34,7 @@ class UserRepository extends BaseRepository {
      */
     public function getUserById($user_id){
         $data = ['user_id'=>$user_id];
-        $stmt = $this->select($this->table,null,$data);
+        $stmt = $this->select($this->table, $data);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -104,7 +104,7 @@ class UserRepository extends BaseRepository {
     public function getUserEmailById(User $user){
         $read = ['email','username'];
         $data = ['user_id'=>$user->getUserId()];
-        $stmt = $this->select($this->table, $read, $data);
+        $stmt = $this->select($this->table, $data, $read);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -116,7 +116,7 @@ class UserRepository extends BaseRepository {
     public function getUserIdByEmail(User $user){
         $read = ['user_id'];
         $data = ['email'=>$user->getEmail()];
-        $stmt = $this->select($this->table,$read,$data);
+        $stmt = $this->select($this->table, $data, $read);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -182,13 +182,13 @@ class UserRepository extends BaseRepository {
 
     public function getUserByEmail(User $user){
         $data = ['email'=>$user->getEmail()];
-        $stmt = $this->select($this->table,null,$data);
+        $stmt = $this->select($this->table, $data);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
     public function getUserByUsername(User $user){
         $data = ['username'=>$user->getUsername()];
-        $stmt = $this->select($this->table,null,$data);
+        $stmt = $this->select($this->table, $data);
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 

@@ -98,7 +98,7 @@ abstract class BaseRepository{
      * @param $where_data
      * @return false|\PDOStatement
      */
-    protected function select($table, $read = null, $where_data){
+    protected function select($table, $where_data, $read = null){
         try{
             $select = '';
             $where = '';

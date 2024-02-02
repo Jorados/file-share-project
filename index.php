@@ -5,6 +5,7 @@
 
 session_start();
 
+include_once  '/var/www/html/lib/config.php';
 use util\Util;
 
 // 세션값이 있으면 home 페이지로 이동

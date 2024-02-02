@@ -23,7 +23,7 @@ class CommentRepository extends BaseRepository {
      */
     public function getCommentsByBoardId($board_id) {
         $data = ['board_id'=>$board_id];
-        $stmt = $this->select($this->table,null,$data);
+        $stmt = $this->select($this->table,$data);
         return DatabaseController::arrayMapObjects(new Comment(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
@@ -71,7 +71,7 @@ class CommentRepository extends BaseRepository {
      */
     public function findCommentById(Comment $comment){
         $data=['comment_id'=>$comment->getCommentId()];
-        $stmt = $this->select($this->table,null,$data);
+        $stmt = $this->select($this->table,$data);
         return new Comment($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 }

@@ -23,7 +23,7 @@ class BoardRepository extends BaseRepository {
      */
     public function getBoardById($board_id) {
         $data = ['board_id'=>$board_id];
-        $stmt = $this->select($this->table,null,$data);
+        $stmt = $this->select($this->table, $data);
         return new Board($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
@@ -44,7 +44,7 @@ class BoardRepository extends BaseRepository {
      */
     public function getDeleteType(){
         $data = ['delete_type' => 1];
-        $stmt = $this->select($this->table,null,$data);
+        $stmt = $this->select($this->table,$data);
         return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 

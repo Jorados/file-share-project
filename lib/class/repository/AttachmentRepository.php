@@ -23,7 +23,7 @@ class AttachmentRepository extends BaseRepository {
      */
     public function getAttachmentsByBoardId($board_id) {
         $data = ['board_id'=>$board_id];
-        $stmt = $this->select($this->table,null,$data);
+        $stmt = $this->select($this->table,$data);
         return DatabaseController::arrayMapObjects(new Attachment(), $stmt->fetchAll(\PDO::FETCH_ASSOC));
     }
 
