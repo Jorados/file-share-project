@@ -43,7 +43,7 @@ if($_SESSION['authority']==0) Util::serverRedirect("/pages/home.php");
             </div>
         <?php endif; ?>
 
-        <div class="card-body col-md-9 custom-mx-10">
+        <div class="card-body col-md-9 custom-mx-10 mt-3">
             <h5 class="card-title text-center">파일 업로드</h5>
             <form class="dropzone" action="upload.php" id="myDropzone"></form>
         </div>

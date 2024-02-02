@@ -25,6 +25,7 @@ $total = 1;
 <head>
     <?php include '/var/www/html/includes/header.php' ?>
     <meta charset='utf-8'>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://unpkg.com/ionicons@latest/dist/ionicons.js"></script>
 </head>
 
@@ -49,7 +50,6 @@ $total = 1;
             </div>
         </nav>
 
-        <!-- .scrollable-table 클래스를 추가한 div로 감싼 테이블 -->
         <div class="scrollable-table">
             <table class="table table-bordered table-striped">
                 <thead class="card-header">

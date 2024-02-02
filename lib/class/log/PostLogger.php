@@ -40,6 +40,10 @@ class PostLogger extends BaseLogger {
         $this->logAction($action, "{$email} 님이 '{$fileName}' 파일을 다운로드 하였습니다.");
     }
 
+    // 크론탭에 의한 일정시간이 지나서 열람 불가 상태로 변경
+    public function changePermission($action, $title, $board_id){
+        $this->logAction($action, "boardId : {$board_id} 번, {$title} 제목의 게시글이 열람권한 허용 상태에서 일정 시간 후 열람 불가 상태로 변경되었습니다");
+    }
 }
 
 

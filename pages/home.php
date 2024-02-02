@@ -64,8 +64,8 @@ $boards = $result['boards'];
                     <option value="username">작성자</option>
                 </select>
 
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search_query" id="searchQueryInput" autocomplete="off">
-                <button class="btn btn-outline-primary ml-1" type="submit">Search</button>
+                <input class="form-control me-2" type="search" placeholder="search" aria-label="Search" name="search_query" id="searchQueryInput" autocomplete="off">
+                <button class="btn btn-outline-primary ml-1" type="submit">search</button>
             </form>
         </div>
     </nav>
@@ -95,7 +95,7 @@ $boards = $result['boards'];
                             </a>
                             <div style="float: right;">
                                 <p class="card-text">
-                                    <strong>
+                                        <strong>
                                         <?php
                                         if ($board->getOpenclose() == 'open') {
                                             echo '<span style="color: blue;">허용</span>';
@@ -105,7 +105,7 @@ $boards = $result['boards'];
                                             echo '<span style="color: #09de00;">대기</span>';
                                         }
                                         ?>
-                                    </strong>
+                                        </strong>
                                 </p>
                             </div>
                         </h5>
@@ -125,7 +125,7 @@ $boards = $result['boards'];
                             ?>
                         </p>
                         <p class="card-text">
-                            날짜 : <?= ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
+                            작성일 : <?= ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
                         </p>
 
                         <p class="card-text" style="float: right;">

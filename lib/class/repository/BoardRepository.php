@@ -238,7 +238,7 @@ class BoardRepository extends BaseRepository {
      * @return array|\dataset\BaseModel[]
      */
     public function getOpencloseBoard(){
-        $sql = "SELECT board_id FROM board WHERE {$this->getOpencloseWhere()}";
+        $sql = "SELECT * FROM board WHERE {$this->getOpencloseWhere()}";
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return DatabaseController::arrayMapObjects(new Board(), $stmt->fetchAll(\PDO::FETCH_ASSOC));

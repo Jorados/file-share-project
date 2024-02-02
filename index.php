@@ -2,6 +2,16 @@
 /**
  * 기본 홈 페이지
  */
+
+session_start();
+
+use util\Util;
+
+// 세션값이 있으면 home 페이지로 이동
+if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
+    Util::serverRedirect("/pages/home.php");
+    exit;
+}
 ?>
 <!DOCTYPE html>
 <html lang="ko">

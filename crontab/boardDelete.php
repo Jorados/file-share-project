@@ -1,6 +1,6 @@
 <?php
 /**
- * 논리적 상태 게시글 -> 매일 자정 12시에 자동 삭제
+ * 논리적 상태 게시글 -> 매일 자정 12시에 자동 삭제 -> 물리적 삭제
  * 실제 디렉토리 파일도 삭제.
  * 크론탭
  */
@@ -32,6 +32,9 @@ foreach ($boards as $board){
     $boardRepository->deleteBoardById($board->getBoardId());
     // attachment 테이블 삭제
     $attachmentRepository->deleteAttachment($board->getBoardId());
+
+    // 로그 남기기
+    // ~~
 }
 
 ?>

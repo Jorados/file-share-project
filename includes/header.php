@@ -114,8 +114,8 @@ if (isset($_SESSION['session_start_time'])) {
                                         글 관리
                                     </a>
                                     <div class="dropdown-menu" aria-labelledby="userBoardDropdown">
-                                        <a class="dropdown-item" href="notice.php">공지글 보기</a>
                                         <a class="dropdown-item" href="home.php">일반글 보기</a>
+                                        <a class="dropdown-item" href="notice.php">공지글 보기</a>
                                         <?php if ($_SESSION['authority'] == 1): ?>
                                             <a class="dropdown-item" href="boardCreate.php">글 작성</a>
                                         <?php endif; ?>
