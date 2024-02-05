@@ -28,6 +28,10 @@ $searchQuery = isset($_GET['search_query']) ? $_GET['search_query'] : null; // v
 $result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery, $user_id, $status);
 $total_pages = $result['total_pages'];
 $boards = $result['boards'];
+
+$notice_items_per_page = 3; // 상단에 보여줄 공지글 개수
+$notice_result = $boardService->getBoardByPage($notice_items_per_page, 'newest', 0, null, null, null, null, 'notification');
+$notice_boards = $notice_result['boards'];
 ?>
 
 <!DOCTYPE html>
@@ -43,9 +47,65 @@ $boards = $result['boards'];
 <body>
 <!--<div class="container-fluid mt-5" style="max-width: 70%;">-->
 <div class="container mt-5">
-    <h2 class="text-center mb-5">사용자 게시글 조회</h2>
 
-    <nav class="navbar bg-body-tertiary">
+    <div class="info-container bg-light p-3 rounded mt-4">
+        <h3 class="text-center mb-1">
+            <span id="noticeLabel">최신 공지</span>
+        </h3>
+        <button class="btn btn-link btn-sm mb-2" id="toggleNotice" onclick="toggleNotice()">공지보기/숨기기</button>
+
+        <div id="noticeList" class="row mb-2">
+            <?php foreach ($notice_boards as $notice_board): ?>
+                <div class="col-md-4">
+                    <div class="card shadow" style="min-height: 150px; background-color: <?= $notice_board->getOpenclose() == 'open' ? '#D0E7FA' : '#FFFFFF'; ?>;">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="boardDetails.php?board_id=<?= $notice_board->getBoardId(); ?>">
+                                    <?php
+                                    $title = $notice_board->getTitle();
+                                    $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+                                    $truncatedTitle = mb_strimwidth($escapedTitle, 0, 15, '...'); // 문자열 주어진 너비로 자르기
+                                    echo $truncatedTitle;
+                                    ?>
+                                </a>
+
+                                <div style="float: right;">
+                                    <?php
+                                    // 현재 날짜와 게시글 작성일이 동일한 경우에만 "new" 문구를 추가
+                                    $currentDate = date('Y-m-d');
+                                    $boardDate = date('Y-m-d', strtotime($notice_board->getDate()));
+                                    if ($currentDate == $boardDate) {
+                                        echo '<span class="badge badge-pill badge-primary">new</span>';
+                                    }
+                                    ?>
+                                </div>
+                            </h5>
+                            <p class="card-text">
+                                <?php
+                                $content = ($notice_board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ?
+                                    '볼 수 없음' : $notice_board->getContent();
+                                $truncatedContent = mb_strimwidth($content, 0, 15, '...');
+                                echo '<p>내용 : ' . htmlspecialchars($truncatedContent, ENT_QUOTES, 'UTF-8') . '</p>';
+                                ?>
+                            </p>
+                            <p class="card-text">
+                                <?php
+                                $author = $userRepository->getUserById($notice_board->getUserId())->getUsername();
+                                $truncatedAuthor = mb_strimwidth($author, 0, 30, '...'); // 작성자 표시 부분 수정
+                                echo '작성자 : ' . htmlspecialchars($truncatedAuthor, ENT_QUOTES, 'UTF-8');
+                                ?>
+                            </p>
+                            <p class="card-text">날짜 : <?= date('Y-m-d', strtotime($notice_board->getDate())); ?></p>
+<!--                            <p class="card-text">열람권한 : <span style="color: blue;">허용</span></p>-->
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+
+<!--    <h4 class="text-center mt-5">사용자 게시글</h4>-->
+    <nav class="navbar bg-body-tertiary mt-5">
         <div class="container-fluid">
             <form class="d-flex ml-auto" method="GET" action="home.php">
                 <ion-icon class="mr-3" name="reload" onclick="resetSearchParams()" style="font-size: 40px; color: #1977c9; --ionicon-stroke-width: 45px;"></ion-icon>
@@ -179,6 +239,30 @@ $boards = $result['boards'];
     </div>
 </div>
 <script src="/assets/js/board/homeBoard.js"></script>
+<script>
+    // 페이지 로드 시 공지를 숨기는 스크립트 추가
+    document.addEventListener('DOMContentLoaded', function () {
+        var noticeList = document.getElementById('noticeList');
+        var noticeLabel = document.getElementById('noticeLabel');
+
+        // 페이지 로드 시 공지를 숨김
+        noticeList.style.display = 'none';
+        noticeLabel.innerText = '사용자 게시글 조회';
+    });
+
+    function toggleNotice() {
+        var noticeList = document.getElementById('noticeList');
+        var noticeLabel = document.getElementById('noticeLabel');
+
+        if (noticeList.style.display === 'none' || noticeList.style.display === '') {
+            noticeList.style.display = 'flex';
+            noticeLabel.innerText = '최신 공지';
+        } else {
+            noticeList.style.display = 'none';
+            noticeLabel.innerText = '사용자 게시글 조회';
+        }
+    }
+</script>
 <link rel="stylesheet" href="/assets/css/home.css">
 </body>
 </html>
