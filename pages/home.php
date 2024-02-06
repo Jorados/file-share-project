@@ -19,13 +19,12 @@ $items_per_page = 16;
 $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($current_page - 1) * $items_per_page;
 $order = isset($_GET['order']) ? $_GET['order'] : 'newest'; // 기본값은 최신순
-$status = "normal";
 
 $permission = isset($_GET['permission']) ? $_GET['permission'] : null; // openclose
 $searchType = isset($_GET['search_type']) ? $_GET['search_type'] : null; // title,content
 $searchQuery = isset($_GET['search_query']) ? $_GET['search_query'] : null; // value
 
-$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery, $user_id, $status);
+$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery, $user_id, 'normal');
 $total_pages = $result['total_pages'];
 $boards = $result['boards'];
 
@@ -49,7 +48,7 @@ $notice_boards = $notice_result['boards'];
 <div class="container mt-5">
 
     <div class="info-container bg-light p-3 rounded mt-4">
-        <h3 class="text-center mb-1">
+        <h3 class="text-center mt-2 mb-1">
             <span id="noticeLabel">최신 공지</span>
         </h3>
         <button class="btn btn-link btn-sm mb-2" id="toggleNotice" onclick="toggleNotice()">공지보기/숨기기</button>
@@ -64,7 +63,7 @@ $notice_boards = $notice_result['boards'];
                                     <?php
                                     $title = $notice_board->getTitle();
                                     $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
-                                    $truncatedTitle = mb_strimwidth($escapedTitle, 0, 15, '...'); // 문자열 주어진 너비로 자르기
+                                    $truncatedTitle = mb_strimwidth($escapedTitle, 0, 25, '...'); // 문자열 주어진 너비로 자르기
                                     echo $truncatedTitle;
                                     ?>
                                 </a>
@@ -82,9 +81,8 @@ $notice_boards = $notice_result['boards'];
                             </h5>
                             <p class="card-text">
                                 <?php
-                                $content = ($notice_board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ?
-                                    '볼 수 없음' : $notice_board->getContent();
-                                $truncatedContent = mb_strimwidth($content, 0, 15, '...');
+                                $content = $notice_board->getContent();
+                                $truncatedContent = mb_strimwidth($content, 0, 25, '...');
                                 echo '<p>내용 : ' . htmlspecialchars($truncatedContent, ENT_QUOTES, 'UTF-8') . '</p>';
                                 ?>
                             </p>
@@ -95,8 +93,7 @@ $notice_boards = $notice_result['boards'];
                                 echo '작성자 : ' . htmlspecialchars($truncatedAuthor, ENT_QUOTES, 'UTF-8');
                                 ?>
                             </p>
-                            <p class="card-text">날짜 : <?= date('Y-m-d', strtotime($notice_board->getDate())); ?></p>
-<!--                            <p class="card-text">열람권한 : <span style="color: blue;">허용</span></p>-->
+                            <p class="card-text">작성일 : <?= date('Y-m-d H시 i분', strtotime($notice_board->getDate())); ?></p>
                         </div>
                     </div>
                 </div>
@@ -138,63 +135,71 @@ $notice_boards = $notice_result['boards'];
             <a class="nav-link <?php echo isset($_GET['order']) && $_GET['order'] === 'oldest' ? 'active' : ''; ?>" href="?page=1&order=oldest">오래된순</a>
         </li>
     </ul>
-
-    <div class="row">
-        <?php foreach ($boards as $board): ?>
-            <div class="col-md-3 mb-4">
-                <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 'open' ? '#D0E7FA' : '#FFFFFF'; ?>;"> <!--'#D0E7FA'-->
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <a href="boardDetails.php?board_id=<?= $board->getBoardId(); ?>">
-                                <?php
-                                $title = $board->getTitle();
-                                $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
-                                $truncatedTitle = mb_strimwidth($escapedTitle, 0, 15, '...'); // 문자열 주어진 너비로 자르기
-                                echo $truncatedTitle;
-                                ?>
-                            </a>
-                            <div style="float: right;">
-                                <p class="card-text">
+    <?php if (empty($boards)): ?>
+        <div class="info-container bg-light p-3 rounded mt-4 text-center">
+            <div class="mt-4">
+                <h4>작성한 게시글이 없습니다.</h4>
+                <p class="text-muted">새로운 게시글을 작성해보세요!</p>
+            </div>
+        </div>
+    <?php else: ?>
+        <div class="row">
+            <?php foreach ($boards as $board): ?>
+                <div class="col-md-3 mb-4">
+                    <div class="card shadow" style="min-height: 230px; background-color: <?= $board->getOpenclose() == 'open' ? '#D0E7FA' : '#FFFFFF'; ?>;"> <!--'#D0E7FA'-->
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="boardDetails.php?board_id=<?= $board->getBoardId(); ?>">
+                                    <?php
+                                    $title = $board->getTitle();
+                                    $escapedTitle = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+                                    $truncatedTitle = mb_strimwidth($escapedTitle, 0, 15, '...'); // 문자열 주어진 너비로 자르기
+                                    echo $truncatedTitle;
+                                    ?>
+                                </a>
+                                <div style="float: right;">
+                                    <p class="card-text">
                                         <strong>
-                                        <?php
-                                        if ($board->getOpenclose() == 'open') {
-                                            echo '<span style="color: blue;">허용</span>';
-                                        } elseif ($board->getOpenclose() == 'close') {
-                                            echo '<span style="color: red;">불가</span>';
-                                        } elseif ($board->getOpenclose() == 'wait') {
-                                            echo '<span style="color: #09de00;">대기</span>';
-                                        }
-                                        ?>
+                                            <?php
+                                            if ($board->getOpenclose() == 'open') {
+                                                echo '<span style="color: blue;">허용</span>';
+                                            } elseif ($board->getOpenclose() == 'close') {
+                                                echo '<span style="color: red;">불가</span>';
+                                            } elseif ($board->getOpenclose() == 'wait') {
+                                                echo '<span style="color: #09de00;">대기</span>';
+                                            }
+                                            ?>
                                         </strong>
-                                </p>
-                            </div>
-                        </h5>
-                        <p class="card-text">
-                            <?php
-                            $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ?
-                                '볼 수 없음' : $board->getContent();
-                            $truncatedContent = mb_strimwidth($content, 0, 15, '...');
-                            echo '<p>내용 : ' . htmlspecialchars($truncatedContent, ENT_QUOTES, 'UTF-8') . '</p>';
-                            ?>
-                        </p>
-                        <p class="card-text">
-                            <?php
-                            $author = $userRepository->getUserById($board->getUserId())->getUsername();
-                            $truncatedAuthor = mb_strimwidth($author, 0, 15, '...'); // 작성자 표시 부분 수정
-                            echo '작성자 : ' . htmlspecialchars($truncatedAuthor, ENT_QUOTES, 'UTF-8');
-                            ?>
-                        </p>
-                        <p class="card-text">
-                            작성일 : <?= ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
-                        </p>
+                                    </p>
+                                </div>
+                            </h5>
+                            <p class="card-text">
+                                <?php
+                                $content = ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ?
+                                    '볼 수 없음' : $board->getContent();
+                                $truncatedContent = mb_strimwidth($content, 0, 15, '...');
+                                echo '<p>내용 : ' . htmlspecialchars($truncatedContent, ENT_QUOTES, 'UTF-8') . '</p>';
+                                ?>
+                            </p>
+                            <p class="card-text">
+                                <?php
+                                $author = $userRepository->getUserById($board->getUserId())->getUsername();
+                                $truncatedAuthor = mb_strimwidth($author, 0, 15, '...'); // 작성자 표시 부분 수정
+                                echo '작성자 : ' . htmlspecialchars($truncatedAuthor, ENT_QUOTES, 'UTF-8');
+                                ?>
+                            </p>
+                            <p class="card-text">
+                                작성일 : <?= ($board->getOpenclose() != 'open' && $_SESSION['role'] == 'user') ? '볼 수 없음' : date('Y-m-d', strtotime($board->getDate())); ?>
+                            </p>
 
-                        <p class="card-text" style="float: right;">
-                            댓글 <?= $commentRepository->getCountComments($board->getBoardId()); ?> 개
-                        </p>
+                            <p class="card-text" style="float: right;">
+                                댓글 <?= $commentRepository->getCountComments($board->getBoardId()); ?> 개
+                            </p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        <?php endforeach; ?>
+                <?php endforeach; ?>
+        <?php endif; ?>
     </div>
 
     <div class="container mt-4" id="pagination-container">

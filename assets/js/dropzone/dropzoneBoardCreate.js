@@ -15,13 +15,19 @@ Dropzone.options.myDropzone = {
 
         // 파일이 추가될 때 호출될 콜백 함수
         this.on("addedfile", function(file) {
-            var cancelButton = Dropzone.createElement("<button class='btn btn-danger btn-sm mt-2'>취소</button>");
+            var cancelButton = Dropzone.createElement("<button class='btn btn-danger btn-sm mt-1'>취소</button>");
             var _this = this;
 
             cancelButton.addEventListener("click", function() {
                 _this.removeFile(file);  // 파일 제거
             });
             file.previewElement.appendChild(cancelButton);  // 취소 버튼을 파일 미리보기 요소에 추가
+
+            // 에러 메시지 숨기기
+            // var errorMessageElement = file.previewElement.querySelector(".dz-error-message");
+            // if (errorMessageElement) {
+            //     errorMessageElement.style.display = "none";
+            // }
         });
 
         // 데이터 전송
@@ -69,7 +75,7 @@ Dropzone.options.myDropzone = {
                 success: function(response) {
                     console.log("Ajax Success:", response);
                     if (myDropzone.getQueuedFiles().length === 0) {
-                        window.location.href = "../../../pages/home.php";
+                        //window.location.href = "../../../pages/home.php";
                     }
                     myDropzone.processQueue();
                 },

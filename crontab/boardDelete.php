@@ -32,9 +32,6 @@ foreach ($boards as $board){
     $boardRepository->deleteBoardById($board->getBoardId());
     // attachment 테이블 삭제
     $attachmentRepository->deleteAttachment($board->getBoardId());
-
-    // 로그 남기기
-    // ~~
 }
 
 ?>

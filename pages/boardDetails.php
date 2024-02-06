@@ -115,7 +115,7 @@ $attachments = $result['attachments'];
                 </ul>
 
                 <label for="date">작성일</label>
-                <textarea class="form-control mb-3" id="date" rows="1" readonly><?= date('Y-m-d', strtotime($board->getDate())); ?></textarea>
+                <textarea class="form-control mb-3" id="date" rows="1" readonly><?= date('Y-m-d H시 i분', strtotime($board->getDate())); ?></textarea>
 
                 <label for="date">작성자</label>
                 <textarea class="form-control mb-3" id="email" rows="1" readonly><?= $userRepository->getUserById($board->getUserId())->getUsername() ?></textarea>
@@ -226,7 +226,7 @@ $attachments = $result['attachments'];
                             <div class="card-body d-flex justify-content-between">
                                 <div style="max-width: 80%;">
                                     <p class="card-text mb-2" style="margin: 0;"><?= $comment->getContent(); ?></p>
-                                    <small class="text-muted mr-3"> 작성일 : <?= date('Y-m-d H:i', strtotime($comment->getDate())); ?></small>
+                                    <small class="text-muted mr-3"> 작성일 : <?= date('Y-m-d H시 i분', strtotime($comment->getDate())); ?></small>
                                     <small class="text-muted ">
                                         작성자 : <?= $userRepository->getUserEmailById(new User(['user_id'=>($comment->getUserId())]))->getUsername(); ?>
                                     </small>
