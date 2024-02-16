@@ -11,7 +11,7 @@ if (!isset($_SESSION['session_start_time'])) {
 if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     Util::serverRedirect("/index.php");
     exit;
-} elseif (isset($_SESSION['role'])) {
+} else if (isset($_SESSION['role'])) {
     $currentPath = $_SERVER['REQUEST_URI'];
     if ($_SESSION['role'] == 'user' && (in_array('admin', explode("/", $currentPath)))) {
         Util::serverRedirect("/pages/home.php");

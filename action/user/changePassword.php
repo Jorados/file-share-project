@@ -16,10 +16,17 @@ if ($_SERVER['REQUEST_METHOD'] === Constant::METHOD_POST){
         array_merge($userService->changePassword($_POST['password'], $_SESSION['email']),['error' => false])
     );
 }
-else convertJsonAndExit(['error' => true , 'content' => "userService->changePassword 에 문제생김"]);
+else {
+    convertJsonAndExit(['error' => true , 'content' => "userService->changePassword 에 문제생김"]);
+}
 
 function convertJsonAndExit($jsonArr){
     echo json_encode($jsonArr);
+
+    // 세션 파기
+    session_unset();
+    session_destroy();
+
     exit();
 }
 ?>

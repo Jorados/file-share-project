@@ -27,7 +27,7 @@ if($_SESSION['authority']==0) Util::serverRedirect("/pages/home.php");
 <?php include '/var/www/html/includes/header.php'?>
 <div class="container mt-5">
     <div class="card mx-auto mb-5" style="max-width: 1000px;">
-        <div class="card-header custom-header" style="max-height: 90px;">
+        <div class="card-header custom-header" style="max-height: 90px;">$
             <h3 class="text-center">게시글 생성</h3>
         </div>
 

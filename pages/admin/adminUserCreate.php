@@ -43,14 +43,13 @@
                         <small class="form-text text-muted">실명을 입력해주세요.</small>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group mb-4">
                         <label for="phone">전화번호</label>
                         <input type="text" id="phone" name="phone" class="form-control">
                         <small class="form-text text-muted">11자리의 숫자만 입력해주세요.</small>
                     </div>
 
-                    <br>
-                    <button type="button" class="btn btn-primary btn-block" onclick="submitForm()">회원 가입</button>
+                    <button type="button" class="btn btn-primary btn-block mb-2" onclick="submitForm()">회원 가입</button>
                 </form>
             </div>
         </div>

@@ -10,7 +10,6 @@ define('FILE_PATH', DOCUMENT_ROOT . "/file");
 define('INCULEDS_PATH',DOCUMENT_ROOT . "/includes");
 define('PAGES_PATH',DOCUMENT_ROOT . '/pages');
 define('ADMIN_PATH',PAGES_PATH . '/admin');
-define('USER_PATH',PAGES_PATH . '/user');
 
 
 //오토로드
@@ -26,8 +25,6 @@ function myAutoloader($className) {
 }
 // 오토로더 함수를 등록
 spl_autoload_register('myAutoloader');
-
-
 ?>
 
 
