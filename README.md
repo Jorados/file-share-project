@@ -1,5 +1,8 @@
 # file-share-project
 
+### 기간
+ - 2023/12/26 ~ 2024/01/12
+
 ### 기술스택
  - VMWARE - UBUNTU 18.04
  - APACHE2  
