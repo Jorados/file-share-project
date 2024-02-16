@@ -9,7 +9,26 @@
 
 ### WBS (계획서)
 
+<details>
+ <summary> 클릭하여 보기 </summary>
+
+ <br>
+
 > https://docs.google.com/spreadsheets/d/1eU2O7kzHnQqxTx5iBJp2_r8CohMnA372/edit?usp=drive_link&ouid=114989303808624482632&rtpof=true&sd=true   
+ 
+</details>
+
+### ERD
+
+<details>
+<summary> 클릭하여 보기 </summary>   
+
+<br>
+
+![image](https://github.com/Jorados/file-share-project/assets/100845256/b2a39913-8108-47af-a3cb-99d06a9a59e6)
+
+
+</details>
 
 <br>   
 
