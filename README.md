@@ -2,6 +2,7 @@
 
 ### 기술스택
  - VMWARE - UBUNTU 18.04
+ - APACHE2  
  - PHP 7.2
  - MYSQL
  - PDO
