@@ -4,7 +4,7 @@
  - 2023/12/26 ~ 2024/01/12
 
 ### 기술스택
- - VMWARE - UBUNTU 18.04
+ - VMWARE - UBUNTU 18.04  -> Docker로 마이그레이션 진행
  - APACHE2  
  - PHP 7.2
  - MYSQL
