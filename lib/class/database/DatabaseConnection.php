@@ -7,7 +7,7 @@
 namespace database;
 
 class DatabaseConnection {
-    private $host = 'localhost';
+    private $host = 'db'; // 도커 네트워크 내부는 컨테이너의 서비스 이름으로 서로 인식 가능
     private $db   = 'seongjinDB';
     private $user = 'USERNAME';
     private $pass = 'passWORD@3';

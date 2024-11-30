@@ -1,0 +1,31 @@
+# docker compose 설정
+
+services:
+  apache-php:
+    build: .
+    image: apache-php
+    ports:
+      - "80:80"
+    volumes:
+      - ./:/var/www/html/
+    depends_on:
+      - db
+    container_name: file_share
+
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 0000
+      MYSQL_DATABASE: seongjinDB
+      MYSQL_USER: USERNAME
+      MYSQL_PASSWORD: passWORD@3
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d
+
+volumes:
+  db_data:

@@ -1,0 +1,5 @@
+# ./init 디렉토리 제외
+/init/
+
+# 혹시 몰라 init.sql 제외
+/init/init.sql
