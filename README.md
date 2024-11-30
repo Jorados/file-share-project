@@ -36,15 +36,21 @@
 <br>   
 
 ```
+### 프로젝트 실행 방법
+> 1. git clone 진행
+> 2. ( 도커 설치 후 ) 도커 실행
+> 3. 실행 : docker compose up -d
+> 4. 종료 : docker compose down
+
+
 ### URL
 
-> 192.168.10.96/index.php
+> 접속 경로 : localhost/
 
 
 ### 관리자 계정
-
 > ID : whtjdwls1539@nate.com    
-> PW : aaa
+> PW : 0000
 ```  
 
 -------
