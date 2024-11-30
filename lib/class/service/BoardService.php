@@ -29,7 +29,7 @@ class BoardService{
      * @param String $status
      * @return array
      */
-    public function getBoardByPage($items_per_page, $order, $offset, $permission = null, $searchType = null, $searchQuery = null, $user_id = null, $status) {
+    public function getBoardByPage($items_per_page, $order, $offset, $status, $permission = null, $searchType = null, $searchQuery = null, $user_id = null) {
         $boardRepository = new BoardRepository();
         $userRepository = new UserRepository();
 
@@ -40,8 +40,8 @@ class BoardService{
         $user = $userRepository->getUserById($user_id);
         if($user->getRole() === "admin") $user_id = null;
 
-        $total_items = $boardRepository->getTotalBoardCount($permission, $searchType, $searchQuery, $user_id, $status);
-        $boards = $boardRepository->getBoardsByPage($offset, $items_per_page, $order, $permission, $searchType, $searchQuery, $user_id, $status);
+        $total_items = $boardRepository->getTotalBoardCount($status, $permission, $searchType, $searchQuery, $user_id);
+        $boards = $boardRepository->getBoardsByPage($offset, $items_per_page, $order, $status, $permission, $searchType, $searchQuery, $user_id);
 
         $total_pages = ceil($total_items / $items_per_page);
 
@@ -57,7 +57,7 @@ class BoardService{
      * @param String $email
      * @return array
      */
-    public function deleteBoard($board_id=null, $email): array{
+    public function deleteBoard($email, $board_id=null): array{
         $boardRepository = new BoardRepository();
         $logger = new PostLogger();
 
@@ -99,7 +99,7 @@ class BoardService{
      * @param int $user_id
      * @return array
      */
-    public function boardAuthorityChange($newPermission, $board_id, $reason_content=null, $user_id){
+    public function boardAuthorityChange($newPermission, $board_id, $user_id, $reason_content=null){
         $boardRepository = new BoardRepository();
         $infoRepository = new InfoRepository();
         $mailSender = new SendMail();
@@ -124,7 +124,7 @@ class BoardService{
             $message = 'Your post status has been changed by Administrator ' . $_SESSION['email'];
 
             // 메일 전송
-            $mailSender->sendToUser($subject, $message,$user->getEmail());
+//            $mailSender->sendToUser($subject, $message,$user->getEmail());
 
             // 로그 작성
             $board = $boardRepository->getBoardById($board_id);
@@ -165,7 +165,7 @@ class BoardService{
          */
         $subject = '관리자 게시글이 작성되었습니다.';
         $message = '관리자 ' . $_SESSION['email'] . ' 님의 게시글이 작성되었습니다.';
-        $mailSender->sendToAdmins($subject, $message);
+//        $mailSender->sendToAdmins($subject, $message);
 
         // 로그 작성
         $logger->createPost($_SERVER['REQUEST_URI'], $email, $postStatus);
@@ -199,7 +199,7 @@ class BoardService{
          */
         $subject = 'post has been written.';
         $message = $email . ' post has been written.';
-        $mailSender->sendToAdmins($subject, $message);
+//        $mailSender->sendToAdmins($subject, $message);
 
         // 로그 작성
         $status = 'normal';

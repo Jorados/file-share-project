@@ -22,11 +22,10 @@ $status = "notification";
 $searchType = isset($_GET['search_type']) ? $_GET['search_type'] : null; // title,content
 $searchQuery = isset($_GET['search_query']) ? $_GET['search_query'] : null; // value
 
-$result = $boardService->getBoardByPage($items_per_page, $order, $offset, null, $searchType, $searchQuery,null, $status);
+$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $status, null, $searchType, $searchQuery,null);
 $total_pages = $result['total_pages'];
 $boards = $result['boards'];
 ?>
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>

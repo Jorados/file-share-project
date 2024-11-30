@@ -1,5 +1,5 @@
 <?php
-session_start();
+//session_start();
 include_once '/var/www/html/lib/config.php';
 
 use util\Util;

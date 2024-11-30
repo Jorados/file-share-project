@@ -2,8 +2,6 @@
 /**
  * 헤더파일 - 권한,세션,세션시간 검사 / 네이게이션 / 로그아웃
  */
-session_start();
-
 include_once  '/var/www/html/lib/config.php';
 include_once  LIB_PATH . '/sessionCheck.php';
 use util\Util;

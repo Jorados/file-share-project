@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === Constant::METHOD_POST){
     $reason_content = $_POST['reason_content']; // 사용자로부터의 입력
     $user_id = $_SESSION['user_id'];
 
-    $result = $boardService->boardAuthorityChange($newPermission, $board_id, $reason_content, $user_id);
+    $result = $boardService->boardAuthorityChange($newPermission, $board_id, $user_id, $reason_content);
     echo json_encode(['status' => $result['status'], 'content' => $result['content']]);
 }
 ?>

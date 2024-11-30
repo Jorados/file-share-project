@@ -15,6 +15,6 @@ if ($_SERVER["REQUEST_METHOD"] == Constant::METHOD_POST) {
     $password = $_POST['password'];
 
     $result = $userService->loginUser($email,$password);
-    echo json_encode(['status'=>$result['status'], 'content'=>$result['content'], 'role'=>$result['role'], 'available'=>$result['available']]);
+    echo json_encode(['status'=>$result['status'], 'content'=>$result['content'], 'role'=>$result['role'] ?? null, 'available'=>$result['available'] ?? null]);
 }
 ?>

@@ -48,12 +48,12 @@ class AttachmentRepository extends BaseRepository {
                   VALUES (:filename, :filepath, :filesize, :filetype, :uploaddate, :boardid)";
 
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':filename', $attachment->getFilename(), \PDO::PARAM_STR);
-        $stmt->bindParam(':filepath', $attachment->getFilepath(), \PDO::PARAM_STR);
-        $stmt->bindParam(':filesize', $attachment->getFilesize(), \PDO::PARAM_INT);
-        $stmt->bindParam(':filetype', $attachment->getFileType(), \PDO::PARAM_STR);
-        $stmt->bindParam(':uploaddate', $uploadDate, \PDO::PARAM_STR);
-        $stmt->bindParam(':boardid', $attachment->getBoardId(), \PDO::PARAM_INT);
+        $stmt->bindValue(':filename', $attachment->getFilename(), \PDO::PARAM_STR);
+        $stmt->bindValue(':filepath', $attachment->getFilepath(), \PDO::PARAM_STR);
+        $stmt->bindValue(':filesize', $attachment->getFilesize(), \PDO::PARAM_INT);
+        $stmt->bindValue(':filetype', $attachment->getFileType(), \PDO::PARAM_STR);
+        $stmt->bindValue(':uploaddate', $uploadDate, \PDO::PARAM_STR);
+        $stmt->bindValue(':boardid', $attachment->getBoardId(), \PDO::PARAM_INT);
         $stmt->execute();
     }
 }

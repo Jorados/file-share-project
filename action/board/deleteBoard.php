@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === Constant::METHOD_POST) {
     $board_id = isset($_POST['board_id']) ? $_POST['board_id'] : null;
 
     $email = $_SESSION['email'];
-    $result = $boardService->deleteBoard($board_id,$email);
+    $result = $boardService->deleteBoard($email, $board_id);
     echo json_encode(['status' => $result['status'], 'content' => $result['content']]);
 }
 ?>

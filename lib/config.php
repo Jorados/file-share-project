@@ -25,6 +25,6 @@ function myAutoloader($className) {
 }
 // 오토로더 함수를 등록
 spl_autoload_register('myAutoloader');
-?>
+
 
 

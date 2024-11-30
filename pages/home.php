@@ -1,4 +1,3 @@
-
 <?php
 /**
  * 사용자 -> 홈 페이지 (로그인 후)
@@ -24,12 +23,12 @@ $permission = isset($_GET['permission']) ? $_GET['permission'] : null; // opencl
 $searchType = isset($_GET['search_type']) ? $_GET['search_type'] : null; // title,content
 $searchQuery = isset($_GET['search_query']) ? $_GET['search_query'] : null; // value
 
-$result = $boardService->getBoardByPage($items_per_page, $order, $offset, $permission, $searchType, $searchQuery, $user_id, 'normal');
+$result = $boardService->getBoardByPage($items_per_page, $order, $offset, 'normal', $permission, $searchType, $searchQuery, $user_id);
 $total_pages = $result['total_pages'];
 $boards = $result['boards'];
 
 $notice_items_per_page = 3; // 상단에 보여줄 공지글 개수
-$notice_result = $boardService->getBoardByPage($notice_items_per_page, 'newest', 0, null, null, null, null, 'notification');
+$notice_result = $boardService->getBoardByPage($notice_items_per_page, 'newest', 0, 'notification', null, null, null, null);
 $notice_boards = $notice_result['boards'];
 ?>
 

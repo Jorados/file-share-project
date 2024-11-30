@@ -77,8 +77,8 @@ class BoardRepository extends BaseRepository {
      * @param String $status
      * @return mixed
      */
-    public function getTotalBoardCount($permission = null, $searchType = null, $searchQuery = null, $userId = null, $status) {
-        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId, $status);
+    public function getTotalBoardCount($status, $permission = null, $searchType = null, $searchQuery = null, $userId = null) {
+        $whereClause = $this->buildWhereClause($status, $permission, $searchType, $searchQuery, $userId);
         $query = "SELECT COUNT(*) as total FROM board WHERE {$whereClause['strArr']};";
         $stmt = $this->pdo->prepare($query);
 
@@ -100,9 +100,9 @@ class BoardRepository extends BaseRepository {
      * @return array|\dataset\BaseModel[]
      */
 
-    public function getBoardsByPage($offset, $items_per_page, $order, $permission = null, $searchType = null, $searchQuery = null, $userId = null, $status) {
+    public function getBoardsByPage($offset, $items_per_page, $order, $status, $permission = null, $searchType = null, $searchQuery = null, $userId = null) {
         $orderClause = ($order === 'oldest') ? 'ORDER BY date ASC' : 'ORDER BY date DESC';
-        $whereClause = $this->buildWhereClause($permission, $searchType, $searchQuery, $userId, $status);
+        $whereClause = $this->buildWhereClause($status, $permission, $searchType, $searchQuery, $userId);
         $query = "SELECT * FROM board WHERE {$whereClause['strArr']} {$orderClause} LIMIT :offset, :items_per_page;";
         $stmt = $this->pdo->prepare($query);
 
@@ -119,7 +119,7 @@ class BoardRepository extends BaseRepository {
      * @return array
      */
 
-    private function buildWhereClause($permission = null, $searchType = null, $searchQuery = null, $userId = null, $status) {
+    private function buildWhereClause($status, $permission = null, $searchType = null, $searchQuery = null, $userId = null) {
         $whereConditions = [];
         $paramArr = [];
 

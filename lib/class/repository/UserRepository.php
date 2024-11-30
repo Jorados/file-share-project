@@ -192,5 +192,12 @@ class UserRepository extends BaseRepository {
         return new User($stmt->fetch(\PDO::FETCH_ASSOC));
     }
 
+    public function findUser(){
+        $query = "SELECT * FROM user;";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
 
 }

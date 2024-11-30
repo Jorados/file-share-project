@@ -75,7 +75,7 @@ Dropzone.options.myDropzone = {
                 success: function(response) {
                     console.log("Ajax Success:", response);
                     if (myDropzone.getQueuedFiles().length === 0) {
-                        //window.location.href = "../../../pages/home.php";
+                        window.location.href = "../../../pages/home.php";
                     }
                     myDropzone.processQueue();
                 },
