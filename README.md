@@ -6,7 +6,7 @@
 ### 기술스택
  - VMWARE - UBUNTU 18.04  -> Docker로 마이그레이션 진행
  - APACHE2  
- - PHP 7.2
+ - PHP 8.2
  - MYSQL
  - PDO
 
