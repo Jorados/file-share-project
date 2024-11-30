@@ -1,0 +1,13 @@
+{
+  "autoload": {
+    "psr-4": {
+      "dataset\\" : "lib/class/dataset/",
+      "database\\" : "lib/class/database/",
+      "log\\" : "lib/class/log/",
+      "mail\\" : "lib/class/mail/",
+      "repository\\" : "lib/class/repository/",
+      "service\\" : "lib/class/service/",
+      "util\\" : "lib/class/util/"
+    }
+  }
+}
