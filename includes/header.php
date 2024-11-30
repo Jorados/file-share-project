@@ -2,8 +2,11 @@
 /**
  * 헤더파일 - 권한,세션,세션시간 검사 / 네이게이션 / 로그아웃
  */
-include_once  '/var/www/html/lib/config.php';
-include_once  LIB_PATH . '/sessionCheck.php';
+//include_once  '/var/www/html/lib/config.php';
+//include_once  LIB_PATH . '/sessionCheck.php';
+
+//session_start();
+
 use util\Util;
 
 // 세션 시작 시간을 현재 시간으로 업데이트

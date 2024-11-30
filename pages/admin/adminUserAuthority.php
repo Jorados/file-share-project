@@ -2,8 +2,8 @@
 /**
  * 관리자 -> 사용자 권한을 변경하는 페이지
  */
-session_start();
-include '/var/www/html/lib/config.php';
+include_once  '/var/www/html/lib/config.php';
+include_once  LIB_PATH . '/sessionCheck.php';
 
 use log\UserLogger;
 use service\UserService;

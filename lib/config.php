@@ -1,7 +1,9 @@
 <?php
+//error_reporting(E_ALL);
+//ini_set('display_errors', 1);
+
 // 경로 변수 설정
 define('DOCUMENT_ROOT', "/var/www/html");
-
 define('LIB_PATH', DOCUMENT_ROOT . "/lib");
 define('CLASS_PATH', LIB_PATH . "/class");
 define('INCLUDE_PATH', DOCUMENT_ROOT . "/includes");

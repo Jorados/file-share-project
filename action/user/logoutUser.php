@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 include_once '/var/www/html/lib/config.php';
 
 use util\Constant;
@@ -18,6 +17,12 @@ if ($_SERVER["REQUEST_METHOD"] == Constant::METHOD_POST) {
     // 세션 파기
     session_unset();
     session_destroy();
+
+
+    echo json_encode([
+        'status' => true,
+        'content' => '로그아웃 성공'
+    ]);
     exit();
 }
 ?>

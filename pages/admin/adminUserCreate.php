@@ -2,6 +2,8 @@
 /**
  *  관리자 -> 사용자 계정 생성 페이지
  */
+include_once  '/var/www/html/lib/config.php';
+include_once  LIB_PATH . '/sessionCheck.php';
 ?>
 <!DOCTYPE html>
 <html lang="ko">

@@ -2,6 +2,8 @@
 /**
  * 관리자 -> 로그 조회 페이지
  */
+include_once  '/var/www/html/lib/config.php';
+include_once  LIB_PATH . '/sessionCheck.php';
 ?>
 <!DOCTYPE html>
 <html lang="ko">
@@ -57,6 +59,7 @@
     ?>
     <script src="/assets/js/searchLog.js"></script>
 </div>
+<div style="height: 100px"></div>
 <link rel="stylesheet" href="/assets/css/log.css">
 </body>
 </html>

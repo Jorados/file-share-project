@@ -4,7 +4,6 @@ namespace util;
 class Util{
     public static function serverRedirect(string $url){
         if (empty($url)) return false;
-
         header("Location: {$url}");
     }
 
@@ -18,7 +17,7 @@ class Util{
 
         $script .= "document.location.href = {$url}";
         $script .= "</script>";
+        echo $script;
     }
 }
 ?>
-

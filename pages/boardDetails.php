@@ -3,7 +3,6 @@
  * 사용자 -> 게시글 상세 조회 페이지
  */
 session_start();
-
 include_once '/var/www/html/lib/config.php';
 
 use repository\UserRepository;

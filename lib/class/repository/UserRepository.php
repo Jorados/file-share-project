@@ -89,9 +89,9 @@ class UserRepository extends BaseRepository {
     }
 
     private function isDuplicate($columnName, $columnValue) {
-        $query = "SELECT COUNT(*) FROM user WHERE $columnName = :columnValue";
+        $query = "SELECT COUNT(*) FROM user WHERE {$columnName} = :columnValue";
         $stmt = $this->pdo->prepare($query);
-        $stmt->execute([$columnName => $columnValue]);
+        $stmt->execute([$columnValue]);
         $count = $stmt->fetchColumn();
         return $count > 0;
     }

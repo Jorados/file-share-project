@@ -3,7 +3,8 @@
  *  관리자 -> 공지 조회 페이지
  */
 
-include_once '/var/www/html/lib/config.php';
+include_once  '/var/www/html/lib/config.php';
+include_once  LIB_PATH . '/sessionCheck.php';
 
 use repository\UserRepository;
 use service\BoardService;
