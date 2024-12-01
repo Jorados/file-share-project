@@ -9,6 +9,8 @@
  - PHP 7.2
  - MYSQL
  - PDO
+ - Composer
+ - Xdebug
 
 ### WBS (계획서)
 
@@ -19,6 +21,16 @@
 
 > https://docs.google.com/spreadsheets/d/1eU2O7kzHnQqxTx5iBJp2_r8CohMnA372/edit?usp=drive_link&ouid=114989303808624482632&rtpof=true&sd=true   
  
+</details>
+
+### ARCHITECTURE 
+<details>
+ <summary> 클릭하여 보기</summary>
+
+ <br>
+
+ ![image](https://github.com/user-attachments/assets/d3a9e34f-e511-45cc-b5a5-aaef78ac82a5)
+
 </details>
 
 ### ERD
