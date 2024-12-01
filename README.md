@@ -49,8 +49,8 @@
 
 
 ### 관리자 계정
-> ID : whtjdwls1539@nate.com    
-> PW : 0000
+> ID : jorados@naver.com
+> PW : aaa123456
 ```  
 
 -------
