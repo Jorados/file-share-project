@@ -2,8 +2,8 @@
 /**
  * 사용자 -> 홈 페이지 (로그인 후)
  */
-session_start();
-include_once '/var/www/html/lib/config.php';
+include_once  '/var/www/html/lib/config.php';
+include_once  LIB_PATH . '/sessionCheck.php';
 
 use repository\UserRepository;
 use service\BoardService;
